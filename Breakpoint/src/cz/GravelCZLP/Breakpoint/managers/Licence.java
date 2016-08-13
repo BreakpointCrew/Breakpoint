@@ -13,8 +13,9 @@ public class Licence {
 		
 		try {
 			b = getResponce();
+			System.out.println("Responce" + getResponce());
 		} catch (IOException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return Boolean.valueOf(b);
@@ -22,7 +23,7 @@ public class Licence {
 	
 	private static String getResponce() throws IOException {
 		
-		URL o = new URL("https://bitbucket.org/GravelCZLP/breakpoint/raw/d1ed79691fa0bcd20269483e426d2c8cb7455802/l");
+		URL o = new URL("https://gist.githubusercontent.com/GravelCZLP/399cb004a98b5d46789cbc3d7b713332/raw/e48677918e17b8f04c788a41f25ad9f6d06cd233/licence.txt");
 		HttpURLConnection con = (HttpURLConnection) o.openConnection();
 		con.setDoOutput(true);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));

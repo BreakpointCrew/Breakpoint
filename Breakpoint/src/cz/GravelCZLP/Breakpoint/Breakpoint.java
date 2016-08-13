@@ -78,7 +78,6 @@ public class Breakpoint extends JavaPlugin
 	public MapManager mapm;
 	public ProtocolManager prm; //BPPlayer-520, this-181 a 80, PlayerManager-355
 	public EventManager evtm;
-	public TopKillsManager topkills;
 	public boolean successfullyEnabled;
 	
 	@Override
@@ -114,8 +113,6 @@ public class Breakpoint extends JavaPlugin
 			LobbyInfoManager.startLoop();
 			setEventManager();
 			DoubleMoneyManager.update();
-			topkills = new TopKillsManager(config);
-			topkills.setupFancyStats().startLoops();
 			getServer().clearRecipes();
 			World world = config.getLobbyLocation().getWorld();
 			world.setStorm(false);
@@ -139,8 +136,6 @@ public class Breakpoint extends JavaPlugin
 	{
 		if (!successfullyEnabled)
 			return;
-		
-		topkills.despawn();
 		
 		trySave();
 		kickPlayers();

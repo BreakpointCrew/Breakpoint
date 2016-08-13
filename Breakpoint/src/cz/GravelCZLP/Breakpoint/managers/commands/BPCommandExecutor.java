@@ -791,25 +791,18 @@ public class BPCommandExecutor implements CommandExecutor
 			{
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("setNPCLocation"))
+		} else if (args[0].equalsIgnoreCase("setNPCLoc"))
 		{
-			if (!(sender instanceof Player)) {
-				sender.sendMessage(ChatColor.RED +"Only for Players");
-				return false;
-			}
+			if (sender instanceof Player)
+				pl.getBreakpointConfig().setTopNPCLocation(((Player) sender).getLocation());
+				sender.sendMessage("§4Nastaveno..");
 			
-			Player p = (Player) sender;
-			if (args.length < 2) {
-				sender.sendMessage("§c/bp setNPCLocation <sign/npc> index(cislo)");
-				return false;
-			}
-			if (args[1].equalsIgnoreCase("NPC")) {
-				pl.getBreakpointConfig().setNPCsLocations(p.getLocation(), Integer.valueOf(args[2]));
-			} else if (args[1].equalsIgnoreCase("Sign")) {
-				pl.getBreakpointConfig().setNPCsSignLocations(p.getLocation(), Integer.valueOf(args[2]));
-			}
+		} else if (args[0].equalsIgnoreCase("setSignLoc")) 
+		{
+			if (sender instanceof Player)
+				pl.getBreakpointConfig().setTopSignLocation(((Player) sender).getLocation());
+				sender.sendMessage("§4Nastaveno.."); 	
 		}
-		
 		return true;
 	}
 }

@@ -1,13 +1,8 @@
 package cz.GravelCZLP.Breakpoint.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
@@ -16,140 +11,113 @@ import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
 public class TopKillsManager {
 
+	private boolean isNpcLoopRunning;
+	private boolean isSignLoopRunning;
+	
+	private int npcid;
+	
 	private Configuration config;
-	private List<UUID> NPCs = new ArrayList<UUID>(); 
 	
 	public TopKillsManager(Configuration config) {
+		isSignLoopRunning = false;
+		isNpcLoopRunning = false;
 		this.config = config;
 	}
 	
-	
-	public TopKillsManager setupFancyStats() {	
-		setupNPCs();
-		setSigns();
-		return this;
+	public void spawn() {
+		spawnNPC();
+		spawnSign();
 	}
 	
-	public void startLoops() {
-		SignsLoop();
-		NPCLoop();
-	}
-	
-	private void NPCLoop() {
-		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				for (int i = 0; i < NPCs.size(); i++) {
-					NPC npc = CitizensAPI.getNPCRegistry().getByUniqueId(NPCs.get(i));
-					PlayerStatistics stat = null;
-					try {
-						stat = StatisticsManager.playersRankedByKills.get(i);
-					} catch (Exception e) {
-						Breakpoint.warn("Error when trying to update top kill NPCs: " + e.getMessage());
-						return;
-					}
-					npc.setName(stat.getName());
-				}
-			}
-		}, 1L, 2500L);
-	}
-	
-	private void SignsLoop() {
-		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				for (int i = 0; i < config.getNPCsSignLocations().length; i++) {
-					Block sign = config.getNPCsSignLocations()[i].getBlock();
-					if (sign.getState() instanceof Sign) {
-						Sign s = (Sign) sign.getState();
-						PlayerStatistics stat = null;
-						try {
-							stat = StatisticsManager.playersRankedByKills.get(i);	
-						} catch (Exception e) {
-							Breakpoint.warn("Error When trying to load signs for TOP 3 Players: " + e.getMessage());
-							return;
-						}
-						if (stat != null) 
-							s.setLine(0, stat.getName());
-							s.setLine(1, "§aKills: " + String.valueOf(stat.getKills()));
-							s.setLine(2, "§cDeaths: " + String.valueOf(stat.getDeaths())); 
-							s.setLine(3, "§6K/D: " + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
-					}
-				}
-			}
-		}, 1L, 2500L);
-	}
-	
-	private void setupNPCs() {
-		for (int i = 0; i < config.getNPCsLocations().length; i++) {
-			Location loc = config.getNPCsLocations()[i];
-			PlayerStatistics stat = null;
-			try {
-				stat = StatisticsManager.playersRankedByKills.get(i);
-			} catch (Exception e) {
-				Breakpoint.warn("Erron when trying to set NPCs at their Position: " + e.getMessage());
-				return;
-			}
-			if (stat != null) {
-				NPCRegistry  reg = CitizensAPI.getNPCRegistry();
-				NPC npc = reg.createNPC(EntityType.PLAYER, stat.getName());
-				npc.setProtected(true);
-				NPCs.add(npc.getUniqueId());
-				npc.spawn(loc);
-			}
+	public void spawnNPC() {
+		Location loc = config.getTopNPCLocation();
+		NPCRegistry api = CitizensAPI.getNPCRegistry();
+		PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+		if (stat == null) {
+			return;
 		}
+		NPC npc = api.createNPC(EntityType.PLAYER, stat.getName());
+		npc.setProtected(true);
+		npc.setFlyable(true);
+		npcid = npc.getId();
+		npc.spawn(loc);
+		
 	}
-	
-	private void setSigns() {
-		for (int i = 0; i < config.getNPCsSignLocations().length; i++) {
-			World w = config.getNPCsSignLocations()[i].getWorld();
-			Block signBlock = w.getBlockAt(config.getNPCsLocations()[i]);
-			if (!(signBlock.getState() instanceof Sign)) {
-				signBlock.setType(Material.AIR);
-				
-				signBlock.setType(Material.WALL_SIGN);
-				
-				Sign sign = (Sign) signBlock.getState();
-				PlayerStatistics stat = null;
-				try {
-					stat = StatisticsManager.playersRankedByKills.get(i);	
-				} catch (Exception e) {
-					Breakpoint.warn("Error When trying to load signs for TOP 3 Players: " + e.getMessage());
-					return;
-				}
-				if (stat != null) 
-					sign.setLine(0, stat.getName());
-					sign.setLine(1, "§aKills: " + String.valueOf(stat.getKills()));
-					sign.setLine(2, "§cDeaths: " + String.valueOf(stat.getDeaths())); 
-					sign.setLine(3, "§6K/D: " + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
-				
-			} else {
-				Sign sign = (Sign) signBlock.getState();
-				
-				PlayerStatistics stat = null;
-				try {
-					stat = StatisticsManager.playersRankedByKills.get(i);	
-				} catch (Exception e) {
-					Breakpoint.warn("Error When trying to load signs for TOP 3 Players");
-					return;
-				}
-				
-				sign.setLine(0, stat.getName());
-				sign.setLine(1, "§aKills: " + String.valueOf(stat.getKills()));
-				sign.setLine(2, "§cDeaths: " + String.valueOf(stat.getDeaths())); 
-				sign.setLine(3, "§6K/D: " + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
-			}
+	public void spawnSign() {
+		Block signBlock = Bukkit.getWorlds().get(0).getBlockAt(config.getTopSignLocation());
+		PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+		if (stat == null) {
+			return;
+		}
+		if (signBlock.getState() instanceof Sign) {
+			Sign sign = (Sign) signBlock.getState();
+			sign.setLine(0, "§4§l" + stat.getName());
+			sign.setLine(1, "§aK: " + stat.getKills());
+			sign.setLine(2, "§cDeaths: " + stat.getDeaths());
+			sign.setLine(3, "§8" + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
+		} else {
+			signBlock.setType(Material.WALL_SIGN);
 			
+			Sign sign = (Sign) signBlock.getState();
+			sign.setLine(0, "§4§l" + stat.getName());
+			sign.setLine(1, "§aK: " + stat.getKills());
+			sign.setLine(2, "§cDeaths: " + stat.getDeaths());
+			sign.setLine(3, "§8" + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
 		}
 	}
-	public void despawn() {
-		for (int i = 0; i < NPCs.size(); i++) {
-			CitizensAPI.getNPCRegistry().deregister(CitizensAPI.getNPCRegistry().getByUniqueId(NPCs.get(i)));
+	public void startLoops() {
+		startSignUpdateLoop();
+		startNpcUpdateLoop();
+	}
+	
+	public void startSignUpdateLoop() {
+		if (isSignLoopRunning) {
+			return;
 		}
+		isSignLoopRunning = true;
+		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				Block signBlock = Bukkit.getWorlds().get(0).getBlockAt(config.getTopSignLocation());
+				if (!(signBlock.getState() instanceof Sign)) {
+					throw new NullPointerException("Block at 'Top sign' Locaton is not equal to Sign");
+				}
+				PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+				if (stat == null) {
+					return;
+				}
+				Sign sign = (Sign) signBlock.getState();
+				
+				sign.setLine(0, "§4§l" + stat.getName());
+				sign.setLine(1, "§aK: " + stat.getKills());
+				sign.setLine(2, "§cDeaths: " + stat.getDeaths());
+				sign.setLine(3, "§8" + Double.toString(((double) stat.getKills()) / ((double) stat.getDeaths())));
+			}
+		}, 10L, 2000L);
+	}
+	public void startNpcUpdateLoop() {
+		if (isNpcLoopRunning) {
+			return;
+		}
+		isNpcLoopRunning = true;
+		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
+				npc.despawn(DespawnReason.PLUGIN);
+				PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+				if (stat == null) {
+					return;
+				}
+				npc.setName(stat.getName());
+				npc.spawn(config.getTopNPCLocation());
+			}
+		}, 10L, 2000L);
 	}
 }

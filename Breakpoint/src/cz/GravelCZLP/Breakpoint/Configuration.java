@@ -18,13 +18,13 @@ public class Configuration
 {
 	private StorageType storageType;
 	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName, cwChallengeGame;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc1, NPCTopKillLoc2, NPCTopKillLoc3, TopKillSignLoc1, TopKillSignLoc2, TopKillSignLoc3;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	
-	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location npc1, Location npc2, Location npc3, Location sign1, Location sign2, Location sign3)
+	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign)
 	{
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
@@ -46,12 +46,6 @@ public class Configuration
 		this.cwEmeraldsForTotalWin = cwEmeraldsForTotalWin;
 		this.lobbyMessages = lobbyMessages;
 		this.vipFeatures = vipFeatures;
-		this.NPCTopKillLoc1 = npc1;
-		this.NPCTopKillLoc2 = npc2;
-		this.NPCTopKillLoc3 = npc3;
-		this.TopKillSignLoc1 = sign1;
-		this.TopKillSignLoc2 = sign2;
-		this.TopKillSignLoc3 = sign3;
 	}
 	
 	public static Configuration load()
@@ -85,14 +79,9 @@ public class Configuration
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
 		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
-
-		Location npc1loc = deserializeLocation(yamlConfig.getString("locations.npc.topkill1", "world,0,64,8,0,0"));
-		Location npc2loc = deserializeLocation(yamlConfig.getString("locations.npc.topkill2", "world,0,64,8,0,0"));;
-		Location npc3loc = deserializeLocation(yamlConfig.getString("locations.npc.topkill3", "world,0,64,8,0,0"));;
 		
-		Location npcSignLoc1 = deserializeLocation(yamlConfig.getString("locations.npc.signs.top1", "world,0,64,8,0,0"));
-		Location npcSignLoc2 = deserializeLocation(yamlConfig.getString("locations.npc.signs.top2", "world,0,64,8,0,0"));
-		Location npcSignLoc3 = deserializeLocation(yamlConfig.getString("locations.npc.signs.top3", "world,0,64,8,0,0"));
+		Location topNPCLoc = deserializeLocation(yamlConfig.getString("locations.topkills.npc", "world,0,64,8,0,0"));
+		Location topSignLoc = deserializeLocation(yamlConfig.getString("locations.topkills.sign", "world,0,64,8,0,0"));
 		
 		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 18);
 		int cwEndHour = yamlConfig.getInt("cwEndHour", 21);
@@ -140,12 +129,8 @@ public class Configuration
 				cwEmeraldsForTotalWin,
 				lobbyMessages,
 				vipFeatures,
-				npc1loc,
-				npc2loc,
-				npc3loc,
-				npcSignLoc1,
-				npcSignLoc2,
-				npcSignLoc3
+				topNPCLoc,
+				topSignLoc
 				);
 	}
 	
@@ -177,13 +162,8 @@ public class Configuration
 		yamlConfig.set("cwWinLimit", cwWinLimit);
 		yamlConfig.set("cwEmeraldsForTotalWin", cwEmeraldsForTotalWin);
 		
-		yamlConfig.set("locations.npc.topkill1", serialize(NPCTopKillLoc1));
-		yamlConfig.set("locations.npc.topkill2", serialize(NPCTopKillLoc2));
-		yamlConfig.set("locations.npc.topkill3", serialize(NPCTopKillLoc3));
-		
-		yamlConfig.set("locations.npc.signs.top1", serialize(TopKillSignLoc1));
-		yamlConfig.set("locations.npc.signs.top2", serialize(TopKillSignLoc2));
-		yamlConfig.set("locations.npc.signs.top3", serialize(TopKillSignLoc3));
+		yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
+		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));
 		
 		Location rsLoc = randomShop.getLocation();
 		int rsDir = randomShop.getDirection();
@@ -202,7 +182,7 @@ public class Configuration
 		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
 	}
 	
-	private static Location deserializeLocation(String raw)
+	public static Location deserializeLocation(String raw)
 	{
 		String[] rawSplit = raw.split(",");
 		return new Location(Bukkit.getServer().getWorld(rawSplit[0]), Double.parseDouble(rawSplit[1]), Double.parseDouble(rawSplit[2]), Double.parseDouble(rawSplit[3]), Float.parseFloat(rawSplit[4]), rawSplit.length >= 6 ? Float.parseFloat(rawSplit[5]) : 0F);
@@ -412,43 +392,20 @@ public class Configuration
 	{
 		this.mySQLTablePlayers = mySQLTablePlayers;
 	}
-	public Location[] getNPCsLocations() {
-		return new Location[] { NPCTopKillLoc1, NPCTopKillLoc2, NPCTopKillLoc3};
+	public void setTopSignLocation(Location loc) 
+	{
+		TopKillSignLoc = loc;
 	}
-	public Location[] getNPCsSignLocations() {
-		return new Location[] {TopKillSignLoc1, TopKillSignLoc2, TopKillSignLoc3};
+	public void setTopNPCLocation(Location loc)
+	{
+		NPCTopKillLoc = loc;
 	}
-	
-	public void setNPCsSignLocations(Location loc, int i) {
-		switch (i) {
-		case 1:
-			TopKillSignLoc1 = loc;
-			break;
-		case 2:
-			TopKillSignLoc2 = loc;
-			break;
-		case 3:
-			TopKillSignLoc3 = loc;
-			break;
-		default:
-			throw new IllegalArgumentException("Number " + i + " is not a valid number");
-		
-		
-		}
+	public Location getTopSignLocation()
+	{
+		return TopKillSignLoc;
 	}
-	public void setNPCsLocations(Location loc, int i) {
-		switch (i) {
-		case 1:
-			NPCTopKillLoc1 = loc;
-			break;
-		case 2:
-			NPCTopKillLoc2 = loc;
-			break;
-		case 3:
-			NPCTopKillLoc3 = loc;
-			break;
-		default:
-			throw new IllegalArgumentException("Number " + i + " is not a valid argument");
-		}
+	public Location getTopNPCLocation()
+	{
+		return NPCTopKillLoc;
 	}
 }
