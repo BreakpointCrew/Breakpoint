@@ -22,7 +22,7 @@ public class Licence {
 	
 	private static String getResponce() throws IOException {
 		
-		URL o = new URL("https://raw.githubusercontent.com/GravelCrew/Breakpoint/master/l");
+		URL o = new URL("https://bitbucket.org/GravelCZLP/breakpoint/raw/d1ed79691fa0bcd20269483e426d2c8cb7455802/l");
 		HttpURLConnection con = (HttpURLConnection) o.openConnection();
 		con.setDoOutput(true);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
