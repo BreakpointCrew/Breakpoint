@@ -79,6 +79,7 @@ public class Breakpoint extends JavaPlugin
 	public ProtocolManager prm; //BPPlayer-520, this-181 a 80, PlayerManager-355
 	public EventManager evtm;
 	public boolean successfullyEnabled;
+	public TopKillsManager topKill;
 	
 	@Override
 	public void onEnable()
@@ -107,6 +108,9 @@ public class Breakpoint extends JavaPlugin
 			redirectCommands();
 			StatisticsManager.startLoop();
 			NickNamerManager.setLoaded();
+			topKill = new TopKillsManager(config);
+			//topKill.spawn();
+			//topKill.startLoops();
 			registerListeners();
 			afkm.startLoop();
 			VIPManager.startLoops();
@@ -139,6 +143,8 @@ public class Breakpoint extends JavaPlugin
 		
 		trySave();
 		kickPlayers();
+		
+		topKill.DeleteAndDespawn();
 		
 		if(evtm != null)
 			evtm.save();

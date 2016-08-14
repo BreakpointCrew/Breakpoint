@@ -38,7 +38,12 @@ public class TopKillsManager {
 	public void spawnNPC() {
 		Location loc = config.getTopNPCLocation();
 		NPCRegistry api = CitizensAPI.getNPCRegistry();
-		PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+		PlayerStatistics stat = null;
+		try {
+			stat = StatisticsManager.playersRankedByKills.get(0);
+		} catch (NullPointerException e) {
+			Breakpoint.warn("Error when spawing NPC: " + e.getMessage());
+		}
 		if (stat == null) {
 			return;
 		}
@@ -50,8 +55,16 @@ public class TopKillsManager {
 		
 	}
 	public void spawnSign() {
-		Block signBlock = Bukkit.getWorlds().get(0).getBlockAt(config.getTopSignLocation());
-		PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+		Block signBlock = config.getTopSignLocation().getBlock();
+		if (!signBlock.getChunk().isLoaded()) {
+			signBlock.getChunk().load();
+		}
+		PlayerStatistics stat = null;
+		try {
+			stat = StatisticsManager.playersRankedByKills.get(0);
+		} catch (NullPointerException e) {
+			Breakpoint.warn("Error when spawing NPC: " + e.getMessage());
+		}
 		if (stat == null) {
 			return;
 		}
@@ -88,7 +101,12 @@ public class TopKillsManager {
 				if (!(signBlock.getState() instanceof Sign)) {
 					throw new NullPointerException("Block at 'Top sign' Locaton is not equal to Sign");
 				}
-				PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+				PlayerStatistics stat = null;
+				try {
+					stat = StatisticsManager.playersRankedByKills.get(0);
+				} catch (NullPointerException e) {
+					Breakpoint.warn("Error when spawing NPC: " + e.getMessage());
+				}
 				if (stat == null) {
 					return;
 				}
@@ -111,7 +129,12 @@ public class TopKillsManager {
 			public void run() {
 				NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
 				npc.despawn(DespawnReason.PLUGIN);
-				PlayerStatistics stat = StatisticsManager.playersRankedByKills.get(0);
+				PlayerStatistics stat = null;
+				try {
+					stat = StatisticsManager.playersRankedByKills.get(0);
+				} catch (NullPointerException e) {
+					Breakpoint.warn("Error when spawing NPC: " + e.getMessage());
+				}
 				if (stat == null) {
 					return;
 				}
@@ -119,5 +142,10 @@ public class TopKillsManager {
 				npc.spawn(config.getTopNPCLocation());
 			}
 		}, 10L, 2000L);
+	}
+	public void DeleteAndDespawn() {
+		NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
+		npc.despawn();
+		npc.destroy();
 	}
 }
