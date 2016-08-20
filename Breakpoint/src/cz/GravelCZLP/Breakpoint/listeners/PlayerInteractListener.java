@@ -51,7 +51,6 @@ import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.CooldownType;
 import cz.GravelCZLP.Breakpoint.players.Settings;
-import net.citizensnpcs.api.npc.NPC;
 
 public class PlayerInteractListener implements Listener
 {

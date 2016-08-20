@@ -2,6 +2,7 @@ package cz.GravelCZLP.Breakpoint.players;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +52,10 @@ import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import me.limeth.storageAPI.Column;
 import me.limeth.storageAPI.Storage;
 import me.limeth.storageAPI.StorageType;
-import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_10_R1.EntityPlayer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder.EnumWorldBorderAction;
+import net.minecraft.server.v1_10_R1.WorldBorder;
 
 public class BPPlayer
 {
@@ -649,6 +654,21 @@ public class BPPlayer
 		setGameProperties(null);
 		
 		setPlayerListName();
+	}
+	
+	public void sendWarnLowHealth() {
+		EntityPlayer nmsPlayer = ((CraftPlayer) Bukkit.getPlayer(name)).getHandle();
+		WorldBorder playerWorldBorder = nmsPlayer.world.getWorldBorder();
+		PacketPlayOutWorldBorder worldBorder = new PacketPlayOutWorldBorder(playerWorldBorder, EnumWorldBorderAction.SET_WARNING_BLOCKS);
+		try {
+			Field f = worldBorder.getClass().getDeclaredField("i");
+			f.setAccessible(true);
+			f.setInt(worldBorder, 2);
+			f.setAccessible(!f.isAccessible());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		nmsPlayer.playerConnection.sendPacket(worldBorder);
 	}
 	
 	public void colorArmor()

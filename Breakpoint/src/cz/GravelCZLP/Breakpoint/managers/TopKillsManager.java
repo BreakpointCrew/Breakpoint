@@ -1,26 +1,23 @@
 package cz.GravelCZLP.Breakpoint.managers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.EntityType;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
+import cz.GravelCZLP.NPC.NPC;
 
 public class TopKillsManager {
 
 	private boolean isNpcLoopRunning;
 	private boolean isSignLoopRunning;
 	
-	private int npcid;
+	private NPC npc1;
 	
 	private Configuration config;
 	
@@ -33,26 +30,26 @@ public class TopKillsManager {
 	public void spawn() {
 		spawnNPC();
 		spawnSign();
+		
 	}
 	
 	public void spawnNPC() {
 		Location loc = config.getTopNPCLocation();
-		NPCRegistry api = CitizensAPI.getNPCRegistry();
+		
 		PlayerStatistics stat = null;
 		try {
 			stat = StatisticsManager.playersRankedByKills.get(0);
 		} catch (NullPointerException e) {
-			Breakpoint.warn("Error when spawing NPC: " + e.getMessage());
+			Breakpoint.warn("Error when loading data for NPC: " + e.getMessage());
 		}
 		if (stat == null) {
 			return;
 		}
-		NPC npc = api.createNPC(EntityType.PLAYER, stat.getName());
-		npc.setProtected(true);
-		npc.setFlyable(true);
-		npcid = npc.getId();
-		npc.spawn(loc);
-		
+		NPC npc = new NPC(stat.getName(), loc);
+		npc.setGameMode(GameMode.CREATIVE);
+		npc.setSkin(stat.getName());
+		npc.spawn();
+		npc1 = npc;
 	}
 	public void spawnSign() {
 		Block signBlock = config.getTopSignLocation().getBlock();
@@ -127,8 +124,6 @@ public class TopKillsManager {
 		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
-				npc.despawn(DespawnReason.PLUGIN);
 				PlayerStatistics stat = null;
 				try {
 					stat = StatisticsManager.playersRankedByKills.get(0);
@@ -138,14 +133,12 @@ public class TopKillsManager {
 				if (stat == null) {
 					return;
 				}
-				npc.setName(stat.getName());
-				npc.spawn(config.getTopNPCLocation());
+				npc1.setCustomName(stat.getName());
+				npc1.setSkin(stat.getName());
 			}
 		}, 10L, 2000L);
 	}
 	public void DeleteAndDespawn() {
-		NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
-		npc.despawn();
-		npc.destroy();
+		npc1.destroy();
 	}
 }
