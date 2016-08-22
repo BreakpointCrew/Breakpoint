@@ -3,6 +3,7 @@ package cz.GravelCZLP.Breakpoint.game.ctf;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 
 public enum Team
 {
@@ -91,6 +92,6 @@ public enum Team
 	
 	public void displayDeathEffect(Location loc)
 	{
-		// TODO: death
+		
 	}
 }

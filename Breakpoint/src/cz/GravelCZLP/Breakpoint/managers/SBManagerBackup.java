@@ -30,7 +30,7 @@ public class SBManagerBackup
 		sb = Bukkit.getScoreboardManager().getNewScoreboard();
 		init();
 		bpPlayer.getPlayer().setScoreboard(sb);
-		
+		updateSidebarObjective();
 	}
 	
 	private void init()
