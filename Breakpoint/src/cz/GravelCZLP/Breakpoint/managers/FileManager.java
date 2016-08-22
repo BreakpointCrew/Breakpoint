@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.meta.BookMeta;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
-import cz.GravelCZLP.Breakpoint.maps.MapManager;
 
 public class FileManager
 {

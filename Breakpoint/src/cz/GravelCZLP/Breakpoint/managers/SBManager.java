@@ -74,6 +74,7 @@ public class SBManager
 				bpPlayer.getScoreboardManager().updateLobbyObjective();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void updateLobbyObjective()
 	{
 		for(Game game : GameManager.getGames())
@@ -87,6 +88,7 @@ public class SBManager
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void updateVoteOptions(Map<String, Integer> votes)
 	{
 		for (Entry<String, Integer> entry : votes.entrySet())

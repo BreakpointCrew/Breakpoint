@@ -30,8 +30,7 @@ public class DMProperties extends GameProperties
 			bpPlayer.spawn();
 		}
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	public void equip()
 	{
 		BPPlayer bpPlayer = getPlayer();

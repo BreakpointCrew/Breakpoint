@@ -23,7 +23,7 @@ public class BPMapPalette
 	public static final int baseColorLength = 14;
 
 	public static byte getColor(int id, int shade)
-	{ // TODO use
+	{
 		int colorId = id * 4 + shade;
 		if (colorId < colors.length)
 			return matchColor(colors[id * 4 + shade]);

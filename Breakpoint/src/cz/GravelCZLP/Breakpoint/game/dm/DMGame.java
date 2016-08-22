@@ -101,6 +101,7 @@ public class DMGame extends Game
 		updateProgressObjectiveScores(bpPlayer.getScoreboardManager().getProgressObj());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void updateProgressObjectiveScores(Objective progressObj)
 	{
 		for(BPPlayer bpPlayer : getPlayers())
@@ -119,6 +120,7 @@ public class DMGame extends Game
 			updateProgressObjectiveScoresOf(bpPlayer.getScoreboardManager().getProgressObj(), target);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void updateProgressObjectiveScoresOf(Objective obj, BPPlayer target)
 	{
 		int killsThisRound = getPoints(target);

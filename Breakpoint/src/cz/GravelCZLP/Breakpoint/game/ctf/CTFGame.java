@@ -355,7 +355,7 @@ public class CTFGame extends Game
 	{
 		super.updateLobbyMaps(bpPlayer);
 		
-		Player player = bpPlayer.getPlayer();
+		//Player player = bpPlayer.getPlayer();
 		
 		for(int i = 0; i < 2; i++) {
 			

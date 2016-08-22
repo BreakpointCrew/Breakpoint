@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="/home/jindra/Plocha/libs/spigot-1.10.2-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/ProtocolLib.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/NickNamer_v3.12.3.jar"/>
+	<classpathentry kind="lib" path="/home/jindra/Plocha/libs/GlowAPI_v1.4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -176,6 +176,7 @@ public abstract class BPMapRenderer extends MapRenderer
 
     }
 
+	@SuppressWarnings("deprecation")
 	public static void drawTextOld(MapCanvas canvas, int x, int y, int width, int height, MapFont font, String text)
 	{
 		int xStart = x;
@@ -224,6 +225,7 @@ public abstract class BPMapRenderer extends MapRenderer
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void drawTextOld(Byte[][] canvas, int x, int y, int width, int height, MapFont font, String text)
 	{
 		int xStart = x;

@@ -17,6 +17,7 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
+@SuppressWarnings("deprecation")
 public class SBManagerBackup
 {
 	private final BPPlayer bpPlayer;
@@ -28,9 +29,8 @@ public class SBManagerBackup
 		this.bpPlayer = bpPlayer;
 		sb = Bukkit.getScoreboardManager().getNewScoreboard();
 		init();
-		Player player = bpPlayer.getPlayer();
-		player.setScoreboard(sb); //TODO FATAL ERROR
-		updateSidebarObjective();
+		bpPlayer.getPlayer().setScoreboard(sb);
+		
 	}
 	
 	private void init()
@@ -161,23 +161,6 @@ public class SBManagerBackup
 			lobbyObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 
-/*	public void startScoreTimeLoop()
-	{
-		if (scoreTimeLoopId >= 0)
-			stopScoreTimeLoop();
-		timeLeft = 60 * (GameManager.defaultMapMinutes;
-		scoreTimeLoopId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			@Override
-			public void run()
-			{
-				String time = formatTime(timeLeft);
-				scoreObj.setDisplayName(scoreHeader.getValue(time));
-				plugin.sdm.informPlayersAboutTime(timeLeft);
-				timeLeft--;
-			}
-		}, 0, 20L);
-	}*/
-
 	public static String formatTime(int timeLeft)
 	{
 		if (timeLeft <= 0)
@@ -224,7 +207,6 @@ public class SBManagerBackup
 
 	public void setProgressObj(Objective progressObj)
 	{
-	//	new Throwable().printStackTrace(); TODO
 		this.progressObj = progressObj;
 	}
 }

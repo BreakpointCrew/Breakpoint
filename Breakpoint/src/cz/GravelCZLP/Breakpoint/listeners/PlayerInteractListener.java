@@ -61,6 +61,7 @@ public class PlayerInteractListener implements Listener
 		plugin = p;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void onPlayerUseItem(PlayerInteractEvent event)
 	{
 		Action action = event.getAction();

@@ -41,7 +41,6 @@ public class TeamBalanceManager
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void movePlayerToTeam(BPPlayer bpPlayer, Team team)
 	{
 		Player player = bpPlayer.getPlayer();

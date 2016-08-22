@@ -190,6 +190,7 @@ public class CTFListener extends GameListener
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item)
 	{
