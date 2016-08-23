@@ -1386,9 +1386,13 @@ public class BPPlayer
 				public void run() {
 					GlowAPI.setGlowing(getPlayer(), GlowAPI.Color.RED, Bukkit.getOnlinePlayers());
 				}
-			}, 200L);	
+			}, 200L);
 		} else {
 			throw new NotStaffException("Player " + name + " is not a Staff");
 		}
+	}
+	public void removeColor()
+	{
+		
 	}
 }

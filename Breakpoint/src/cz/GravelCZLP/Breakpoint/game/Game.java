@@ -25,7 +25,6 @@ import cz.GravelCZLP.Breakpoint.game.cw.CWGame;
 import cz.GravelCZLP.Breakpoint.game.dm.DMGame;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
-import cz.GravelCZLP.Breakpoint.managers.NickNamerManager;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.maps.BPMapPalette;
@@ -155,8 +154,6 @@ public abstract class Game
 		sbm.updateSidebarObjective();
 		sbm.getProgressObj().unregister();
 		sbm.setProgressObj(null);
-		
-		NickNamerManager.updateNametag(bpPlayer);
 	}
 	
 	//{{Saving
@@ -284,9 +281,6 @@ public abstract class Game
 		setRoundEnded(true);
 		PlayerManager.clearHotBars();
 		awardLastKiller();
-		
-		for(BPPlayer bpPlayer : players)
-			NickNamerManager.updateNametag(bpPlayer);
 	}
 
 	public void awardLastKiller()
@@ -389,9 +383,6 @@ public abstract class Game
 		
 		for(World world : Bukkit.getWorlds())
 			world.setGameRuleValue("doDaylightCycle", "false");
-		
-		for(BPPlayer bpPlayer : players)
-			NickNamerManager.updateNametag(bpPlayer);
 		
 		setRoundEnded(false);
 		startCountdown();

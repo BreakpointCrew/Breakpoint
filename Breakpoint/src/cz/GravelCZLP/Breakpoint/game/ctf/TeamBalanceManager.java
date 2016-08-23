@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
-import cz.GravelCZLP.Breakpoint.managers.NickNamerManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
 public class TeamBalanceManager
@@ -54,7 +53,6 @@ public class TeamBalanceManager
 			flm.dropFlag(bpPlayer);
 		
 		bpPlayer.setPlayerListName();
-		NickNamerManager.updateNametag(bpPlayer);
 		
 		player.updateInventory();
 		player.sendMessage(ChatColor.DARK_RED + "--- --- --- --- ---");

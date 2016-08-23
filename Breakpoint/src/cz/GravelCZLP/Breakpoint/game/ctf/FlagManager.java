@@ -31,7 +31,6 @@ import cz.GravelCZLP.Breakpoint.achievements.Achievement;
 import cz.GravelCZLP.Breakpoint.equipment.BPArmor;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
-import cz.GravelCZLP.Breakpoint.managers.NickNamerManager;
 import cz.GravelCZLP.Breakpoint.managers.SoundManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
@@ -292,7 +291,6 @@ public class FlagManager
 				Player player = bpPlayer.getPlayer();
 				holders[i] = null;
 				bpPlayer.setPlayerListName();
-				NickNamerManager.updateNametag(bpPlayer);
 				giveCompass(player);
 			}
 	}
@@ -406,7 +404,6 @@ public class FlagManager
 		showHolderEffect(holder, flagTeam);
 		colorArmorByFlag(holder, flagTeam);
 		giveCompass(holder);
-		NickNamerManager.updateNametag(bpHolder);
 		bpHolder.setPlayerListName();
 		
 		if(flagTeam == Team.RED)
@@ -433,7 +430,6 @@ public class FlagManager
 		timeoutIn[flagTeamId] = 10;
 		
 		giveCompass(holder);
-		NickNamerManager.updateNametag(bpHolder);
 		bpHolder.setPlayerListName();
 		
 		if(flagTeam == Team.RED)
@@ -480,7 +476,6 @@ public class FlagManager
 		bpHolder.colorArmor();
 		giveCompass(holder);
 		holder.updateInventory();
-		NickNamerManager.updateNametag(bpHolder);
 		bpHolder.setPlayerListName();
 		bpHolder.addMoney(CTFGame.emeraldsForCapture, true, true);
 		

@@ -16,7 +16,6 @@ import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.GameProperties;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
-import cz.GravelCZLP.Breakpoint.managers.NickNamerManager;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
@@ -94,8 +93,7 @@ public class CTFProperties extends GameProperties
 			
 			bpPlayer.equipArmor();
 			
-			if(!NickNamerManager.isLoaded())
-				colorChestplate();
+			colorChestplate();
 			
 			characterType.equipPlayer(player);
 			characterType.applyEffects(player);
@@ -158,8 +156,6 @@ public class CTFProperties extends GameProperties
 		setTeam(team);
 		bpPlayer.spawn();
 		bpPlayer.setPlayerListName();
-		NickNamerManager.updateNametag(bpPlayer);
-//		plugin.sbm.addPlayerToTeam(player, team);
 		game.updateTeamMapViews();
 		player.getInventory().clear();
 		player.updateInventory();
