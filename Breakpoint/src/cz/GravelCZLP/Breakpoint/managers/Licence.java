@@ -13,9 +13,10 @@ public class Licence {
 		
 		try {
 			b = getResponce();
-			System.out.println("Responce" + getResponce());
+			System.out.println("Responce: " + getResponce());
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 		return Boolean.valueOf(b);

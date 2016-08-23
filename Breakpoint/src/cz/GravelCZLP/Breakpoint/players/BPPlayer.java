@@ -187,6 +187,10 @@ public class BPPlayer
 			File[] files = folder.listFiles();
 			List<String> list = new LinkedList<String>();
 			
+			if (files == null) {
+				return null;
+			}
+			
 			for(File file : files)
 			{
 				String name = FilenameUtils.removeExtension(file.getName());
