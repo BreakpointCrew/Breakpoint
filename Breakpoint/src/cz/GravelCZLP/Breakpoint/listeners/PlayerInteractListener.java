@@ -1,6 +1,7 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +31,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +43,9 @@ import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.achievements.Achievement;
 import cz.GravelCZLP.Breakpoint.game.Game;
+import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.MapPoll;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AbilityManager;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
@@ -356,6 +360,27 @@ public class PlayerInteractListener implements Listener
 	}
 
 	@EventHandler
+	public void onPickup(PlayerPickupItemEvent e)
+	{
+		BPPlayer bpPlayer = BPPlayer.get(e.getPlayer());
+		if (bpPlayer.isInGame()) {
+			if (bpPlayer.getGame().getType() == GameType.CTF) {
+				ItemStack item = (ItemStack) e.getItem();
+				if (item.getType() == Material.MELON) {
+					if (item.getItemMeta().getDisplayName() == "melounBoost") {
+						e.setCancelled(true);
+						e.getItem().remove();
+						Color color = Color.WHITE;
+						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
+						color = props.getTeam().getColor();
+						e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onHangingBreak(HangingBreakEvent event)
 	{
 		if(event.isCancelled())
@@ -407,9 +432,7 @@ public class PlayerInteractListener implements Listener
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{	
 		Player player = event.getPlayer();
-		if (player.hasMetadata("NPC")) {
-			return;
-		}
+		
 		BPPlayer bpPlayer = BPPlayer.get(player);
 		Game game = bpPlayer.getGame();
 		

@@ -186,6 +186,7 @@ public class CTFGame extends Game
 				sender.sendMessage("setCapacity [Min] [Max] [Name]");
 				sender.sendMessage("teamSpawn [Team] [Name]");
 				sender.sendMessage("teamFlag [Team] [Name]");
+				sender.sendMessage("addMelounBoost [Name]");
 			}
 			else if(args[1].equalsIgnoreCase("list"))
 			{
@@ -347,6 +348,27 @@ public class CTFGame extends Game
 				Location[] spawnFlags = map.getTeamFlags();
 				spawnFlags[teamId] = player.getLocation().getBlock().getLocation();
 				sender.sendMessage(ChatColor.GREEN + "Flag location on map '" + mapName + "' for team " + teamId + " successfully set.");
+			} else if (args[1].equalsIgnoreCase("addMelounBoost")) {
+				if (!(sender instanceof Player))
+				{
+					sender.sendMessage(ChatColor.RED + "Only for players!");
+					return;
+				}
+				CTFMap map = getMapByName(args[2]);
+				if (map == null)
+				{
+					sender.sendMessage(ChatColor.RED + "Map not found!");
+					return;
+				}
+				CTFMap ctfMap;
+				if (!(map instanceof CTFMap)) 
+				{
+					return;
+				}
+				ctfMap = (CTFMap) map;
+				Player p = (Player) sender;
+				ctfMap.addMelounBoostLocation(p.getLocation());
+				sender.sendMessage(ChatColor.GREEN + "Location succesfully added !");
 			}
 	}
 	

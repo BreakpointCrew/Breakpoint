@@ -23,8 +23,9 @@ public class Configuration
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
+	private long BoostMelounTime;
 	
-	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign)
+	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, long BoostMelounTime)
 	{
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
@@ -46,6 +47,7 @@ public class Configuration
 		this.cwEmeraldsForTotalWin = cwEmeraldsForTotalWin;
 		this.lobbyMessages = lobbyMessages;
 		this.vipFeatures = vipFeatures;
+		this.BoostMelounTime = BoostMelounTime;
 	}
 	
 	public static Configuration load()
@@ -87,6 +89,8 @@ public class Configuration
 		int cwEndHour = yamlConfig.getInt("cwEndHour", 21);
 		int cwWinLimit = yamlConfig.getInt("cwWinLimit", 3);
 		int cwEmeraldsForTotalWin = yamlConfig.getInt("cwEmeraldsForTotalWin", 25);
+		
+		long BoostMelounTime = yamlConfig.getLong("TimeForBoostMelounToSpawn", 10000L);
 		
 		List<String> lobbyMessages = yamlConfig.getStringList("lobbyMessages");
 		
@@ -130,7 +134,8 @@ public class Configuration
 				lobbyMessages,
 				vipFeatures,
 				topNPCLoc,
-				topSignLoc
+				topSignLoc,
+				BoostMelounTime
 				);
 	}
 	
@@ -164,6 +169,8 @@ public class Configuration
 		
 		yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
 		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));
+		
+		yamlConfig.set("TimeForBoostMelounToSpawn", 10000L);
 		
 		Location rsLoc = randomShop.getLocation();
 		int rsDir = randomShop.getDirection();
@@ -407,5 +414,10 @@ public class Configuration
 	public Location getTopNPCLocation()
 	{
 		return NPCTopKillLoc;
+	}
+
+	public long getTimeForSpeedMeloun() 
+	{
+		return BoostMelounTime;
 	}
 }
