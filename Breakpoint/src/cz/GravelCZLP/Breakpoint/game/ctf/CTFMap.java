@@ -56,7 +56,7 @@ public class CTFMap extends BPMap
 	
 	private final Location[] teamSpawn = new Location[2];
 	private final Location[] teamFlags = new Location[2];
-	private Location[] mellounBoost = new Location[Integer.MAX_VALUE];
+	private Location[] mellounBoost = new Location[((Integer.MAX_VALUE / 2) / 2)];
 	
 	public CTFMap(String name, Location redSpawn, Location blueSpawn, Location redFlag, Location blueFlag, int minPlayers, int maxPlayers, double fallDamageMultiplier, LinkedList<Location> boosts)
 	{
