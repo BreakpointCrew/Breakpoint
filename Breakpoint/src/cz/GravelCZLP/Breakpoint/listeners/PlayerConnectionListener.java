@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.map.MinecraftFont;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
@@ -18,6 +19,9 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import me.leoko.advancedban.manager.TimeManager;
+import me.leoko.advancedban.utils.Punishment;
+import me.leoko.advancedban.utils.PunishmentType;
 
 public class PlayerConnectionListener implements Listener
 {
@@ -118,11 +122,26 @@ public class PlayerConnectionListener implements Listener
 			game.onPlayerLeaveGame(bpPlayer);
 		}
 		
+		if (bpPlayer.isBeingControled()) {
+			
+			String name = bpPlayer.getPlayer().getName(); 
+			String uuid = bpPlayer.getPlayer().getUniqueId().toString();
+			
+			PunishmentType type = PunishmentType.TEMP_BAN;
+			
+			long start = TimeManager.getTime();
+			long end = TimeManager.getTime() + (86400000L * 2);
+			
+			new Punishment(name, uuid, "Odpojení při prohledávání", "CONSOLE", type, start, end, "", -1)
+			.create();
+		}
+		
 		bpPlayer.trySave();
 		bpPlayer.reset();
 		BPPlayer.removePlayer(bpPlayer);
 		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		bpPlayer.getScoreboardManager().unregister();
+	
 	}
 
 	@EventHandler
@@ -131,11 +150,14 @@ public class PlayerConnectionListener implements Listener
 		event.setLeaveMessage(null);
 	}
 
-	/*@EventHandler
+	@EventHandler
 	public void onServerPing(ServerListPingEvent event)
 	{
-		event.setMotd(motd);
-	}*/
+		
+		
+		
+	}
+	 
 	public int getWidth(String string)
 	{
 		String noColors = ChatColor.stripColor(string);

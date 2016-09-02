@@ -49,6 +49,7 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.perks.PerkType;
+import cz.GravelCZLP.Breakpoint.players.VIP.VIPEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import me.limeth.storageAPI.Column;
@@ -147,7 +148,8 @@ public class BPPlayer
 		
 		long timeJoined = System.currentTimeMillis();
 		Clan clan = Clan.getByPlayer(playerName);
-		BPPlayer bpPlayer = new BPPlayer(playerName, settings, lobbyInventory, stats, achievements, perks, clan, timeJoined);
+		VIP vip = VIP.load(storage);
+		BPPlayer bpPlayer = new BPPlayer(playerName, settings, lobbyInventory, stats, achievements, perks, clan, timeJoined, vip);
 		
 		return bpPlayer;
 	}
@@ -308,8 +310,10 @@ public class BPPlayer
 	private BPPlayer achievementViewTarget = null, lastTimeKilledBy = null;
 	private Location afkPastLocation = null, shopItemLocation = null, singleTeleportLocation = null;
 	private CharacterType queueCharacter = null;
+	private boolean isBeingControlled = false;
+	private VIP vip;
 	
-	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics, List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined)
+	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics, List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined, VIP vip)
 	{
 		this.settings = settings;
 		this.lobbyInventory = lobbyInventory;
@@ -319,6 +323,8 @@ public class BPPlayer
 		this.perks = perks;
 		this.bpClan = bpClan;
 		this.timeJoined = timeJoined;
+		this.vip = vip;
+		isBeingControlled = false;
 		
 		if(isOnline())
 			scoreboardManager = new SBManager(this);
@@ -444,7 +450,7 @@ public class BPPlayer
 	{
 		Player player = getPlayer();
 		String gamePrefix = gameProperties != null ? gameProperties.getTagPrefix() : null;
-		boolean vip = player.hasPermission("Breakpoint.vip");
+		boolean vip = getVIP().getVIPType() != VIPEnum.NORMAL;
 		boolean staff = isStaff();
 		boolean sponsor = staff ? false : player.hasPermission("Breakpoint.sponsor");
 		boolean yt = staff ? false : player.hasPermission("Breakpoint.yt");
@@ -517,7 +523,7 @@ public class BPPlayer
 
 	public boolean isVIP()
 	{
-		return getPlayer().hasPermission("Breakpoint.vip");
+		return !getVIP().hasNoVIP();
 	}
 	
 	public boolean isSponsor()
@@ -592,7 +598,11 @@ public class BPPlayer
 			return ChatManager.prefixSponsor + " ";
 		else if(player.hasPermission("Breakpoint.yt"))
 			return ChatManager.prefixYT + " ";
-		else if(player.hasPermission("Breakpoint.vip"))
+		else if(getVIP().getVIPType() == VIPEnum.VIPPlusPlus)
+			return ChatManager.prefixVIPPlusPlus + " ";
+		else if (getVIP().getVIPType() == VIPEnum.VIPPlus)
+			return ChatManager.prefixVIPPlus + " ";
+		else if (getVIP().getVIPType() == VIPEnum.VIP)
 			return ChatManager.prefixVIP + " ";
 		else
 			return "";
@@ -609,7 +619,11 @@ public class BPPlayer
 			return ChatManager.prefixSponsor + " ";
 		else if(player.hasPermission("Breakpoint.yt"))
 			return ChatManager.prefixYT + " ";
-		else if(player.hasPermission("Breakpoint.vip"))
+		else if(getVIP().getVIPType() == VIPEnum.VIPPlusPlus)
+			return ChatManager.prefixVIPPlusPlus + " ";
+		else if (getVIP().getVIPType() == VIPEnum.VIPPlus)
+			return ChatManager.prefixVIPPlus + " ";
+		else if (getVIP().getVIPType() == VIPEnum.VIP)
 			return ChatManager.prefixVIP + " ";
 		else
 			return "";
@@ -771,9 +785,8 @@ public class BPPlayer
 
 	public boolean hasSpaceInLobbyInventory()
 	{
-		Player player = getPlayer();
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		int size = player.hasPermission("Breakpoint.vip") ? 24 : 12;
+		int size = !getVIP().hasNoVIP() ? 24 : 12;
 		for (int i = 0; i < size; i++)
 			if (contents[4 + i] == null)
 				return true;
@@ -782,9 +795,8 @@ public class BPPlayer
 
 	public int getLobbyInventorySpaceSlot()
 	{
-		Player player = getPlayer();
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		int size = player.hasPermission("Breakpoint.vip") ? 24 : 12;
+		int size = !getVIP().hasNoVIP() ? 24 : 12;
 		for (int i = 0; i < size; i++)
 			if (contents[4 + i] == null)
 				return 4 + i;
@@ -920,7 +932,7 @@ public class BPPlayer
 	
 	public int getMaxEquippedPerks()
 	{
-		return 2;//getPlayer().hasPermission("Breakpoint.vip") ? 2 : 1;
+		return !getVIP().hasNoVIP() ? 3 : 1;
 	}
 	
 	public int getPerkInventoryRows()
@@ -1398,5 +1410,16 @@ public class BPPlayer
 	public void removeColor()
 	{
 		
+	}
+	public boolean isBeingControled()
+	{
+		return isBeingControlled;
+	}
+	public void setControled(boolean b)
+	{
+		isBeingControlled = b;
+	}
+	public VIP getVIP() {
+		return vip;
 	}
 }

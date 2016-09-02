@@ -35,4 +35,4 @@ commands:
         aliases: [let, flying]
     cw:
         description: Povoli letani
-aliases: [clanwars, kv, kw, cv, klanvalky, kalnovevalky, kb, cb]
+	aliases: [clanwars, kv, kw, cv, klanvalky, kalnovevalky, kb, cb]

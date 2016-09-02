@@ -321,6 +321,8 @@ public class PlayerInteractListener implements Listener
 						bpPlayer.teleport(config.getShopLocation(), false);
 					else if(belowMat == Material.QUARTZ_BLOCK)
 						bpPlayer.teleport(config.getLobbyLocation(), false);
+					else if (belowMat == Material.REDSTONE_BLOCK) 
+						bpPlayer.teleport(config.getStaffListLocation(), false);
 				}
 				else
 				{

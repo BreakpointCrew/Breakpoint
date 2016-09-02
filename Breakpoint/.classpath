@@ -10,5 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/ProtocolLib.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/libs/GlowAPI_v1.4.4.jar"/>
+	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/AdvancedBan.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -18,14 +18,14 @@ public class Configuration
 {
 	private StorageType storageType;
 	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName, cwChallengeGame;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc, staffListLocation;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
 	
-	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, long BoostMelounTime)
+	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, Location staffListLocation,long BoostMelounTime)
 	{
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
@@ -48,6 +48,7 @@ public class Configuration
 		this.lobbyMessages = lobbyMessages;
 		this.vipFeatures = vipFeatures;
 		this.BoostMelounTime = BoostMelounTime;
+		this.staffListLocation = staffListLocation;
 	}
 	
 	public static Configuration load()
@@ -81,6 +82,7 @@ public class Configuration
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
 		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
+		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
 		
 		Location topNPCLoc = deserializeLocation(yamlConfig.getString("locations.topkills.npc", "world,0,64,8,0,0"));
 		Location topSignLoc = deserializeLocation(yamlConfig.getString("locations.topkills.sign", "world,0,64,8,0,0"));
@@ -135,6 +137,7 @@ public class Configuration
 				vipFeatures,
 				topNPCLoc,
 				topSignLoc,
+				staffListLocation,
 				BoostMelounTime
 				);
 	}
@@ -157,6 +160,7 @@ public class Configuration
 		yamlConfig.set("locations.shop", serialize(shopLocation));
 		yamlConfig.set("locations.vipInfo", serialize(vipInfoLocation));
 		yamlConfig.set("locations.moneyInfo", serialize(moneyInfoLocation));
+		yamlConfig.set("locations.stafflist", serialize(staffListLocation));
 		yamlConfig.set("lobbyMessages", lobbyMessages);
 		yamlConfig.set("lang", languageFileName);
 		yamlConfig.set("vipFeatures", vipFeatures != null ? Arrays.asList(vipFeatures) : null);
@@ -416,6 +420,11 @@ public class Configuration
 		return NPCTopKillLoc;
 	}
 
+	public Location getStaffListLocation() 
+	{
+		return staffListLocation;
+	}
+	
 	public long getTimeForSpeedMeloun() 
 	{
 		return BoostMelounTime;

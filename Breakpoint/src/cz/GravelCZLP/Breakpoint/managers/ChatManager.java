@@ -14,18 +14,24 @@ public class ChatManager
 	public static String tagPrefixYT;
 	public static String tagPrefixSponsor;
 	public static String prefixDeveloper;
+	public static String prefixVIPPlusPlus;
+	public static String prefixVIPPlus;
 	
 	public static void loadStrings()
 	{
 		prefixAdmin = MessageType.CHAT_PREFIX_ADMIN.getTranslation().getValue();
 		prefixModerator = MessageType.CHAT_PREFIX_MODERATOR.getTranslation().getValue();
 		prefixHelper = MessageType.CHAT_PREFIX_HELPER.getTranslation().getValue();
-		prefixVIP = MessageType.CHAT_PREFIX_VIP.getTranslation().getValue();
 		prefixYT = MessageType.CHAT_PREFIX_YOUTUBE.getTranslation().getValue();
 		prefixSponsor = MessageType.CHAT_PREFIX_SPONSOR.getTranslation().getValue();
-		tagPrefixVIP = MessageType.CHAT_TAGPREFIX_VIP.getTranslation().getValue();
+		
+		prefixDeveloper = MessageType.CHAT_PREFIX_DEV.getTranslation().getValue();
+		
+		prefixVIPPlusPlus = MessageType.CHAT_PREFIX_VIPPLUSPLUS.getTranslation().getValue();
+		prefixVIPPlus = MessageType.CHAT_PREFIX_VIPPLUS.getTranslation().getValue();
+		prefixVIP = MessageType.CHAT_PREFIX_VIP.getTranslation().getValue();
+		
 		tagPrefixYT = MessageType.CHAT_TAGPREFIX_YOUTUBE.getTranslation().getValue();
 		tagPrefixSponsor = MessageType.CHAT_TAGPREFIX_SPONSOR.getTranslation().getValue();
-		prefixDeveloper = "§8§l[§4§lDeveloper§8§l]";
 	}
 }

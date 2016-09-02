@@ -1,5 +1,7 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,15 +31,19 @@ public class ChatListener implements Listener
 		case "/pl":
 			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
 			e.setCancelled(true);
+			break;
 		case "/plugins":
 			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
 			e.setCancelled(true);
+			break;
 		case "/bukkit:pl":
 			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
 			e.setCancelled(true);
+			break;
 		case "/Bukkit:plugins":
 			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
 			e.setCancelled(true);
+			break;
 		}
 	}
 	
@@ -54,6 +60,24 @@ public class ChatListener implements Listener
 			event.setCancelled(true);
 			return;
 		}
+		
+		List<String> mentioned = new LinkedList<String>();
+		
+		String[] split = event.getMessage().split(" ");
+		
+		for (int i = 0; i < split.length; i++) {
+			if (split[i].startsWith("@")) {
+				mentioned.add(split[i].replaceAll("@", ""));
+				split[i] = "§c" + split[i];
+			}
+		}
+		
+		StringBuilder b = new StringBuilder();
+		for (String s : split) {
+			b.append(s);
+		}
+		
+		event.setMessage(b.toString());
 		
 		if(message.equals(lastMsg))
 		{
