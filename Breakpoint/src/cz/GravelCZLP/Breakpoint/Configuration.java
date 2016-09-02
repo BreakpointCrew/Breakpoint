@@ -171,8 +171,8 @@ public class Configuration
 		yamlConfig.set("cwWinLimit", cwWinLimit);
 		yamlConfig.set("cwEmeraldsForTotalWin", cwEmeraldsForTotalWin);
 		
-		yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
-		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));
+		/*yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
+		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));*/
 		
 		yamlConfig.set("TimeForBoostMelounToSpawn", 10000L);
 		
@@ -190,6 +190,8 @@ public class Configuration
 	
 	private static String serialize(Location loc)
 	{
+		if (loc == null) 
+			return "";
 		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
 	}
 	

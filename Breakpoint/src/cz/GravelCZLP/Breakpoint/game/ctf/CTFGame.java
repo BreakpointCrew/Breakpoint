@@ -599,8 +599,9 @@ public class CTFGame extends Game
 			for(BPPlayer bpPlayer : BPPlayer.onlinePlayers)
 			{
 				Player player = bpPlayer.getPlayer();
-				if(bpPlayer.isInLobby())
-					player.sendMap(map);
+				if(bpPlayer.isInLobby()) {
+					//TODO: player.sendMap(map);
+				}
 			}
 		}
 	}
