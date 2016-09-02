@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint.game.ctf;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,15 +57,16 @@ public class CTFMap extends BPMap
 	
 	private final Location[] teamSpawn = new Location[2];
 	private final Location[] teamFlags = new Location[2];
-	private Location[] mellounBoost = new Location[((Integer.MAX_VALUE / 2) / 2)];
+	private List<Location> melounBoosts = new ArrayList<Location>();
 	
-	public CTFMap(String name, Location redSpawn, Location blueSpawn, Location redFlag, Location blueFlag, int minPlayers, int maxPlayers, double fallDamageMultiplier, LinkedList<Location> boosts)
+	public CTFMap(String name, Location redSpawn, Location blueSpawn, Location redFlag, Location blueFlag, int minPlayers, int maxPlayers, double fallDamageMultiplier, List<Location> boosts)
 	{
 		super(name, GameType.CTF, minPlayers, maxPlayers, fallDamageMultiplier);
 		teamSpawn[0] = redSpawn;
 		teamSpawn[1] = blueSpawn;
 		teamFlags[0] = redFlag;
 		teamFlags[1] = blueFlag;
+		melounBoosts = boosts;
 	}
 	
 	public CTFMap(String name, int minPlayers, int maxPlayers)
@@ -100,23 +102,20 @@ public class CTFMap extends BPMap
 		return teamFlags;
 	}
 	
-	public Location[] getMelounBoostsLocations()
+	public List<Location> getMelounBoostsLocations()
 	{
-		return mellounBoost;
+		return melounBoosts;
 	}
 	
 	public void addMelounBoostLocation(Location loc)
 	{
-		Location[] loc1 = mellounBoost.clone();
-		int i = loc1.length;
-		loc1[(i+1)] = loc;
-		mellounBoost = loc1;
+		melounBoosts.add(loc);
 	}
 	public LinkedList<String> boostsToStringList()
 	{
 		LinkedList<String> list = new LinkedList<String>();
 		
-		for (Location loc : mellounBoost) {
+		for (Location loc : melounBoosts) {
 			
 			String v = loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
 			

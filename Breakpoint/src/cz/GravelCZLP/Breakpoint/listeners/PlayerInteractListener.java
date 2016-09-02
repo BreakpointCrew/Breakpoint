@@ -375,7 +375,19 @@ public class PlayerInteractListener implements Listener
 						Color color = Color.WHITE;
 						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 						color = props.getTeam().getColor();
-						e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
+						if (e.getPlayer().hasPotionEffect(PotionEffectType.SPEED)) {
+							for (PotionEffect effect : e.getPlayer().getActivePotionEffects()) {
+								if (effect.getAmplifier() == 1) {
+									e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
+								} else if (effect.getAmplifier() == 2) {
+									e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
+								} else {
+									
+								}
+							}
+						} else {
+							
+						}
 					}
 				}
 			}
