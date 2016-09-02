@@ -19,33 +19,7 @@ import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 
 public class ChatListener implements Listener
 {
-	@EventHandler
-	public void onComamnd(PlayerCommandPreprocessEvent e) {
-		String msg = e.getMessage().toLowerCase();
-		Player p = e.getPlayer();
-		BPPlayer bpPlayer = BPPlayer.get(p);
-		if (bpPlayer.isStaff()) {
-			return;
-		}
-		switch (msg) {
-		case "/pl":
-			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
-			e.setCancelled(true);
-			break;
-		case "/plugins":
-			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
-			e.setCancelled(true);
-			break;
-		case "/bukkit:pl":
-			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
-			e.setCancelled(true);
-			break;
-		case "/Bukkit:plugins":
-			p.sendMessage(ChatColor.GREEN + "Custom naprogramované, to ti musí stačit :)");
-			e.setCancelled(true);
-			break;
-		}
-	}
+	
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event)
@@ -61,7 +35,7 @@ public class ChatListener implements Listener
 			return;
 		}
 		
-		List<String> mentioned = new LinkedList<String>();
+		/*List<String> mentioned = new LinkedList<String>();
 		
 		String[] split = event.getMessage().split(" ");
 		
@@ -77,7 +51,7 @@ public class ChatListener implements Listener
 			b.append(s);
 		}
 		
-		event.setMessage(b.toString());
+		event.setMessage(b.toString());*/
 		
 		if(message.equals(lastMsg))
 		{

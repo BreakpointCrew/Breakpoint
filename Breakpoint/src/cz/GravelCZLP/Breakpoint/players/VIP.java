@@ -37,7 +37,11 @@ public class VIP {
 	}
 	
 	public VIP(String vip) {
-		this.vip = VIPEnum.valueOf(vip);
+		try {
+			this.vip = VIPEnum.valueOf(vip);	
+		} catch (NullPointerException ignore) {
+			this.vip = VIPEnum.NORMAL;
+		}
 	}
 	
 	public boolean hasNoVIP() {

@@ -1,8 +1,7 @@
 name: Breakpoint
-version: 2.2.1
+version: 2.3.0
 main: cz.GravelCZLP.Breakpoint.Breakpoint
-depend: [ProtocolLib, Citizens]
-soft-depend: [NickNamer]
+depend: [ProtocolLib]
 authors: [Limeth, GravelCZLP]
 commands:
     BP:
@@ -35,4 +34,4 @@ commands:
         aliases: [let, flying]
     cw:
         description: Povoli letani
-	aliases: [clanwars, kv, kw, cv, klanvalky, kalnovevalky, kb, cb]
+        aliases: [clanwars, kv, kw, cv, klanvalky, kalnovevalky, kb, cb]

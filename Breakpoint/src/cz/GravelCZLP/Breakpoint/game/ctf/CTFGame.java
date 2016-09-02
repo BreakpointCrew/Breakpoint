@@ -607,7 +607,10 @@ public class CTFGame extends Game
 
 	public Location getSpawnLocation(Team team)
 	{
-		return getMaps().get(getActiveMapId()).getTeamSpawn()[Team.getId(team)];
+		int i = getActiveMapId();
+		if (i == -1) 
+			i = 0;
+		return getMaps().get(i).getTeamSpawn()[Team.getId(team)];
 	}
 
 	public int[] getTeamSizes()

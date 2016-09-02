@@ -117,6 +117,9 @@ public class StatisticsManager
 		List<PlayerStatistics> unorderedList = new LinkedList<PlayerStatistics>();
 		List<PlayerStatistics> orderedList = new LinkedList<PlayerStatistics>();
 		
+		if (playerNames == null) 
+			return;
+		
 		for(String playerName : playerNames)
 			if(isPlayer(playerName))
 			{
