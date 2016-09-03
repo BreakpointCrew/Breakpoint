@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.game.Game;
@@ -35,7 +34,7 @@ public class ChatListener implements Listener
 			return;
 		}
 		
-		/*List<String> mentioned = new LinkedList<String>();
+		List<String> mentioned = new LinkedList<String>();
 		
 		String[] split = event.getMessage().split(" ");
 		
@@ -48,10 +47,10 @@ public class ChatListener implements Listener
 		
 		StringBuilder b = new StringBuilder();
 		for (String s : split) {
-			b.append(s);
+			b.append(s + " ");
 		}
 		
-		event.setMessage(b.toString());*/
+		event.setMessage(b.toString());
 		
 		if(message.equals(lastMsg))
 		{

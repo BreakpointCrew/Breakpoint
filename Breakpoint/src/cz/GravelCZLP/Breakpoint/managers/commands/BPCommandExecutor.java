@@ -57,7 +57,7 @@ public class BPCommandExecutor implements CommandExecutor
 		pl = bp;
 	}
 	
-	@SuppressWarnings({ "static-access", "deprecation" })
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
@@ -238,7 +238,7 @@ public class BPCommandExecutor implements CommandExecutor
 				
 				sender.sendMessage(sb.toString());
 			}
-			else if(args[1].equalsIgnoreCase("create"))
+			else if(args[1].equalsIgnoreCase("create") || args[1].equalsIgnoreCase("add"))
 			{
 				if(args.length <= 3)
 					return true;
@@ -323,7 +323,7 @@ public class BPCommandExecutor implements CommandExecutor
 				game.onCommand(sender, Arrays.copyOfRange(args, 2, args.length));
 			}
 		}
-		else if(args[0].equalsIgnoreCase("getArmour"))
+		else if(args[0].equalsIgnoreCase("getArmor"))
 		{
 			if(args.length > 1)
 			{
@@ -416,6 +416,9 @@ public class BPCommandExecutor implements CommandExecutor
 					else if(args[1].equalsIgnoreCase("add"))
 					{
 						int money = bpTarget.addMoney(amount, true, false);
+						if (bpTarget.isInLobby()) {
+							bpTarget.getPlayer().updateInventory();
+						}
 						sender.sendMessage(ChatColor.GREEN + "The money of player '" + target.getName() + "' has been succesfully set to " + money + " by increasing it by " + amount + "!");
 					}
 					else
@@ -599,7 +602,7 @@ public class BPCommandExecutor implements CommandExecutor
 				}
 				catch(Exception e)
 				{
-					sender.sendMessage(ChatColor.RED + "Nezn�m� achievement '" + args[2] + "'!");
+					sender.sendMessage(ChatColor.RED + "Neznamy achievement '" + args[2] + "'!");
 					return true;
 				}
 				if(!bpPlayer.hasAchievement(at))
@@ -791,17 +794,6 @@ public class BPCommandExecutor implements CommandExecutor
 			{
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("setNPCLoc"))
-		{
-			if (sender instanceof Player)
-				pl.getBreakpointConfig().setTopNPCLocation(((Player) sender).getLocation());
-				sender.sendMessage("§4Nastaveno..");
-			
-		} else if (args[0].equalsIgnoreCase("setSignLoc")) 
-		{
-			if (sender instanceof Player)
-				pl.getBreakpointConfig().setTopSignLocation(((Player) sender).getLocation());
-				sender.sendMessage("§4Nastaveno.."); 	
 		}
 		return true;
 	}

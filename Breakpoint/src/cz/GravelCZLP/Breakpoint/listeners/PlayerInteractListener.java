@@ -199,7 +199,7 @@ public class PlayerInteractListener implements Listener
 			String playerName = player.getName();
 			if(!mapPoll.hasVoted(playerName))
 			{
-				int strength = player.hasPermission("Breakpoint.vip") ? 2 : 1;
+				int strength = bpPlayer.isVIP() ? 2 : 1;
 				mapPoll.vote(playerName, mapId, strength);
 				PlayerManager.clearHotBar(inv);
 				player.updateInventory();

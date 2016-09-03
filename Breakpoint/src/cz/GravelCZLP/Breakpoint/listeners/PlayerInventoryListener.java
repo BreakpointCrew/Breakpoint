@@ -102,7 +102,7 @@ public class PlayerInventoryListener implements Listener
 				}
 				else
 				{
-					if(!player.hasPermission("Breakpoint.vip"))
+					if(!bpPlayer.isVIP())
 						if(InventoryMenuManager.isVipSlot(slotId))
 						{
 							event.setCancelled(true);
@@ -238,7 +238,7 @@ public class PlayerInventoryListener implements Listener
 			if(ct != null)
 			{
 				String name = ct.getProperName();
-				if(ct.requiresVIP() && !player.hasPermission("Breakpoint.vip"))
+				if(ct.requiresVIP() && !bpPlayer.isVIP())
 				{
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
 					player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
