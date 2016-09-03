@@ -258,8 +258,8 @@ public abstract class Game
 	
 	public void updateProgressHeaderTime()
 	{
-		/*for(BPPlayer bpPlayer : players)
-			updateProgressObjectiveHeader(bpPlayer);*/
+		for(BPPlayer bpPlayer : players)
+			updateProgressObjectiveHeader(bpPlayer);
 	}
 	
 	public void scheduleMapPoll()

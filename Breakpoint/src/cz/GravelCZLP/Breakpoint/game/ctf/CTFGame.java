@@ -93,6 +93,8 @@ public class CTFGame extends Game
 	public void startExtra()
 	{
 		flm.startLoops();
+		flm.removeFlags();
+		flm.spawnFlags();
 	}
 	
 	@Override
@@ -595,10 +597,10 @@ public class CTFGame extends Game
 		for(int i = 0; i < 2; i++)
 		{
 			teamSizeRenderers[i].setSize(teamSizes[i]);
-			MapView map = Bukkit.getMap((short) (teamSizeRenderersMapId + i));
+			//MapView map = Bukkit.getMap((short) (teamSizeRenderersMapId + i));
 			for(BPPlayer bpPlayer : BPPlayer.onlinePlayers)
 			{
-				Player player = bpPlayer.getPlayer();
+				//Player player = bpPlayer.getPlayer();
 				if(bpPlayer.isInLobby()) {
 					//TODO: player.sendMap(map);
 				}

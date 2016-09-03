@@ -140,7 +140,7 @@ public class Breakpoint extends JavaPlugin
 		trySave();
 		kickPlayers();
 		
-		topKill.DeleteAndDespawn();
+		//topKill.DeleteAndDespawn();
 		
 		if(evtm != null)
 			evtm.save();
