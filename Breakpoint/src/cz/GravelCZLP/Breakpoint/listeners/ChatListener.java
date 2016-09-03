@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Instrument;
+import org.bukkit.Note;
+import org.bukkit.Note.Tone;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,8 +44,17 @@ public class ChatListener implements Listener
 		
 		for (int i = 0; i < split.length; i++) {
 			if (split[i].startsWith("@")) {
-				mentioned.add(split[i].replaceAll("@", ""));
-				split[i] = "§c" + split[i];
+				String withoutAt = split[i].replaceAll("@", "");
+				if (Bukkit.getPlayer(withoutAt) != null) {
+					if (Bukkit.getPlayer(withoutAt).isOnline()) {
+						if (!Bukkit.getPlayer(withoutAt).getName().equals(player.getName())) {
+							mentioned.add(split[i].replaceAll("@", ""));
+							split[i] = "§c" + split[i];
+						} else {
+							player.sendMessage("§cNemůžeš Zmínit sám sebe v chatu");
+						}
+					}
+				}
 			}
 		}
 		
@@ -52,6 +65,17 @@ public class ChatListener implements Listener
 		
 		event.setMessage(b.toString());
 		
+		for (String s : mentioned) {
+			if (Bukkit.getPlayer(s) != null) {
+				if (Bukkit.getPlayer(s).isOnline()) {
+					Player p = Bukkit.getPlayer(s);
+					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.B));
+					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.C));
+					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.B));
+					p.sendMessage("§cByl jsi Zmíněn v Chatu");
+				}
+			}
+		}
 		if(message.equals(lastMsg))
 		{
 			event.setCancelled(true);
