@@ -21,5 +21,3 @@ ProjectSurvive.cz, my Minecraft gaming portal, now runs Mine-Strike instead.
 
 Consult the LICENSE file.
 
-##Fork
-as you know this is a fork, but is not being updated here but on bitbukkit and that is not open-source :) so yeah, but i am working on it.
