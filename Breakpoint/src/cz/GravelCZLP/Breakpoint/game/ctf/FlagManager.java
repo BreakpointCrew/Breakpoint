@@ -38,7 +38,7 @@ public class FlagManager
 {
 	private final CTFGame game;
 	private Location[] defaultFlagLocations;
-	private final EnderCrystal[] flags;
+	private static EnderCrystal[] flags;
 	private final BPPlayer[] holders;
 	private int[] score;
 	private final int[] timeoutIn;
@@ -551,7 +551,7 @@ public class FlagManager
 		return x1 == x2 && z1 == z2;
 	}
 
-	public boolean isTeamFlag(EnderCrystal ec)
+	public static boolean isTeamFlag(EnderCrystal ec)
 	{
 		for (int i = 0; i < 2; i++)
 			if (flags[i] != null)
