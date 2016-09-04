@@ -332,27 +332,6 @@ public class BPPlayer
 			scoreboardManager = null;
 	}
 	
-//	public void saveToYAML() throws IOException
-//	{
-//		String playerName = offlinePlayer.getName();
-//		
-//		if(hasDefaultData())
-//		{
-//			System.out.println("Data of player " + playerName + " have not been saved because of default values.");
-//			return;
-//		}
-//		
-//		File file = getFile();
-//		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-//		
-//		settings.save(yml);
-//		lobbyInventory.save(yml);
-//		statistics.savePlayerStatistics(yml);
-//		Achievement.savePlayerAchievements(yml, achievements);
-//		Perk.savePlayerPerks(yml, perks);
-//		yml.save(file);
-//	}
-	
 	public void save(StorageType storageType, FruitSQL mySQL) throws IOException, SQLException
 	{
 		if(hasDefaultData())
@@ -369,6 +348,7 @@ public class BPPlayer
 		statistics.savePlayerStatistics(storage);
 		Achievement.savePlayerAchievements(storage, achievements);
 		Perk.savePlayerPerks(storage, perks);
+		getVIP().save(storage);
 		
 		storage.save(storageType, folder, mySQL, Breakpoint.getBreakpointConfig().getMySQLTablePlayers());
 	}
@@ -598,9 +578,9 @@ public class BPPlayer
 			return ChatManager.prefixSponsor + " ";
 		else if(player.hasPermission("Breakpoint.yt"))
 			return ChatManager.prefixYT + " ";
-		else if(getVIP().getVIPType() == VIPEnum.VIPPlusPlus)
+		else if(getVIP().getVIPType() == VIPEnum.VIPPLUSPLUS)
 			return ChatManager.prefixVIPPlusPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIPPlus)
+		else if (getVIP().getVIPType() == VIPEnum.VIPPLUS)
 			return ChatManager.prefixVIPPlus + " ";
 		else if (getVIP().getVIPType() == VIPEnum.VIP)
 			return ChatManager.prefixVIP + " ";
@@ -619,9 +599,9 @@ public class BPPlayer
 			return ChatManager.prefixSponsor + " ";
 		else if(player.hasPermission("Breakpoint.yt"))
 			return ChatManager.prefixYT + " ";
-		else if(getVIP().getVIPType() == VIPEnum.VIPPlusPlus)
+		else if(getVIP().getVIPType() == VIPEnum.VIPPLUSPLUS)
 			return ChatManager.prefixVIPPlusPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIPPlus)
+		else if (getVIP().getVIPType() == VIPEnum.VIPPLUS)
 			return ChatManager.prefixVIPPlus + " ";
 		else if (getVIP().getVIPType() == VIPEnum.VIP)
 			return ChatManager.prefixVIP + " ";
@@ -676,14 +656,14 @@ public class BPPlayer
 		setPlayerListName();
 	}
 	
-	public void sendWarnLowHealth() {
+	public void sendWarnLowHealth(int i) {
 		EntityPlayer nmsPlayer = ((CraftPlayer) Bukkit.getPlayer(name)).getHandle();
 		WorldBorder playerWorldBorder = nmsPlayer.world.getWorldBorder();
 		PacketPlayOutWorldBorder worldBorder = new PacketPlayOutWorldBorder(playerWorldBorder, EnumWorldBorderAction.SET_WARNING_BLOCKS);
 		try {
 			Field f = worldBorder.getClass().getDeclaredField("i");
 			f.setAccessible(true);
-			f.setInt(worldBorder, 2);
+			f.setInt(worldBorder, i);
 			f.setAccessible(!f.isAccessible());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -861,19 +841,38 @@ public class BPPlayer
 		Player player = getPlayer();
 		boolean positive = amount >= 0;
 		boolean multiply = positive && DoubleMoneyManager.isDoubleXP() && allowMultiplication;
+		BPPlayer bpPlayer = BPPlayer.get(player);
 		
-		if(multiply)
-			amount *= 2;
+		int byWhat = 2;
+		
+		if(multiply) {
+			switch (bpPlayer.getVIP().getVIPType()) {
+			case NORMAL:
+				byWhat = 2;
+				break;
+			case VIP:
+				byWhat = 4;
+				break;
+			case VIPPLUS:
+				byWhat = 6;
+				break;
+			case VIPPLUSPLUS:
+				byWhat = 8;
+				break;
+			}
+			amount *= byWhat;
+		}
 		
 		statistics.increaseMoney(amount);
 		
-		if(inform)
+		if(inform) {
 			if(player != null)
 			{
 				MessageType msgType = positive ? MessageType.OTHER_EMERALDS_INCREASE : MessageType.OTHER_EMERALDS_DECREASE;
 				
-				player.sendMessage(msgType.getTranslation().getValue(amount, multiply ? "2x" : ""));
+				player.sendMessage(msgType.getTranslation().getValue(amount, multiply ?  byWhat + "x" : ""));
 			}
+		}
 		
 		return statistics.getMoney();
 	}

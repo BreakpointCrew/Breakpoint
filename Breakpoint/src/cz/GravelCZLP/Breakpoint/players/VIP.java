@@ -10,7 +10,7 @@ import me.limeth.storageAPI.Storage;
 public class VIP {
 
 	public enum VIPEnum {
-		NORMAL, VIP, VIPPlus, VIPPlusPlus;
+		NORMAL, VIP, VIPPLUS, VIPPLUSPLUS;
 	}
 	
 	public static VIP load(Storage storage) throws Exception {
@@ -50,5 +50,9 @@ public class VIP {
 	
 	public VIPEnum getVIPType() {
 		return vip;
+	}
+
+	public void setVIPType(VIPEnum type) {
+		vip = type;
 	}
 }

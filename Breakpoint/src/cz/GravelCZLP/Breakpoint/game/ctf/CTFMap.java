@@ -1,12 +1,10 @@
 package cz.GravelCZLP.Breakpoint.game.ctf;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import cz.GravelCZLP.Breakpoint.game.BPMap;
@@ -29,24 +27,19 @@ public class CTFMap extends BPMap
 		String[] rawBlueFlag = yml.getString(fullPath + ".blueFlag").split(",");
 		Location blueFlag = new Location(Bukkit.getWorld(rawBlueFlag[0]), Integer.parseInt(rawBlueFlag[1]), Integer.parseInt(rawBlueFlag[2]), Integer.parseInt(rawBlueFlag[3]));
 		
-		List<String> rawMelounBoostList = yml.getStringList(fullPath + ".boosts");
+		List<String> rawMelounBoostList = yml.getStringList(fullPath + ".melounBoosts");
 		
-		LinkedList<Location> boosts = new LinkedList<Location>();
+		List<Location> boosts = new ArrayList<Location>();
 		
-		for (String s : rawMelounBoostList)
+		
+		for(String rawSpawn : rawMelounBoostList)
 		{
-			String[] split = s.split(",");
-			
-			double x = Double.parseDouble(split[1]);
-			double y = Double.parseDouble(split[2]);
-			double z = Double.parseDouble(split[3]);
-			
-			World w = Bukkit.getWorld(split[0]);
-			
-			Location loc = new Location(w, x ,y ,z);
+			String[] split = rawSpawn.split(",");
+			Location loc = new Location(Bukkit.getWorld(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]), Double.parseDouble(split[3]), Float.parseFloat(split[4]), 1.0F);
 			
 			boosts.add(loc);
 		}
+		
 		int minPlayers = yml.getInt(fullPath + ".min");
 		int maxPlayers =  yml.getInt(fullPath + ".max");
 		double fallDamageMultiplier = yml.getDouble(fullPath + ".fallDamageMultiplier", 1.0);
@@ -111,9 +104,9 @@ public class CTFMap extends BPMap
 	{
 		melounBoosts.add(loc);
 	}
-	public LinkedList<String> boostsToStringList()
+	public List<String> boostsToStringList()
 	{
-		LinkedList<String> list = new LinkedList<String>();
+		List<String> list = new ArrayList<String>();
 		
 		for (Location loc : melounBoosts) {
 			

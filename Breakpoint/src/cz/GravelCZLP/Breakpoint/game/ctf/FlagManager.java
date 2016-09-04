@@ -254,7 +254,7 @@ public class FlagManager
 			spawnFlagAtDefaultLocation(team);
 		}
 	}
-
+	
 	public EnderCrystal spawnFlag(Location loc, Team team)
 	{
 		if (loc.getY() <= 0) {
@@ -267,16 +267,18 @@ public class FlagManager
 		Chunk chunk = world.getChunkAt(loc);
 		
 		if (!chunk.isLoaded())
-			chunk.unload();
 			chunk.load();
 		
+		EnderCrystal ec = null;
+		
+		ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+				
 		for (Entity e : chunk.getEntities())
 			if (e instanceof EnderCrystal)
 				e.remove();
-		
-		EnderCrystal ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+				
 		flags[teamId] = ec;
-		
+			
 		return ec;
 	}
 
@@ -317,8 +319,13 @@ public class FlagManager
 			Chunk chunk = world.getChunkAt(loc);
 			if (!chunk.isLoaded())
 				chunk.load();
-			flags[teamId].remove();
-			flags[teamId] = null;
+			Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					flags[teamId].remove();
+					flags[teamId] = null;
+				}
+			}, 10L);
 			return true;
 		}
 		return false;
@@ -428,6 +435,11 @@ public class FlagManager
 		
 		SoundManager.playTeamSound(game, Sound.ENTITY_ENDERDRAGON_HURT, 1F, 1F, oppositeTeam);
 		SoundManager.playTeamSound(game, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F, flagTeam);
+		
+		if (loc.getY() < 0) {
+			spawnFlagAtDefaultLocation(flagTeam);
+			return;
+		}
 		
 		spawnFlag(loc, flagTeam);
 		holders[flagTeamId] = null;
@@ -680,7 +692,7 @@ public class FlagManager
 		else
 			while (world.getBlockAt(x, y, z).getType() == Material.AIR && y > 0)
 				y--;
-		return new Location(world, x, y + 1, z);
+		return new Location(world, x, y + 2, z);
 	}
 
 	public static void giveCompass(Player player)

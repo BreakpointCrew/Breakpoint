@@ -52,7 +52,7 @@ public class DoubleMoneyManager
 							ent.remove();
 						}
 					}
-					ItemStack boost = new ItemStack(Material.MELON);
+					ItemStack boost = new ItemStack(Material.SPECKLED_MELON);
 					ItemMeta bm = boost.getItemMeta();
 					bm.setDisplayName("melounBoost");
 					boost.setItemMeta(bm);

@@ -44,6 +44,7 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.VIP.VIPEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
@@ -69,7 +70,7 @@ public class BPCommandExecutor implements CommandExecutor
 		
 		if(args.length <= 0)
 		{
-			sender.sendMessage("/bp reload");
+			sender.sendMessage("/bp setVIPType [Player] [Type]");
 			sender.sendMessage("/bp lobbyLoc");
 			sender.sendMessage("/bp shopLoc");
 			sender.sendMessage("/bp vipInfoLoc");
@@ -701,7 +702,7 @@ public class BPCommandExecutor implements CommandExecutor
 			
 			sender.sendMessage("Done");
 		}
-		else if(args[0].equalsIgnoreCase("deleteDefault"))
+		else if(args[0].equalsIgnoreCase("deleteDefarg0ault"))
 		{
 			File folder = BPPlayer.getFolder();
 			File[] files = folder.listFiles();
@@ -794,6 +795,11 @@ public class BPCommandExecutor implements CommandExecutor
 			{
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
+		} else if (args[0].equalsIgnoreCase("setVIPType")) {
+			BPPlayer bpPlayer = BPPlayer.get(args[1]);
+			VIPEnum type = VIPEnum.valueOf(args[2]);
+			bpPlayer.getVIP().setVIPType(type);
+			sender.sendMessage("§aPlayer " + args[1] + " now has VIP: " + args[2]);
 		}
 		return true;
 	}

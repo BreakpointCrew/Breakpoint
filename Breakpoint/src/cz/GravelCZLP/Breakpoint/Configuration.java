@@ -174,7 +174,7 @@ public class Configuration
 		/*yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
 		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));*/
 		
-		yamlConfig.set("TimeForBoostMelounToSpawn", 10000L);
+		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
 		
 		Location rsLoc = randomShop.getLocation();
 		int rsDir = randomShop.getDirection();
