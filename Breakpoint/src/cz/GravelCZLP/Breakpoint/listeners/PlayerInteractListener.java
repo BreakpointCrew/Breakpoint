@@ -49,7 +49,6 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.MapPoll;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
-import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AbilityManager;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
@@ -371,27 +370,15 @@ public class PlayerInteractListener implements Listener
 		BPPlayer bpPlayer = BPPlayer.get(e.getPlayer());
 		if (bpPlayer.isInGame()) {
 			if (bpPlayer.getGame().getType() == GameType.CTF) {
-				ItemStack item = (ItemStack) e.getItem();
-				if (item.getType() == Material.MELON) {
+				ItemStack item = e.getItem().getItemStack();
+				if (item.getType() == Material.SPECKLED_MELON) {
 					if (item.getItemMeta().getDisplayName() == "melounBoost") {
 						e.setCancelled(true);
 						e.getItem().remove();
+						e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 2.0F);
 						Color color = Color.WHITE;
 						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 						color = props.getTeam().getColor();
-						/*if (e.getPlayer().hasPotionEffect(PotionEffectType.SPEED)) {
-							for (PotionEffect effect : e.getPlayer().getActivePotionEffects()) {
-								if (effect.getAmplifier() == 1) {
-									e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
-								} else if (effect.getAmplifier() == 2) {
-									
-								} else {
-									
-								}
-							}
-						} else {
-							
-						}*/
 						e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
 					}
 				}
@@ -477,7 +464,7 @@ public class PlayerInteractListener implements Listener
 			}
 			
 			EnderCrystal ec = (EnderCrystal) en;
-			if (!FlagManager.isTeamFlag(ec)) {
+			if (!plugin.flm.isTeamFlag(ec)) {
 				ec.remove();
 			}
 		}

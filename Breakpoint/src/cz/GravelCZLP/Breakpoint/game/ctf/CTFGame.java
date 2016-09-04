@@ -93,8 +93,7 @@ public class CTFGame extends Game
 	public void startExtra()
 	{
 		flm.startLoops();
-		flm.removeFlags();
-		flm.spawnFlags();
+		Breakpoint.getInstance().setFlagManager(flm);
 	}
 	
 	@Override

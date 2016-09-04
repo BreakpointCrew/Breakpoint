@@ -38,7 +38,7 @@ public class FlagManager
 {
 	private final CTFGame game;
 	private Location[] defaultFlagLocations;
-	private static EnderCrystal[] flags;
+	private final EnderCrystal[] flags;
 	private final BPPlayer[] holders;
 	private int[] score;
 	private final int[] timeoutIn;
@@ -267,7 +267,12 @@ public class FlagManager
 		Chunk chunk = world.getChunkAt(loc);
 		
 		if (!chunk.isLoaded())
+			chunk.unload();
 			chunk.load();
+		
+		for (Entity e : chunk.getEntities())
+			if (e instanceof EnderCrystal)
+				e.remove();
 		
 		EnderCrystal ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
 		flags[teamId] = ec;
@@ -551,12 +556,14 @@ public class FlagManager
 		return x1 == x2 && z1 == z2;
 	}
 
-	public static boolean isTeamFlag(EnderCrystal ec)
+	public boolean isTeamFlag(EnderCrystal ec)
 	{
 		for (int i = 0; i < 2; i++)
 			if (flags[i] != null)
 				if (flags[i].equals(ec))
 					return true;
+			else
+				return true;
 		return false;
 	}
 

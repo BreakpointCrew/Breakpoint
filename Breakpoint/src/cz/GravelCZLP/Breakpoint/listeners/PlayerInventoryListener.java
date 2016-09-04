@@ -235,7 +235,7 @@ public class PlayerInventoryListener implements Listener
 		else if(mat == Material.MONSTER_EGG)
 		{
 			CharacterType ct = CharacterType.getByMonsterEggId(item.getDurability());
-			if(ct != null)
+			if (true) // ct != null
 			{
 				String name = ct.getProperName();
 				if(ct.requiresVIP() && !bpPlayer.isVIP())
@@ -258,7 +258,13 @@ public class PlayerInventoryListener implements Listener
 	public void onPlayerDropItem(PlayerDropItemEvent event)
 	{
 		Player player = event.getPlayer();
-		if(!(player.hasPermission("Breakpoint.admin") && player.getGameMode() == GameMode.CREATIVE))
+		BPPlayer bpPlayer = BPPlayer.get(player);
+		if(!(player.hasPermission("Breakpoint.admin") && player.getGameMode() == GameMode.CREATIVE)) {
 			event.setCancelled(true);
+			return;
+		}
+		if (bpPlayer.isInGame() && event.getItemDrop().getItemStack().getType() == Material.GLASS_BOTTLE) {
+			event.getItemDrop().remove();
+		}
 	}
 }

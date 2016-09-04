@@ -5,6 +5,8 @@ import java.util.Calendar;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -45,6 +47,11 @@ public class DoubleMoneyManager
 				CTFMap map = (CTFMap) GameManager.getGame("ctf").getCurrentMap();
 				
 				for (Location loc : map.getMelounBoostsLocations()) {
+					for (Entity ent : loc.getWorld().getNearbyEntities(loc, 1, 1, 1)) {
+						if (ent instanceof Item) {
+							ent.remove();
+						}
+					}
 					ItemStack boost = new ItemStack(Material.MELON);
 					ItemMeta bm = boost.getItemMeta();
 					bm.setDisplayName("melounBoost");
@@ -52,7 +59,7 @@ public class DoubleMoneyManager
 					Location loc0 = loc.clone();
 					loc0.setYaw(90);
 					loc0.setPitch(90);
-					loc.getWorld().dropItem(loc0, boost);	
+					loc.getWorld().dropItem(loc0, boost);
 				}
 			}
 		}, 0L, Breakpoint.getBreakpointConfig().getTimeForSpeedMeloun());

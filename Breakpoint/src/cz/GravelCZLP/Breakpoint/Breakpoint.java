@@ -28,6 +28,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.fijistudios.jordan.FruitSQL;
 
+import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.listeners.ChatListener;
@@ -77,6 +78,7 @@ public class Breakpoint extends JavaPlugin
 	public MapManager mapm;
 	public ProtocolManager prm; //BPPlayer-520, this-181 a 80, PlayerManager-355
 	public EventManager evtm;
+	public FlagManager flm;
 	public boolean successfullyEnabled;
 	public TopKillsManager topKill;
 	
@@ -113,6 +115,7 @@ public class Breakpoint extends JavaPlugin
 			LobbyInfoManager.startLoop();
 			setEventManager();
 			DoubleMoneyManager.update();
+			DoubleMoneyManager.startBoostLoop();
 			getServer().clearRecipes();
 			World world = config.getLobbyLocation().getWorld();
 			world.setStorm(false);
@@ -396,5 +399,9 @@ public class Breakpoint extends JavaPlugin
 	public static boolean hasMySQL()
 	{
 		return mySQL != null;
+	}
+
+	public void setFlagManager(FlagManager flm2) {
+		flm = flm2;
 	}
 }
