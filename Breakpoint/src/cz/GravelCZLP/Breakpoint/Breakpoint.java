@@ -28,7 +28,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.fijistudios.jordan.FruitSQL;
 
-import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.listeners.ChatListener;
@@ -78,7 +77,6 @@ public class Breakpoint extends JavaPlugin
 	public MapManager mapm;
 	public ProtocolManager prm; //BPPlayer-520, this-181 a 80, PlayerManager-355
 	public EventManager evtm;
-	public FlagManager flm;
 	public boolean successfullyEnabled;
 	public TopKillsManager topKill;
 	
@@ -122,15 +120,13 @@ public class Breakpoint extends JavaPlugin
 			world.setThundering(false);
 			world.setWeatherDuration(1000000000);
 			successfullyEnabled = true;
-			
 			return;
 		} else {
+			successfullyEnabled = false;
 			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 			System.out.println("Není licence na spuštění Breakpointu ");
 			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 		}
-			
-		successfullyEnabled = false;
 		//TODO: getServer().getPluginManager().registerEvents(new BanListener(), this);
 	}
 
@@ -399,9 +395,5 @@ public class Breakpoint extends JavaPlugin
 	public static boolean hasMySQL()
 	{
 		return mySQL != null;
-	}
-
-	public void setFlagManager(FlagManager flm2) {
-		flm = flm2;
 	}
 }

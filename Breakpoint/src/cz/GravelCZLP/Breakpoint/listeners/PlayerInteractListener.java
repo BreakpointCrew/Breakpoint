@@ -1,7 +1,6 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -11,7 +10,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -35,7 +33,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -379,7 +376,7 @@ public class PlayerInteractListener implements Listener
 						Color color = Color.WHITE;
 						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 						color = props.getTeam().getColor();
-						e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 3, false, true, color));
+						e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, (20 * 3), 3, false, true, color));
 					}
 				}
 			}
@@ -450,23 +447,5 @@ public class PlayerInteractListener implements Listener
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
 		event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent e) {
-		Chunk c = e.getChunk();
-		
-		Entity[] ents = c.getEntities();
-		
-		for (Entity en : ents) {
-			if (!(en instanceof EnderCrystal)) {
-				continue;
-			}
-			
-			EnderCrystal ec = (EnderCrystal) en;
-			if (!plugin.flm.isTeamFlag(ec)) {
-				ec.remove();
-			}
-		}
 	}
 }

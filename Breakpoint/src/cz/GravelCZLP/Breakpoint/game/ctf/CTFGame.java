@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
@@ -92,8 +93,20 @@ public class CTFGame extends Game
 	@Override
 	public void startExtra()
 	{
+		for (BPMap map : getPlayableMaps()) {
+			if (map.getGameType() == GameType.CTF ) {
+				CTFMap ctfMap = (CTFMap) map;
+				if (ctfMap.isPlayable()){
+					for (int i = 0; i < ctfMap.getTeamFlags().length; i++) {
+						Chunk chunk = ctfMap.getTeamFlags()[i].getWorld().getChunkAt(ctfMap.getTeamFlags()[i]);
+						if (!chunk.isLoaded()) {
+							chunk.load();
+						}
+					}
+				}
+			}
+		}
 		flm.startLoops();
-		Breakpoint.getInstance().setFlagManager(flm);
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class CTFMap extends BPMap
 		for(String rawSpawn : rawMelounBoostList)
 		{
 			String[] split = rawSpawn.split(",");
-			Location loc = new Location(Bukkit.getWorld(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]), Double.parseDouble(split[3]), Float.parseFloat(split[4]), 1.0F);
+			Location loc = new Location(Bukkit.getWorld(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]), Double.parseDouble(split[3]));
 			
 			boosts.add(loc);
 		}

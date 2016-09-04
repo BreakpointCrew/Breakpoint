@@ -1,15 +1,9 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Instrument;
-import org.bukkit.Note;
-import org.bukkit.Note.Tone;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +32,7 @@ public class ChatListener implements Listener
 			return;
 		}
 		
-		List<String> mentioned = new LinkedList<String>();
+		/*List<String> mentioned = new LinkedList<String>();
 		
 		String[] split = event.getMessage().split(" ");
 		
@@ -52,6 +46,7 @@ public class ChatListener implements Listener
 							split[i] = "§c" + split[i];
 						} else {
 							player.sendMessage("§cNemůžeš Zmínit sám sebe v chatu");
+							e.setCancelled(true);
 						}
 					}
 				}
@@ -75,7 +70,8 @@ public class ChatListener implements Listener
 					p.sendMessage("§cByl jsi Zmíněn v Chatu");
 				}
 			}
-		}
+		}*/
+		
 		if(message.equals(lastMsg))
 		{
 			event.setCancelled(true);

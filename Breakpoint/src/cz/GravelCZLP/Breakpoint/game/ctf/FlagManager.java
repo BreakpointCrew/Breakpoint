@@ -269,13 +269,13 @@ public class FlagManager
 		if (!chunk.isLoaded())
 			chunk.load();
 		
-		EnderCrystal ec = null;
-		
-		ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
-				
 		for (Entity e : chunk.getEntities())
 			if (e instanceof EnderCrystal)
 				e.remove();
+		
+		EnderCrystal ec = null;
+		
+		ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
 				
 		flags[teamId] = ec;
 			
@@ -319,13 +319,10 @@ public class FlagManager
 			Chunk chunk = world.getChunkAt(loc);
 			if (!chunk.isLoaded())
 				chunk.load();
-			Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					flags[teamId].remove();
-					flags[teamId] = null;
-				}
-			}, 10L);
+			
+			flags[teamId].remove();
+			flags[teamId] = null;
+
 			return true;
 		}
 		return false;
