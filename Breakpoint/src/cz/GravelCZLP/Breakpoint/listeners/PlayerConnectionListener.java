@@ -153,9 +153,9 @@ public class PlayerConnectionListener implements Listener
 	@EventHandler
 	public void onServerPing(ServerListPingEvent event)
 	{
-		
-		
-		
+		int bodyBlue = 0;
+		int bodyRed = 0;
+		event.setMotd("§c[-------------- §dBREAKPOINT§c--------------]\n CTF: Blue:" + bodyBlue + " Red:" + bodyRed);
 	}
 	 
 	public int getWidth(String string)

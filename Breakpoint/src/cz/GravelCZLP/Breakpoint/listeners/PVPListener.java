@@ -537,7 +537,7 @@ public class PVPListener implements Listener
 					arrow.remove();
 				}
 				
-			}, 20L);
+			}, 10L);
 		}
 	}
 

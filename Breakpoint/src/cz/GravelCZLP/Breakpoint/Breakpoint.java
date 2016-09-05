@@ -63,7 +63,10 @@ import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
+import cz.GravelCZLP.DiscordBOT.BreakpointDiscordbot;
 import me.limeth.storageAPI.StorageType;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 
 public class Breakpoint extends JavaPlugin
 {
@@ -79,6 +82,7 @@ public class Breakpoint extends JavaPlugin
 	public EventManager evtm;
 	public boolean successfullyEnabled;
 	public TopKillsManager topKill;
+	public BreakpointDiscordbot discordBot;
 	
 	@Override
 	public void onEnable()
@@ -114,6 +118,14 @@ public class Breakpoint extends JavaPlugin
 			setEventManager();
 			DoubleMoneyManager.update();
 			DoubleMoneyManager.startBoostLoop();
+			
+			discordBot = new BreakpointDiscordbot();
+			try {
+				discordBot.start();
+			} catch (RateLimitException | DiscordException e) {
+				e.printStackTrace();
+			}
+			
 			getServer().clearRecipes();
 			World world = config.getLobbyLocation().getWorld();
 			world.setStorm(false);

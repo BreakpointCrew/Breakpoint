@@ -1,0 +1,13 @@
+<project name="Breakpoint" default="jar">
+	<property name="src.dir"        location="src"/>
+    <property name="build.dir"      location="/home/Plocha/BpServer/plugins"/>
+    <property name="lib.dir"        location="lib"/>   
+    <property name="resources.dir"  location="resources"/>
+    
+    <target name="jar">
+        <jar destfile="${build.dir}/Breakpoint.jar" basedir="${src.dir}">
+            <fileset id="resources" dir="${resources.dir}" />
+            <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+        </jar>          
+    </target>
+</project>

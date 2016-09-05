@@ -17,7 +17,7 @@ import com.fijistudios.jordan.FruitSQL;
 public class Configuration
 {
 	private StorageType storageType;
-	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName, cwChallengeGame;
+	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName, cwChallengeGame, token;
 	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc, staffListLocation;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
@@ -25,7 +25,7 @@ public class Configuration
 	private String[] vipFeatures;
 	private long BoostMelounTime;
 	
-	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, Location staffListLocation,long BoostMelounTime)
+	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, Location staffListLocation,long BoostMelounTime, String token)
 	{
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
@@ -49,6 +49,7 @@ public class Configuration
 		this.vipFeatures = vipFeatures;
 		this.BoostMelounTime = BoostMelounTime;
 		this.staffListLocation = staffListLocation;
+		this.token = token;
 	}
 	
 	public static Configuration load()
@@ -77,6 +78,8 @@ public class Configuration
 		
 		String languageFileName = yamlConfig.getString("lang", "en");
 		String challengeGameName = yamlConfig.getString("cwChallengeGame", "CW");
+		
+		String token = yamlConfig.getString("tokens.discord", "NULL");
 		
 		Location lobbyLocation = deserializeLocation(yamlConfig.getString("locations.lobby", "world,0,64,0,0,0"));
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
@@ -138,7 +141,8 @@ public class Configuration
 				topNPCLoc,
 				topSignLoc,
 				staffListLocation,
-				BoostMelounTime
+				BoostMelounTime,
+				token
 				);
 	}
 	
@@ -175,6 +179,8 @@ public class Configuration
 		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));*/
 		
 		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
+		
+		yamlConfig.set("tokens.discord", "NULL");
 		
 		Location rsLoc = randomShop.getLocation();
 		int rsDir = randomShop.getDirection();
@@ -430,5 +436,9 @@ public class Configuration
 	public long getTimeForSpeedMeloun() 
 	{
 		return BoostMelounTime;
+	}
+
+	public String getBotToken() {
+		return token;
 	}
 }
