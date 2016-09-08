@@ -55,7 +55,7 @@ public class StatisticsManager
 			}
 		}, "Async Rank Update");
 		
-		t.setPriority(Thread.NORM_PRIORITY);
+		t.setPriority(Thread.MAX_PRIORITY);
 		t.start();
 	}
 	

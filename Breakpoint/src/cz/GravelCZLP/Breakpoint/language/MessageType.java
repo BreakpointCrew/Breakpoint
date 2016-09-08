@@ -455,8 +455,8 @@ public enum MessageType implements Translateable
 			CHAT_PREFIX_VIP("&8[&bVIP&8]&r"),
 			CHAT_PREFIX_YOUTUBE("&8[&4You&fTube&8]&r"),
 			CHAT_PREFIX_SPONSOR("&8[&aSponsor&8]&r"),
-			CHAT_PREFIX_VIPPLUSPLUS("&8[&cVIP++&8]&r"),
 			CHAT_PREFIX_VIPPLUS("&8[&9VIP+&8]&r"),
+			CHAT_PREFIX_AdminDev("&8[&4Admin&a/&cDeveloper&8]&r"),
 			
 			CHAT_PREFIX_DEV("&8cl[c4clDeveloper&8&l]&r"),
 			

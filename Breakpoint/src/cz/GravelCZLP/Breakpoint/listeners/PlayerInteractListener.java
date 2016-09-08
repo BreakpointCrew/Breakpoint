@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -97,16 +99,16 @@ public class PlayerInteractListener implements Listener
 							if(player.hasPotionEffect(PotionEffectType.HEAL))
 								player.removePotionEffect(PotionEffectType.HEAL);
 							
-							player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, 1), true);
+							player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, 2), true);
 							
 							world.playSound(loc, Sound.ENTITY_GENERIC_EAT, 1F, 1F);
 						}
 				}
 				else if(mat == Material.POTION && durability >= 16000)
 				{
-					if(!bpPlayer.hasCooldown(CooldownType.POTION_RAW.getPath() + durability, 2, true))
+					if(!bpPlayer.hasCooldown(CooldownType.POTION_RAW.getPath() + durability, 1, true))
 					{
-						item.setAmount(item.getAmount() + 1);
+						item.setAmount(1);
 						player.setItemInHand(item);
 					}
 					else
@@ -332,7 +334,6 @@ public class PlayerInteractListener implements Listener
 				}
 			}
 		}
-		
 		return true;
 	}
 
@@ -447,5 +448,15 @@ public class PlayerInteractListener implements Listener
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onChunkUnload(ChunkUnloadEvent e) {
+		for (int i = 0; i < e.getChunk().getEntities().length; i++) {
+			if (e.getChunk().getEntities()[i].getType() == EntityType.ENDER_CRYSTAL) {
+				e.setCancelled(true);
+				return;
+			}
+		}
 	}
 }

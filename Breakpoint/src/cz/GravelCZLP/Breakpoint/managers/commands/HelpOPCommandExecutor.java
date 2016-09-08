@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
+import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 
 public class HelpOPCommandExecutor implements CommandExecutor
 {
@@ -51,13 +53,14 @@ public class HelpOPCommandExecutor implements CommandExecutor
 	{
 		int count = 0;
 		
-		for(Player player : Bukkit.getOnlinePlayers())
-			if(player.hasPermission("Breakpoint.helper"))
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			BPPlayer bpPlayer = BPPlayer.get(player);
+			if(bpPlayer.getServerPosition().getPositon() == ServerPositionEnum.HELPER)
 			{
 				player.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + sender.getName() + ": " + question);
 				count++;
 			}
-		
+		}
 		return count > 0;
 	}
 }

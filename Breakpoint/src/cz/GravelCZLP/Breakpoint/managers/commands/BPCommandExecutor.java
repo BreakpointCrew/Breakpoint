@@ -44,7 +44,7 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.VIP.VIPEnum;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
@@ -795,11 +795,10 @@ public class BPCommandExecutor implements CommandExecutor
 			{
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("setVIPType")) {
+		} else if (args[0].equalsIgnoreCase("setPosition")) {
 			BPPlayer bpPlayer = BPPlayer.get(args[1]);
-			VIPEnum type = VIPEnum.valueOf(args[2]);
-			bpPlayer.getVIP().setVIPType(type);
-			sender.sendMessage("§aPlayer " + args[1] + " now has VIP: " + args[2]);
+			ServerPositionEnum e = ServerPositionEnum.valueOf(args[2].toUpperCase());
+			bpPlayer.getServerPosition().setPosition(e);
 		}
 		return true;
 	}

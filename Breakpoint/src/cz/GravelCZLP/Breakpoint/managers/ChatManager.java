@@ -16,6 +16,7 @@ public class ChatManager
 	public static String prefixDeveloper;
 	public static String prefixVIPPlusPlus;
 	public static String prefixVIPPlus;
+	public static String prefixAdminDev;
 	
 	public static void loadStrings()
 	{
@@ -27,7 +28,8 @@ public class ChatManager
 		
 		prefixDeveloper = MessageType.CHAT_PREFIX_DEV.getTranslation().getValue();
 		
-		prefixVIPPlusPlus = MessageType.CHAT_PREFIX_VIPPLUSPLUS.getTranslation().getValue();
+		prefixAdminDev = MessageType.CHAT_PREFIX_AdminDev.getTranslation().getValue();
+		
 		prefixVIPPlus = MessageType.CHAT_PREFIX_VIPPLUS.getTranslation().getValue();
 		prefixVIP = MessageType.CHAT_PREFIX_VIP.getTranslation().getValue();
 		

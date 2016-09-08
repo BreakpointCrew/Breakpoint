@@ -18,14 +18,13 @@ public class FlyCommandExecutor implements CommandExecutor
 			return true;
 		
 		Player player = (Player) sender;
+		BPPlayer bpPlayer = BPPlayer.get(player);
 		
-		if(!player.hasPermission("Breakpoint.VIP"))
+		if(!bpPlayer.isVIP())
 		{
 			player.sendMessage(MessageType.COMMAND_FLY_VIPSONLY.getTranslation().getValue());
 			return true;
 		}
-		
-		BPPlayer bpPlayer = BPPlayer.get(player);
 		
 		if(!bpPlayer.isInLobby())
 		{

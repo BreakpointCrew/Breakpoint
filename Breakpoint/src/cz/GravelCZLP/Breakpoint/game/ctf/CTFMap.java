@@ -101,7 +101,11 @@ public class CTFMap extends BPMap
 	}
 	
 	public void addMelounBoostLocation(Location loc)
-	{
+	{	
+		if (melounBoosts == null) {
+			melounBoosts = new ArrayList<Location>();
+		}
+		
 		melounBoosts.add(loc);
 	}
 	public List<String> boostsToStringList()

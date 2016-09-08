@@ -49,7 +49,7 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.perks.PerkType;
-import cz.GravelCZLP.Breakpoint.players.VIP.VIPEnum;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import me.limeth.storageAPI.Column;
@@ -148,8 +148,9 @@ public class BPPlayer
 		
 		long timeJoined = System.currentTimeMillis();
 		Clan clan = Clan.getByPlayer(playerName);
-		VIP vip = VIP.load(storage);
-		BPPlayer bpPlayer = new BPPlayer(playerName, settings, lobbyInventory, stats, achievements, perks, clan, timeJoined, vip);
+		ServerPosition serverPos = ServerPosition.load(storage);
+		
+		BPPlayer bpPlayer = new BPPlayer(playerName, settings, lobbyInventory, stats, achievements, perks, clan, timeJoined, serverPos);
 		
 		return bpPlayer;
 	}
@@ -311,9 +312,9 @@ public class BPPlayer
 	private Location afkPastLocation = null, shopItemLocation = null, singleTeleportLocation = null;
 	private CharacterType queueCharacter = null;
 	private boolean isBeingControlled = false;
-	private VIP vip;
+	private ServerPosition serverPosition;
 	
-	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics, List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined, VIP vip)
+	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics, List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined, ServerPosition serverPos)
 	{
 		this.settings = settings;
 		this.lobbyInventory = lobbyInventory;
@@ -323,7 +324,7 @@ public class BPPlayer
 		this.perks = perks;
 		this.bpClan = bpClan;
 		this.timeJoined = timeJoined;
-		this.vip = vip;
+		this.serverPosition = serverPos;
 		isBeingControlled = false;
 		
 		if(isOnline())
@@ -348,7 +349,7 @@ public class BPPlayer
 		statistics.savePlayerStatistics(storage);
 		Achievement.savePlayerAchievements(storage, achievements);
 		Perk.savePlayerPerks(storage, perks);
-		getVIP().save(storage);
+		serverPosition.save(storage);
 		
 		storage.save(storageType, folder, mySQL, Breakpoint.getBreakpointConfig().getMySQLTablePlayers());
 	}
@@ -428,12 +429,11 @@ public class BPPlayer
 	
 	public String getTagPrefix(boolean brackets)
 	{
-		Player player = getPlayer();
 		String gamePrefix = gameProperties != null ? gameProperties.getTagPrefix() : null;
-		boolean vip = getVIP().getVIPType() != VIPEnum.NORMAL;
+		boolean vip = getServerPosition().isVIP() || getServerPosition().isVIPPlus();
 		boolean staff = isStaff();
-		boolean sponsor = staff ? false : player.hasPermission("Breakpoint.sponsor");
-		boolean yt = staff ? false : player.hasPermission("Breakpoint.yt");
+		boolean sponsor = staff ? false : serverPosition.getPositon() == ServerPositionEnum.SPONSOR;
+		boolean yt = staff ? false : serverPosition.getPositon() == ServerPositionEnum.YOUTUBE;
 		
 		return getTagPrefix(gamePrefix, vip, sponsor, yt, brackets);
 	}
@@ -495,20 +495,17 @@ public class BPPlayer
 
 	public boolean isStaff()
 	{
-		Player player = getPlayer();
-		return player.hasPermission("Breakpoint.admin") 
-				|| player.hasPermission("Breakpoint.moderator") 
-				|| player.hasPermission("Breakpoint.helper");
+		return serverPosition.isStaff();
 	}
 
 	public boolean isVIP()
 	{
-		return !getVIP().hasNoVIP();
+		return serverPosition.isVIP() || serverPosition.isVIPPlus();
 	}
 	
 	public boolean isSponsor()
 	{
-		return getPlayer().hasPermission("Breakpoint.sponsor");
+		return serverPosition.getPositon() == ServerPositionEnum.SPONSOR;
 	}
 	
 	public void sendStaffMessage(String message)
@@ -563,13 +560,15 @@ public class BPPlayer
 		String gamePrefix = gameProperties != null ? gameProperties.getChatPrefix() : "" + ChatColor.ITALIC;
 		return clanName + prefix + gamePrefix;
 	}
-
+	
 	public String getPrefix(Player player)
 	{
 		if(player.hasPermission("Breakpoint.admin"))
 			return ChatManager.prefixAdmin + " ";
 		else if (player.hasPermission("Breakpoint.developer")) 
 			return ChatManager.prefixDeveloper + " ";
+		else if (player.hasPermission("Breakpoint.admin") && player.hasPermission("Breakpoint.developer")) 
+			return ChatManager.prefixAdminDev;
 		else if(player.hasPermission("Breakpoint.moderator"))
 			return ChatManager.prefixModerator + " ";
 		else if(player.hasPermission("Breakpoint.helper"))
@@ -578,35 +577,39 @@ public class BPPlayer
 			return ChatManager.prefixSponsor + " ";
 		else if(player.hasPermission("Breakpoint.yt"))
 			return ChatManager.prefixYT + " ";
-		else if(getVIP().getVIPType() == VIPEnum.VIPPLUSPLUS)
-			return ChatManager.prefixVIPPlusPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIPPLUS)
+		else if (serverPosition.isVIPPlus())
 			return ChatManager.prefixVIPPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIP)
+		else if (serverPosition.isVIP())
 			return ChatManager.prefixVIP + " ";
 		else
 			return "";
 	}
 	
 	public String getRawPVPPrefix()
-	{
-		if(isStaff())
-			return ChatManager.prefixVIP + " ";
-		
-		Player player = getPlayer();
-		
-		if(player.hasPermission("Breakpoint.sponsor"))
-			return ChatManager.prefixSponsor + " ";
-		else if(player.hasPermission("Breakpoint.yt"))
+	{	
+		switch (serverPosition.getPositon()) {
+		case ADMIN:
+			return ChatManager.prefixAdmin + " ";
+		case DEVELOPER:
+			return ChatManager.prefixDeveloper + " ";
+		case MODERATOR:
+			return ChatManager.prefixModerator + " ";
+		case HELPER:
+			return ChatManager.prefixHelper + " ";
+		case YOUTUBE:
 			return ChatManager.prefixYT + " ";
-		else if(getVIP().getVIPType() == VIPEnum.VIPPLUSPLUS)
-			return ChatManager.prefixVIPPlusPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIPPLUS)
+		case SPONSOR:
+			return ChatManager.prefixSponsor + " ";
+		case VIPPLUS:
 			return ChatManager.prefixVIPPlus + " ";
-		else if (getVIP().getVIPType() == VIPEnum.VIP)
+		case VIP:
 			return ChatManager.prefixVIP + " ";
-		else
+		case NORMAL:
 			return "";
+		default:
+			break;
+		}
+		return "";
 	}
 	//}}
 
@@ -766,7 +769,7 @@ public class BPPlayer
 	public boolean hasSpaceInLobbyInventory()
 	{
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		int size = !getVIP().hasNoVIP() ? 24 : 12;
+		int size = serverPosition.isNormalPlayer() ? 24 : 12;
 		for (int i = 0; i < size; i++)
 			if (contents[4 + i] == null)
 				return true;
@@ -776,7 +779,7 @@ public class BPPlayer
 	public int getLobbyInventorySpaceSlot()
 	{
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		int size = !getVIP().hasNoVIP() ? 24 : 12;
+		int size = serverPosition.isNormalPlayer() ? 24 : 12;
 		for (int i = 0; i < size; i++)
 			if (contents[4 + i] == null)
 				return 4 + i;
@@ -841,12 +844,11 @@ public class BPPlayer
 		Player player = getPlayer();
 		boolean positive = amount >= 0;
 		boolean multiply = positive && DoubleMoneyManager.isDoubleXP() && allowMultiplication;
-		BPPlayer bpPlayer = BPPlayer.get(player);
 		
 		int byWhat = 2;
 		
 		if(multiply) {
-			switch (bpPlayer.getVIP().getVIPType()) {
+			switch (serverPosition.getPositon()) {
 			case NORMAL:
 				byWhat = 2;
 				break;
@@ -856,9 +858,8 @@ public class BPPlayer
 			case VIPPLUS:
 				byWhat = 6;
 				break;
-			case VIPPLUSPLUS:
-				byWhat = 8;
-				break;
+			default:
+				byWhat = 8; 
 			}
 			amount *= byWhat;
 		}
@@ -931,7 +932,7 @@ public class BPPlayer
 	
 	public int getMaxEquippedPerks()
 	{
-		return !getVIP().hasNoVIP() ? 3 : 1;
+		return serverPosition.isNormalPlayer() ? 3 : 1;
 	}
 	
 	public int getPerkInventoryRows()
@@ -1401,14 +1402,19 @@ public class BPPlayer
 				public void run() {
 					GlowAPI.setGlowing(getPlayer(), GlowAPI.Color.RED, Bukkit.getOnlinePlayers());
 				}
-			}, 200L);
+			}, 20L);
 		} else {
 			throw new NotStaffException("Player " + name + " is not a Staff");
 		}
 	}
 	public void removeColor()
 	{
-		
+		Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				GlowAPI.setGlowing(getPlayer(), GlowAPI.Color.NONE, Bukkit.getOnlinePlayers());
+			}
+		}, 20L);
 	}
 	public boolean isBeingControled()
 	{
@@ -1418,7 +1424,7 @@ public class BPPlayer
 	{
 		isBeingControlled = b;
 	}
-	public VIP getVIP() {
-		return vip;
+	public ServerPosition getServerPosition() {
+		return serverPosition;
 	}
 }
