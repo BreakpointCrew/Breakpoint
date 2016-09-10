@@ -259,12 +259,13 @@ public class PlayerInventoryListener implements Listener
 	{
 		Player player = event.getPlayer();
 		BPPlayer bpPlayer = BPPlayer.get(player);
+		if (bpPlayer.isInGame() && event.getItemDrop().getItemStack().getType() == Material.GLASS_BOTTLE) {
+			event.getItemDrop().remove();
+			return;
+		}
 		if(!(player.hasPermission("Breakpoint.admin") && player.getGameMode() == GameMode.CREATIVE)) {
 			event.setCancelled(true);
 			return;
-		}
-		if (bpPlayer.isInGame() && event.getItemDrop().getItemStack().getType() == Material.GLASS_BOTTLE) {
-			event.getItemDrop().remove();
 		}
 	}
 }

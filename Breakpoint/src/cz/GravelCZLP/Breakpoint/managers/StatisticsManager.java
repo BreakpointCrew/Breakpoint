@@ -74,6 +74,10 @@ public class StatisticsManager
 	{
 		TotalPlayerStatistics stats = new TotalPlayerStatistics();
 		
+		if (playersRankedByKills == null) {
+			return;
+		}
+		
 		for(PlayerStatistics stat : playersRankedByKills)
 			stats.add(stat);
 		

@@ -38,7 +38,8 @@ public class PlayerConnectionListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		System.out.println("Logged in: " + player);
+		System.out.println("Logged in: " + player + "IP: " + 
+		event.getPlayer().getAddress().getAddress().toString());
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -73,6 +74,8 @@ public class PlayerConnectionListener implements Listener
 					return;
 				
 				SBManager sbm = bpPlayer.getScoreboardManager();
+				
+				bpPlayer.updatePermissions();
 				
 				player.setGameMode(GameMode.ADVENTURE);
 				bpPlayer.spawn();
@@ -155,7 +158,7 @@ public class PlayerConnectionListener implements Listener
 	{
 		int bodyBlue = 0;
 		int bodyRed = 0;
-		event.setMotd("§c[-------------- §dBREAKPOINT§c--------------]\n CTF: Blue:" + bodyBlue + " Red:" + bodyRed);
+		event.setMotd("§c[--------------[§dBREAKPOINT§c]--------------]\n CTF: Blue:" + bodyBlue + " Red:" + bodyRed);
 	}
 	 
 	public int getWidth(String string)

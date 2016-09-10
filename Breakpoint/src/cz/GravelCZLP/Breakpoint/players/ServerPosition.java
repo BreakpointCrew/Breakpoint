@@ -16,7 +16,7 @@ public class ServerPosition {
 	
 	public static ServerPosition load(Storage storage) throws Exception {
 		
-		Enum<?> type = storage.get(Enum.class, "vipType");
+		String type = storage.get(String.class, "serverPosition");
 		
 		return new ServerPosition(type);
 	}
@@ -25,26 +25,29 @@ public class ServerPosition {
 	
 	public void save(Storage storage) {
 		
-		storage.put("vipType", type.name());
+		storage.put("serverPosition", type.name());
 	}
 	
 	public static List<Column> getRequiredMySQLColumns()
 	{
 		return Arrays.asList(
-				new Column("serverPos", ColumnType.ENUM, type.name())
+				new Column("serverPosition", ColumnType.VARCHAR, type.name())
 				);
 	}
 	
 	@SuppressWarnings("static-access")
-	public ServerPosition(Enum<?> type) {
+	public ServerPosition(String type) {
 		try {
-			ServerPositionEnum e = ServerPositionEnum.valueOf(type.name());
+			ServerPositionEnum e = ServerPositionEnum.valueOf(type.toUpperCase());
 			this.type = e;
 		} catch (IllegalArgumentException e) {
 			Breakpoint.warn("Server Position: " + type + " is not Inplemented yet.");
 			this.type = ServerPositionEnum.NORMAL;
+		} catch (NullPointerException e) {
+			this.type = ServerPositionEnum.NORMAL;
 		}
 	}
+	
 	public boolean isVIP() {
 		return type == ServerPositionEnum.VIP;
 	}

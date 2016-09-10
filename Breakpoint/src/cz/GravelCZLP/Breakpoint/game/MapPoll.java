@@ -42,6 +42,7 @@ public class MapPoll
 		mapViewId = game.getVotingMapId();
 		getMapsInOrder(game.getMaps(), game.getPlayers().size());
 		setMapImages();
+		startCountdown();
 	}
 
 	public void getMapsInOrder(List<? extends BPMap> availableMaps, int players)

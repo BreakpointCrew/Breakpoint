@@ -32,46 +32,6 @@ public class ChatListener implements Listener
 			return;
 		}
 		
-		/*List<String> mentioned = new LinkedList<String>();
-		
-		String[] split = event.getMessage().split(" ");
-		
-		for (int i = 0; i < split.length; i++) {
-			if (split[i].startsWith("@")) {
-				String withoutAt = split[i].replaceAll("@", "");
-				if (Bukkit.getPlayer(withoutAt) != null) {
-					if (Bukkit.getPlayer(withoutAt).isOnline()) {
-						if (!Bukkit.getPlayer(withoutAt).getName().equals(player.getName())) {
-							mentioned.add(split[i].replaceAll("@", ""));
-							split[i] = "§c" + split[i];
-						} else {
-							player.sendMessage("§cNemůžeš Zmínit sám sebe v chatu");
-							e.setCancelled(true);
-						}
-					}
-				}
-			}
-		}
-		
-		StringBuilder b = new StringBuilder();
-		for (String s : split) {
-			b.append(s + " ");
-		}
-		
-		event.setMessage(b.toString());
-		
-		for (String s : mentioned) {
-			if (Bukkit.getPlayer(s) != null) {
-				if (Bukkit.getPlayer(s).isOnline()) {
-					Player p = Bukkit.getPlayer(s);
-					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.B));
-					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.C));
-					p.playNote(p.getLocation(), Instrument.PIANO, Note.sharp(1, Tone.B));
-					p.sendMessage("§cByl jsi Zmíněn v Chatu");
-				}
-			}
-		}*/
-		
 		if(message.equals(lastMsg))
 		{
 			event.setCancelled(true);
@@ -88,6 +48,12 @@ public class ChatListener implements Listener
 		
 		if (bpPlayer.isStaff()) {
 			message = ChatColor.translateAlternateColorCodes('&', message);
+		}
+		
+		if (message.contains("hacky")) {
+			event.setCancelled(true);
+			player.sendMessage("§cOd toho je /report :)");
+			return;
 		}
 		
 		if(message.charAt(0) == '#')

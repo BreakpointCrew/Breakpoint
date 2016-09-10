@@ -138,8 +138,8 @@ public class InventoryMenuManager
 				.getPluginManager().isPluginEnabled("BreakpointAntiCheat")) {
 			pi.setItem(1, getACMenu());
 		}
-		pi.setItem(4, getWikiBook());
-		pi.setItem(5, getPerkButton());
+		pi.setItem(5, getWikiBook());
+		//pi.setItem(5, getPerkButton());
 		pi.setItem(6, getSettingsButton());
 		pi.setItem(7, getAchievementButton(bpPlayer));
 		pi.setItem(8, getMoneyEmerald(bpPlayer));
@@ -169,7 +169,7 @@ public class InventoryMenuManager
 
 	public static ItemStack getTrashbin()
 	{
-		ItemStack is = new ItemStack(Material.LAVA);
+		ItemStack is = new ItemStack(Material.STATIONARY_LAVA);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(MessageType.MENU_TRASH_NAME.getTranslation().getValue());
 		List<String> lore = MessageType.MENU_TRASH_DESC.getTranslation().getValues();

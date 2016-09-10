@@ -281,6 +281,7 @@ public class BPPlayer
 		columns.addAll(Settings.getRequiredMySQLColumns());
 		columns.addAll(Achievement.getRequiredMySQLColumns());
 		columns.addAll(LobbyInventory.getRequiredMySQLColumns());
+		columns.addAll(ServerPosition.getRequiredMySQLColumns());
 		
 		return columns;
 	}
@@ -1426,5 +1427,35 @@ public class BPPlayer
 	}
 	public ServerPosition getServerPosition() {
 		return serverPosition;
+	}
+	public void updatePermissions() {
+		if (getPlayer().hasPermission("Breakpoint.admin")) {
+			getServerPosition().setPosition(ServerPositionEnum.ADMIN);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.developer")) {
+			getServerPosition().setPosition(ServerPositionEnum.DEVELOPER);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.moderator")) {
+			getServerPosition().setPosition(ServerPositionEnum.MODERATOR);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.helper")) {
+			getServerPosition().setPosition(ServerPositionEnum.HELPER);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.youtube")) {
+			getServerPosition().setPosition(ServerPositionEnum.YOUTUBE);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.sponsor")) {
+			getServerPosition().setPosition(ServerPositionEnum.SPONSOR);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.vipplus")) {
+			getServerPosition().setPosition(ServerPositionEnum.VIPPLUS);
+			return;
+		} else if (getPlayer().hasPermission("Breakpoint.vip")) {
+			getServerPosition().setPosition(ServerPositionEnum.VIP);
+			return;
+		} else {
+			getServerPosition().setPosition(ServerPositionEnum.NORMAL);
+			return;
+		}
 	}
 }

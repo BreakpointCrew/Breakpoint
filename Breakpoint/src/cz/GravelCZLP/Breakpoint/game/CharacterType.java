@@ -193,8 +193,7 @@ public enum CharacterType
 	
 	public ItemStack getEgg()
 	{
-		ItemStack egg;
-		egg = new ItemStack(Material.MONSTER_EGG, 1, (short) getEggId());
+		ItemStack egg = new ItemStack(Material.MONSTER_EGG, 1, (short) getEggId());
 		ItemMeta im = egg.getItemMeta();
 		im.setDisplayName(ChatColor.ITALIC + "" + chatColor + getProperName());
 		List<String> lore = new ArrayList<String>();
