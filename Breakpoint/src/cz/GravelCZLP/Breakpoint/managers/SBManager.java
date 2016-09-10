@@ -122,7 +122,7 @@ public class SBManager
 			lobbyObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 
-/*	public void startScoreTimeLoop()
+	/*public void startScoreTimeLoop()
 	{
 		if (scoreTimeLoopId >= 0)
 			stopScoreTimeLoop();

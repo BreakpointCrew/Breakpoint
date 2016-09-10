@@ -1405,7 +1405,7 @@ public class BPPlayer
 				}
 			}, 20L);
 		} else {
-			throw new NotStaffException("Player " + name + " is not a Staff");
+			throw new NotStaffException("Player " + name + " is not a Staff"); // xD
 		}
 	}
 	public void removeColor()

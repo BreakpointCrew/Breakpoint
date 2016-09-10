@@ -212,6 +212,8 @@ public abstract class Game
 		updatePlayerAmountRenderer();
 		bpPlayer.setPlayerListName();
 		
+		bpPlayer.removeColor();
+		
 		if (bpPlayer.getGame() instanceof CTFGame) {
 			CTFGame game = (CTFGame) bpPlayer.getGame();
 			player.teleport(game.teamSelectionLocation);
@@ -250,7 +252,12 @@ public abstract class Game
 		else
 		{
 			endRound();
-			scheduleMapPoll();
+			Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					scheduleMapPoll();
+				}
+			}, 10L);
 		}
 		
 		updateProgressHeaderTime();
@@ -270,7 +277,6 @@ public abstract class Game
 			public void run()
 			{
 				setMapPoll(new MapPoll(game));
-				getMapPoll().startCountdown();
 			}
 		}, 20L * 10);
 	}
