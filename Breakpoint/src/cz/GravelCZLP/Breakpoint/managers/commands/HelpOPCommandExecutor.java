@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 
 public class HelpOPCommandExecutor implements CommandExecutor
 {
@@ -55,7 +54,7 @@ public class HelpOPCommandExecutor implements CommandExecutor
 		
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			BPPlayer bpPlayer = BPPlayer.get(player);
-			if(bpPlayer.getServerPosition().getPositon() == ServerPositionEnum.HELPER)
+			if(bpPlayer.getPlayer().hasPermission("Breakpoint.helper"))
 			{
 				player.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + sender.getName() + ": " + question);
 				count++;

@@ -125,7 +125,9 @@ public class InventoryMenuManager
 		// Contents
 		displayContents(bpPlayer, pi);
 		// VIP Slots
+		
 		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		
 		if (canUse)
 			displayVIPContents(bpPlayer, pi);
 		else
@@ -134,11 +136,6 @@ public class InventoryMenuManager
 					pi.setItem(14 + i * 9 + j, getVipSlot());
 		// Hotbar
 		pi.setItem(0, MapManager.getBreakpointMap(player));
-		if (player.hasPermission("Breakpoint.admin") 
-				&& Breakpoint.getInstance().getServer()
-				.getPluginManager().isPluginEnabled("BreakpointAntiCheat")) {
-			pi.setItem(1, getACMenu());
-		}
 		pi.setItem(5, getWikiBook());
 		//pi.setItem(5, getPerkButton());
 		pi.setItem(6, getSettingsButton());
@@ -170,7 +167,7 @@ public class InventoryMenuManager
 
 	public static ItemStack getTrashbin()
 	{
-		ItemStack is = new ItemStack(Material.STATIONARY_LAVA);
+		ItemStack is = new ItemStack(Material.LAVA_BUCKET);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(MessageType.MENU_TRASH_NAME.getTranslation().getValue());
 		List<String> lore = MessageType.MENU_TRASH_DESC.getTranslation().getValues();

@@ -144,7 +144,7 @@ public class DMListener extends GameListener
 						
 						boolean canUse = bpPlayer.isVIP() || bpPlayer.isSponsor() || bpPlayer.isStaff();
 						
-						if(charType.requiresVIP() && canUse)
+						if(charType.requiresVIP() && !canUse)
 						{
 							player.sendMessage(ChatColor.DARK_GRAY + "---");
 							player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));

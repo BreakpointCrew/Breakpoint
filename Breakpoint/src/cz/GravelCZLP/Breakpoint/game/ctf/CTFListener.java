@@ -257,7 +257,7 @@ public class CTFListener extends GameListener
 							
 							boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor(); 
 							
-							if(charType.requiresVIP() && canUse)
+							if(charType.requiresVIP() && !canUse)
 							{
 								player.sendMessage(ChatColor.DARK_GRAY + "---");
 								player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));

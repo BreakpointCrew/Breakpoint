@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.VIPManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 
 public class FlyCommandExecutor implements CommandExecutor
 {
@@ -21,7 +20,7 @@ public class FlyCommandExecutor implements CommandExecutor
 		Player player = (Player) sender;
 		BPPlayer bpPlayer = BPPlayer.get(player);
 		
-		boolean canUse = (bpPlayer.getServerPosition().getPositon() == ServerPositionEnum.VIPPLUS) || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		boolean canUse = (player.hasPermission("Breakpoint.vipplus")) || bpPlayer.isStaff() || bpPlayer.isSponsor();
 		
 		if(!canUse)
 		{

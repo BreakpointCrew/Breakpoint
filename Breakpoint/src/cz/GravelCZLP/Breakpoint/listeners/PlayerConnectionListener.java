@@ -78,8 +78,6 @@ public class PlayerConnectionListener implements Listener
 				
 				SBManager sbm = bpPlayer.getScoreboardManager();
 				
-				bpPlayer.updatePermissions();
-				
 				player.setGameMode(GameMode.ADVENTURE);
 				bpPlayer.spawn();
 				sbm.updateLobbyObjective();

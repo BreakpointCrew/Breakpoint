@@ -44,7 +44,6 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
@@ -62,19 +61,11 @@ public class BPCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		if (sender instanceof Player) {
-			BPPlayer bpPlayer = BPPlayer.get((Player) sender);
-			if (!(bpPlayer.getServerPosition().getPositon() == ServerPositionEnum.ADMIN)) {
-				sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
-				return true;
-			}
-		} else {
-			if(!sender.hasPermission("Breakpoint.adminCommands"))
-			{
-				sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
-				return true;
-			}	
-		}
+		if(!sender.hasPermission("Breakpoint.adminCommands"))
+		{
+			sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
+			return true;
+		}	
 		
 		
 		if(args.length <= 0)
@@ -804,10 +795,6 @@ public class BPCommandExecutor implements CommandExecutor
 			{
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("setPosition")) {
-			BPPlayer bpPlayer = BPPlayer.get(args[1]);
-			ServerPositionEnum e = ServerPositionEnum.valueOf(args[2].toUpperCase());
-			bpPlayer.getServerPosition().setPosition(e);
 		}
 		return true;
 	}

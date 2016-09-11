@@ -200,7 +200,7 @@ public class MapPoll
 				break;
 		return id >= 0 && id <= size;
 	}
-
+	
 	public int vote(String playerName, int mapId, int strength)
 	{
 		String mapName = maps[mapId];
