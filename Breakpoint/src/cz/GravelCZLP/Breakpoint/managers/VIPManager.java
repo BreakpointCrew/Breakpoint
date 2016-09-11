@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
+import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
 public class VIPManager
 {
@@ -44,14 +45,16 @@ public class VIPManager
 	public static void checkFlyingPlayersInLobby()
 	{
 		for(Player player : Bukkit.getOnlinePlayers())
-			if(player.isFlying())
-				if(!player.hasPermission("Breakpoint.moderator"))
+			if(player.isFlying()) {
+				BPPlayer bpPlayer = BPPlayer.get(player);
+				if(!bpPlayer.isStaff())
 					if(isFarFromSpawnToUseFly(player))
 					{
 						player.sendMessage(MessageType.COMMAND_FLY_TOOFAR.getTranslation().getValue());
 						player.setAllowFlight(false);
 						player.setFlying(false);
 					}
+			}
 	}
 	
 	public static boolean isFarFromSpawnToUseFly(Player player)
@@ -72,9 +75,13 @@ public class VIPManager
 		
 		feature = ChatColor.translateAlternateColorCodes('&', feature);
 		
-		for (Player player : Bukkit.getOnlinePlayers())
-			if (!player.hasPermission("Breakpoint.vip"))
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			BPPlayer bpPlayer = BPPlayer.get(player);
+			boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+			
+			if (!canUse)
 				remindPlayer(player, feature);
+		}
 	}
 
 	public static void remindPlayer(Player player, String feature)

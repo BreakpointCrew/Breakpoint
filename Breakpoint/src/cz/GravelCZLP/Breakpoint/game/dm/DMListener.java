@@ -142,7 +142,9 @@ public class DMListener extends GameListener
 					{
 						String name = charType.getProperName();
 						
-						if(charType.requiresVIP() && !player.hasPermission("Breakpoint.vip"))
+						boolean canUse = bpPlayer.isVIP() || bpPlayer.isSponsor() || bpPlayer.isStaff();
+						
+						if(charType.requiresVIP() && canUse)
 						{
 							player.sendMessage(ChatColor.DARK_GRAY + "---");
 							player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));

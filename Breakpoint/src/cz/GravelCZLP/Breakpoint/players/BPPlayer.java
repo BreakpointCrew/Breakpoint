@@ -25,7 +25,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.inventivetalent.glow.GlowAPI;
 
 import com.fijistudios.jordan.FruitSQL;
 
@@ -37,7 +36,6 @@ import cz.GravelCZLP.Breakpoint.achievements.AchievementType;
 import cz.GravelCZLP.Breakpoint.achievements.CharacterAchievement;
 import cz.GravelCZLP.Breakpoint.equipment.BPArmor;
 import cz.GravelCZLP.Breakpoint.equipment.BPEquipment;
-import cz.GravelCZLP.Breakpoint.exceptions.NotStaffException;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameProperties;
@@ -501,7 +499,7 @@ public class BPPlayer
 
 	public boolean isVIP()
 	{
-		return serverPosition.isVIP() || serverPosition.isVIPPlus();
+		return serverPosition.isVIPAnyway();
 	}
 	
 	public boolean isSponsor()
@@ -1395,28 +1393,7 @@ public class BPPlayer
 	{
 		this.perks = perks;
 	}
-	public void setColorStaff() throws NotStaffException 
-	{
-		if (isStaff()) {
-			Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					GlowAPI.setGlowing(getPlayer(), GlowAPI.Color.RED, Bukkit.getOnlinePlayers());
-				}
-			}, 20L);
-		} else {
-			throw new NotStaffException("Player " + name + " is not a Staff"); // xD
-		}
-	}
-	public void removeColor()
-	{
-		Bukkit.getScheduler().runTaskLater(Breakpoint.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				GlowAPI.setGlowing(getPlayer(), GlowAPI.Color.NONE, Bukkit.getOnlinePlayers());
-			}
-		}, 20L);
-	}
+	
 	public boolean isBeingControled()
 	{
 		return isBeingControlled;

@@ -33,6 +33,10 @@ public class ClanCommandExecutor implements CommandExecutor
 		
 		Player player = (Player) sender;
 		
+		BPPlayer bpPlayer = BPPlayer.get(player);
+		
+		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		
 		if(args.length <= 0)
 			listClanCommands(sender, ChatColor.AQUA);
 		else if(args[0].equalsIgnoreCase(MessageType.COMMAND_CLAN_INFO_CMD.getTranslation().getValue()))
@@ -145,9 +149,7 @@ public class ClanCommandExecutor implements CommandExecutor
 				{
 					String clanNameColored = bpClan.getColoredName();
 					if(bpClan.isInvited(playerName))
-					{
-						BPPlayer bpPlayer = BPPlayer.get(player);
-						
+					{	
 						bpClan.join(bpPlayer);
 					}
 					else
@@ -174,7 +176,7 @@ public class ClanCommandExecutor implements CommandExecutor
 		}
 		else if(args[0].equalsIgnoreCase(MessageType.COMMAND_CLAN_CREATE_CMD.getTranslation().getValue()))
 		{
-			if(!player.hasPermission("Breakpoint.vip"))
+			if(!canUse)
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_CREATE_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -195,7 +197,6 @@ public class ClanCommandExecutor implements CommandExecutor
 			else
 			{
 				String nameColored = Clan.getColored(args[1]);
-				BPPlayer bpPlayer = BPPlayer.get(player);
 				Clan bpClan;
 				
 				try
@@ -215,7 +216,7 @@ public class ClanCommandExecutor implements CommandExecutor
 		}
 		else if(args[0].equalsIgnoreCase(MessageType.COMMAND_CLAN_RENAME_CMD.getTranslation().getValue()))
 		{
-			if(!player.hasPermission("Breakpoint.vip"))
+			if(!canUse)
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_RENAME_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -263,7 +264,7 @@ public class ClanCommandExecutor implements CommandExecutor
 				player.sendMessage(MessageType.COMMAND_CLAN_INVITE_EXE_NOTMEMBER.getTranslation().getValue());
 				return true;
 			}
-			else if(!player.hasPermission("Breakpoint.vip") && !curClan.isModerator(playerName))
+			else if(!canUse && !curClan.isModerator(playerName))
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_INVITE_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -320,7 +321,7 @@ public class ClanCommandExecutor implements CommandExecutor
 				player.sendMessage(MessageType.COMMAND_CLAN_KICK_EXE_NOTMEMBER.getTranslation().getValue());
 				return true;
 			}
-			else if(!player.hasPermission("Breakpoint.vip") && !curClan.isModerator(playerName))
+			else if(!canUse && !curClan.isModerator(playerName))
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_KICK_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -351,7 +352,7 @@ public class ClanCommandExecutor implements CommandExecutor
 				player.sendMessage(MessageType.COMMAND_CLAN_MODERATOR_EXE_NOTMEMBER.getTranslation().getValue());
 				return true;
 			}
-			else if(!player.hasPermission("Breakpoint.vip") && !curClan.isModerator(playerName))
+			else if(!canUse && !curClan.isModerator(playerName))
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_MODERATOR_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -419,7 +420,7 @@ public class ClanCommandExecutor implements CommandExecutor
 			
 			CWGame game = (CWGame) rawGame;
 			
-			if(!player.hasPermission("Breakpoint.vip"))
+			if(!canUse)
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_CHALLENGE_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -559,7 +560,7 @@ public class ClanCommandExecutor implements CommandExecutor
 			
 			CWGame game = (CWGame) rawGame;
 			
-			if(!player.hasPermission("Breakpoint.vip"))
+			if(!canUse)
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_ACCEPT_EXE_VIPSONLY.getTranslation().getValue());
 				return true;
@@ -623,7 +624,7 @@ public class ClanCommandExecutor implements CommandExecutor
 				return true;
 			}
 			
-			if(!player.hasPermission("Breakpoint.vip"))
+			if(!canUse)
 			{
 				player.sendMessage(MessageType.COMMAND_CLAN_REJECT_EXE_VIPSONLY.getTranslation().getValue());
 				return true;

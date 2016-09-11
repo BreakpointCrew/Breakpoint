@@ -48,6 +48,10 @@ public class ServerPosition {
 		}
 	}
 	
+	public boolean isVIPAnyway() {
+		return type == ServerPositionEnum.VIP || type == ServerPositionEnum.VIPPLUS;
+	}
+	
 	public boolean isVIP() {
 		return type == ServerPositionEnum.VIP;
 	}
@@ -61,9 +65,10 @@ public class ServerPosition {
 	}
 	
 	public boolean isStaff() {
-		return (type != ServerPositionEnum.NORMAL) 
-				|| (type != ServerPositionEnum.VIP) 
-				|| (type != ServerPositionEnum.VIPPLUS);
+		return type == ServerPositionEnum.ADMIN 
+				|| type == ServerPositionEnum.DEVELOPER 
+				|| type == ServerPositionEnum.HELPER 
+				|| type == ServerPositionEnum.MODERATOR;
 	}
 	
 	public void setPosition(ServerPositionEnum n) {

@@ -62,11 +62,20 @@ public class BPCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		if(!sender.hasPermission("Breakpoint.adminCommands"))
-		{
-			sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
-			return true;
+		if (sender instanceof Player) {
+			BPPlayer bpPlayer = BPPlayer.get((Player) sender);
+			if (!(bpPlayer.getServerPosition().getPositon() == ServerPositionEnum.ADMIN)) {
+				sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
+				return true;
+			}
+		} else {
+			if(!sender.hasPermission("Breakpoint.adminCommands"))
+			{
+				sender.sendMessage(MessageType.OTHER_NOPERMISSION.getTranslation().getValue());
+				return true;
+			}	
 		}
+		
 		
 		if(args.length <= 0)
 		{

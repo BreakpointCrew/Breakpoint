@@ -255,7 +255,9 @@ public class CTFListener extends GameListener
 						{
 							String name = charType.getProperName();
 							
-							if(charType.requiresVIP() && !player.hasPermission("Breakpoint.vip"))
+							boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor(); 
+							
+							if(charType.requiresVIP() && canUse)
 							{
 								player.sendMessage(ChatColor.DARK_GRAY + "---");
 								player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
@@ -302,7 +304,8 @@ public class CTFListener extends GameListener
 		
 		if(data == (byte) 11)
 		{
-			if(!player.hasPermission("Breakpoint.vip"))
+			boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+			if(!canUse)
 			{
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());
@@ -323,7 +326,8 @@ public class CTFListener extends GameListener
 		}
 		else if(data == (byte) 14)
 		{
-			if(!player.hasPermission("Breakpoint.vip"))
+			boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+			if(!canUse)
 			{
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());

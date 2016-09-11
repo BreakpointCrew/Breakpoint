@@ -15,7 +15,6 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.map.MinecraftFont;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
-import cz.GravelCZLP.Breakpoint.exceptions.NotStaffException;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
@@ -43,8 +42,7 @@ public class PlayerConnectionListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		System.out.println("Logged in: " + player + "IP: " + 
-		event.getPlayer().getAddress().getAddress().toString());
+		System.out.println("Logged in: " + player);
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -69,12 +67,6 @@ public class PlayerConnectionListener implements Listener
 				{
 					player.kickPlayer(ChatColor.RED + "Breakpoint Error: " + e.getMessage());
 					return;
-				}
-				
-				try {
-					bpPlayer.setColorStaff();
-				} catch (NotStaffException e) {
-					e.printStackTrace();
 				}
 				
 				bpPlayer.clearAfkSecondsToKick();
@@ -177,7 +169,7 @@ public class PlayerConnectionListener implements Listener
 		int redId = Team.getId(Team.RED);
 		int bodyBlue = ctfGame.getFlagManager().getScore()[blueId];
 		int bodyRed = ctfGame.getFlagManager().getScore()[redId];
-		event.setMotd("§c[--------------[§dBREAKPOINT§c]--------------]\n §cC§dT§3F: §3Blue:" + bodyBlue + " §cRed:" + bodyRed);
+		event.setMotd("§c[--------------§8[§d§lBREAKPOINT§r§8]§c--------------]\n §cC§dT§9F: §9Blue:" + bodyBlue + " §cRed:" + bodyRed);
 	}
 	 
 	public int getWidth(String string)

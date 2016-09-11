@@ -160,7 +160,7 @@ public class MapPoll
 
 	public ItemStack getMapItem(int i)
 	{
-		ItemStack is = new ItemStack(Material.EMPTY_MAP, 1, (short) (mapViewId + i));
+		ItemStack is = new ItemStack(Material.MAP, 1, (short) (mapViewId + i));
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName("" + ChatColor.YELLOW + ChatColor.GOLD + maps[i]);
 		is.setItemMeta(im);

@@ -201,7 +201,8 @@ public class PlayerInteractListener implements Listener
 			String playerName = player.getName();
 			if(!mapPoll.hasVoted(playerName))
 			{
-				int strength = bpPlayer.isVIP() ? 2 : 1;
+				boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+				int strength = canUse ? 2 : 1;
 				mapPoll.vote(playerName, mapId, strength);
 				PlayerManager.clearHotBar(inv);
 				player.updateInventory();
@@ -218,7 +219,8 @@ public class PlayerInteractListener implements Listener
 		if(entity instanceof ItemFrame)
 		{
 			Player player = event.getPlayer();
-			if(!player.hasPermission("Breakpoint.admin"))
+			BPPlayer bpPlayer = BPPlayer.get(player);
+			if(!bpPlayer.isStaff())
 				event.setCancelled(true);
 		}
 	}
@@ -401,8 +403,8 @@ public class PlayerInteractListener implements Listener
 		
 		if(name.startsWith("BREAKPOINT"))
 			return;
-		
-		if(inv.getType() != InventoryType.PLAYER && !event.getPlayer().hasPermission("breakpoint.admin"))
+		BPPlayer bpPlayer = BPPlayer.get(event.getPlayer().getName());
+		if(inv.getType() != InventoryType.PLAYER && bpPlayer.isStaff())
 			event.setCancelled(true);
 	}
 

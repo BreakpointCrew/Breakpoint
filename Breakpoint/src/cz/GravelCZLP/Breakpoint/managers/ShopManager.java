@@ -37,8 +37,9 @@ public class ShopManager
 		String typeName = ChatColor.stripColor(lines[3]);
 		SkullType skullType = SkullType.parse(typeName);
 		boolean vip = skullType == null || skullType.isVip();
+		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
 		
-		if(!vip || player.hasPermission("Breakpoint.vip"))
+		if(!vip || canUse)
 		{
 			Location bLoc = sign.getLocation();
 			String nameColored = lines[3];
@@ -53,7 +54,7 @@ public class ShopManager
 					bpPlayer.addMoney(-cost, false, false);
 					BPSkull bpSkull = new BPSkull(skullType != null ? skullType.name() : typeName, exHours * 60);
 					InventoryMenuManager.saveLobbyMenu(bpPlayer);
-					processBoughtItem(bpPlayer, bpSkull, player.hasPermission("Breakpoint.vip"));
+					processBoughtItem(bpPlayer, bpSkull, canUse);
 					InventoryMenuManager.showLobbyMenu(bpPlayer);
 					bpPlayer.getStatistics().increaseBought();
 					Achievement.checkBought(bpPlayer);
@@ -85,6 +86,8 @@ public class ShopManager
 		Player player = bpPlayer.getPlayer();
 		String typeName = ChatColor.stripColor(lines[0]);
 		ArmorMerchandiseType amt = ArmorMerchandiseType.parse(typeName);
+		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		
 		if (amt != null)
 		{
 			Location bLoc = sign.getLocation();
@@ -105,7 +108,7 @@ public class ShopManager
 					
 					bpPlayer.addMoney(-cost, false, false);
 					InventoryMenuManager.saveLobbyMenu(bpPlayer);
-					processBoughtItem(bpPlayer, psArmor, player.hasPermission("Breakpoint.vip"));
+					processBoughtItem(bpPlayer, psArmor, canUse);
 					InventoryMenuManager.showLobbyMenu(bpPlayer);
 					bpPlayer.getStatistics().increaseBought();
 					Achievement.checkBought(bpPlayer);
@@ -119,7 +122,7 @@ public class ShopManager
 			else
 			{
 				String name = ChatColor.stripColor(nameColored);
-				if (name.startsWith("VIP") && !player.hasPermission("Breakpoint.vip"))
+				if (name.startsWith("VIP") && !canUse)
 				{
 					player.sendMessage(MessageType.SHOP_PURCHASE_VIPSONLY.getTranslation().getValue());
 					return;

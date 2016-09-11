@@ -212,8 +212,6 @@ public abstract class Game
 		updatePlayerAmountRenderer();
 		bpPlayer.setPlayerListName();
 		
-		bpPlayer.removeColor();
-		
 		if (bpPlayer.getGame() instanceof CTFGame) {
 			CTFGame game = (CTFGame) bpPlayer.getGame();
 			player.teleport(game.teamSelectionLocation);

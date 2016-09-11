@@ -414,7 +414,7 @@ public enum MessageType implements Translateable
 				COMMAND_SKULL_EXE_SUCCESS("&7The name of your '&fCHAMELEON&7' skull has been set to '&e{1}&7'."),
 			//}}
 			//{{FLY
-				COMMAND_FLY_VIPSONLY("&cOnly &8[&bVIP&8] &cplayers can fly in the lobby."),
+				COMMAND_FLY_VIPPLUSSONLY("&cOnly &8[&bVIP+&8] &cplayers can fly in the lobby."),
 				COMMAND_FLY_NOTLOBBY("&cYou are not in the lobby, leave the current game."),
 				COMMAND_FLY_TOOFAR("&cYou traveled too far from spawn."),
 				COMMAND_FLY_ENABLED("&aFlying enabled."),

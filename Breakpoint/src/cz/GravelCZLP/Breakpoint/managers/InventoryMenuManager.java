@@ -125,7 +125,8 @@ public class InventoryMenuManager
 		// Contents
 		displayContents(bpPlayer, pi);
 		// VIP Slots
-		if (player.hasPermission("Breakpoint.vip"))
+		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		if (canUse)
 			displayVIPContents(bpPlayer, pi);
 		else
 			for (int i = 0; i < 3; i++)
@@ -331,7 +332,8 @@ public class InventoryMenuManager
 				}
 				k++;
 			}
-		if (player.hasPermission("Breakpoint.vip"))
+		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+		if (canUse)
 		{
 			k = 0;
 			for (int i = 0; i < 3; i++)

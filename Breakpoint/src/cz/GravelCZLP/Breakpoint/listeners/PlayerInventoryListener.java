@@ -102,7 +102,8 @@ public class PlayerInventoryListener implements Listener
 				}
 				else
 				{
-					if(!bpPlayer.isVIP())
+					boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+					if(!canUse)
 						if(InventoryMenuManager.isVipSlot(slotId))
 						{
 							event.setCancelled(true);
@@ -238,7 +239,8 @@ public class PlayerInventoryListener implements Listener
 			if (true) // ct != null
 			{
 				String name = ct.getProperName();
-				if(ct.requiresVIP() && !bpPlayer.isVIP())
+				boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+				if(ct.requiresVIP() && !canUse)
 				{
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
 					player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
@@ -263,7 +265,7 @@ public class PlayerInventoryListener implements Listener
 			event.getItemDrop().remove();
 			return;
 		}
-		if(!(player.hasPermission("Breakpoint.admin") && player.getGameMode() == GameMode.CREATIVE)) {
+		if(!(bpPlayer.isStaff() && player.getGameMode() == GameMode.CREATIVE)) {
 			event.setCancelled(true);
 			return;
 		}

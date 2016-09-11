@@ -215,8 +215,10 @@ public class AdventManager implements EventManager
 				
 				BPBlock block = gift.getBlock();
 				
+				boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
+				
 				InventoryMenuManager.saveLobbyMenu(bpPlayer);
-				ShopManager.processBoughtItem(bpPlayer, block, player.hasPermission("Breakpoint.vip"));
+				ShopManager.processBoughtItem(bpPlayer, block, canUse);
 				InventoryMenuManager.showLobbyMenu(bpPlayer);
 				gift.addGiftedTo(playerName);
 				player.sendMessage(MessageType.EVENT_ADVENT_EARN.getTranslation().getValue());
