@@ -72,8 +72,8 @@ public class PlayerInventoryListener implements Listener
 					}
 					else if(slotId == 42)
 						Settings.showSettingsMenu(bpPlayer);
-					else if(slotId == 41)
-						Perk.showPerkMenu(bpPlayer);
+					/*else if(slotId == 41)
+						Perk.showPerkMenu(bpPlayer);*/
 					
 					InventoryMenuManager.updateInventoryDelayed(player);
 				}
@@ -235,8 +235,9 @@ public class PlayerInventoryListener implements Listener
 		}
 		else if(mat == Material.MONSTER_EGG)
 		{
-			CharacterType ct = CharacterType.getByMonsterEggId(item.getDurability());
-			if (true) // ct != null
+			CharacterType ct = null;
+			ct = CharacterType.getByMonsterEggId(item.getDurability());
+			if (ct != null)
 			{
 				String name = ct.getProperName();
 				boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();

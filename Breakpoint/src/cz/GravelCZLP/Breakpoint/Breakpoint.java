@@ -106,7 +106,6 @@ public class Breakpoint extends JavaPlugin
 			GameManager.startPlayableGames();
 			redirectCommands();
 			StatisticsManager.startLoop();
-			//TODO : topKill = new TopKillsManager(config);
 			registerListeners();
 			afkm.startLoop();
 			VIPManager.startLoops();
@@ -125,9 +124,9 @@ public class Breakpoint extends JavaPlugin
 			return;
 		} else {
 			successfullyEnabled = false;
-			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
-			System.out.println("Není licence na spuštění Breakpointu ");
-			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			System.out.println("#Není licence na spuštění Breakpointu #");
+			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 		}
 		//TODO: getServer().getPluginManager().registerEvents(new BanListener(), this);
 	}

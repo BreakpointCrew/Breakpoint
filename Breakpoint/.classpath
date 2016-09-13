@@ -10,6 +10,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/ProtocolLib.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/AdvancedBan.jar"/>
-	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/AAC 2.1.1-b2 Cracked(BSMC).jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

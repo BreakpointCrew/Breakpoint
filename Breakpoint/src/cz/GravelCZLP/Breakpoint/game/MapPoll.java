@@ -116,7 +116,7 @@ public class MapPoll
 			return nejMapy.get(rand.nextInt(nejMapy.size()));
 		}
 		else
-			return nejMapy.get(0);
+			return nejMapy.get(1);
 	}
 
 	public void setMapImages()

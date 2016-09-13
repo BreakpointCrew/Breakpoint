@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -16,46 +18,47 @@ import org.bukkit.potion.PotionEffectType;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 public enum CharacterType
 {
-	SWORDSMAN(false, MessageType.CHARACTER_SWORDSMAN, 92),
-	KNIGHT(false, MessageType.CHARACTER_KNIGHT, 65,
+	SWORDSMAN(false, MessageType.CHARACTER_SWORDSMAN, EntityType.COW),
+	KNIGHT(false, MessageType.CHARACTER_KNIGHT, EntityType.BAT,
 			new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 0, true)
 	),
-	ARCHER(false, MessageType.CHARACTER_ARCHER, 120),
-	CHEMIST(false, MessageType.CHARACTER_CHEMIST, 66,
+	ARCHER(false, MessageType.CHARACTER_ARCHER, EntityType.VILLAGER),
+	CHEMIST(false, MessageType.CHARACTER_CHEMIST, EntityType.WITCH,
 			new PotionEffect(PotionEffectType.REGENERATION, 2147483647, 0, true)
 	),
-	CULTIST(true, MessageType.CHARACTER_CULTIST, 62, ChatColor.DARK_PURPLE,
+	CULTIST(true, MessageType.CHARACTER_CULTIST, EntityType.MAGMA_CUBE, ChatColor.DARK_PURPLE,
 			new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 4, true)
 	),
-	PYRO(true, MessageType.CHARACTER_PYRO, 61, ChatColor.GOLD),
-	NINJA(true, MessageType.CHARACTER_NINJA, 58, ChatColor.LIGHT_PURPLE,
+	PYRO(true, MessageType.CHARACTER_PYRO, EntityType.BLAZE, ChatColor.GOLD),
+	NINJA(true, MessageType.CHARACTER_NINJA, EntityType.ENDERMAN, ChatColor.LIGHT_PURPLE,
 			new PotionEffect(PotionEffectType.SPEED, 2147483647, 1, true)
 	),
-	HEAVY(true, MessageType.CHARACTER_HEAVY, 52, ChatColor.DARK_RED,
+	HEAVY(true, MessageType.CHARACTER_HEAVY, EntityType.SPIDER, ChatColor.DARK_RED,
 			new PotionEffect(PotionEffectType.SLOW, 2147483647, 0, true)
 	);
 	
 	private final PotionEffect[] effects;
 	private final boolean requiresVIP;
 	private final MessageType nameMessageType;
-	private final int eggId;
+	private final EntityType entityType;
 	private final ChatColor chatColor;
 
-	private CharacterType(boolean requiresVIP, MessageType nameMessageType, int eggId, ChatColor chatColor, PotionEffect... effects)
+	private CharacterType(boolean requiresVIP, MessageType nameMessageType, EntityType type, ChatColor chatColor, PotionEffect... effects)
 	{
 		this.effects = effects;
 		this.requiresVIP = requiresVIP;
+		entityType = type;
 		this.nameMessageType = nameMessageType;
-		this.eggId = eggId;
 		this.chatColor = chatColor;
 	}
 	
-	private CharacterType(boolean requiresVIP, MessageType nameMessageType, int eggId, PotionEffect... effects)
+	private CharacterType(boolean requiresVIP, MessageType nameMessageType, EntityType type, PotionEffect... effects)
 	{
-		this(requiresVIP, nameMessageType, eggId, ChatColor.WHITE, effects);
+		this(requiresVIP, nameMessageType, type, ChatColor.WHITE, effects);
 	}
 	
 	public void applyEffects(Player player)
@@ -146,7 +149,7 @@ public enum CharacterType
 			}
 			case NINJA:
 			{
-				PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_FALL, 1 });
+				PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_FALL, 2 });
 				ItemStack sword = new ItemStack(Material.GOLD_SWORD);
 				sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
 				sword.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
@@ -172,12 +175,13 @@ public enum CharacterType
 		return requiresVIP;
 	}
 	
-	public static CharacterType getByMonsterEggId(int id)
+	public static CharacterType getByMonsterEggId(short id)
 	{
-		for(CharacterType ct : values())
-			if(ct.getEggId() == id)
-				return ct;
-		
+		for (CharacterType t : CharacterType.values()) {
+			if (t.getEggType().getTypeId() == id) {
+				return t;
+			}
+		}
 		return null;
 	}
 
@@ -193,7 +197,7 @@ public enum CharacterType
 	
 	public ItemStack getEgg()
 	{
-		ItemStack egg = new ItemStack(Material.MONSTER_EGG, 1, (short) getEggId());
+		ItemStack egg = new ItemStack(Material.MONSTER_EGG, 1);
 		ItemMeta im = egg.getItemMeta();
 		im.setDisplayName(ChatColor.ITALIC + "" + chatColor + getProperName());
 		List<String> lore = new ArrayList<String>();
@@ -202,15 +206,31 @@ public enum CharacterType
 			im.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
 			MessageType.MENU_EGG_VIPDESC.getTranslation().addValuesToList(lore);
 		}
+		
 		MessageType.MENU_EGG_DESC.getTranslation().addValuesToList(lore);;
 		im.setLore(lore);
 		egg.setItemMeta(im);
+		
+		net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(egg);
+		
+		NBTTagCompound idTag = new NBTTagCompound();
+		
+		idTag.setString("id", getEggType().getName());
+		
+		NBTTagCompound tag = nmsIs.hasTag() ? nmsIs.getTag() : new NBTTagCompound();
+		
+		tag.set("EntityTag", idTag);
+		
+		nmsIs.setTag(tag);
+		
+		egg = CraftItemStack.asBukkitCopy(nmsIs);
+		
 		return egg;
 	}
 
-	public int getEggId()
+	public EntityType getEggType()
 	{
-		return eggId;
+		return entityType;
 	}
 
 	public PotionEffect[] getEffects()
