@@ -175,6 +175,7 @@ public enum CharacterType
 		return requiresVIP;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static CharacterType getByMonsterEggId(short id)
 	{
 		for (CharacterType t : CharacterType.values()) {
@@ -195,6 +196,7 @@ public enum CharacterType
 		return nameMessageType;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ItemStack getEgg()
 	{
 		ItemStack egg = new ItemStack(Material.MONSTER_EGG, 1);

@@ -1,10 +1,13 @@
 package cz.GravelCZLP.Breakpoint.managers;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
 import cz.GravelCZLP.Breakpoint.achievements.Achievement;
@@ -34,16 +37,16 @@ public class ShopManager
 	public static void buySkull(BPPlayer bpPlayer, Sign sign, String[] lines)
 	{
 		Player player = bpPlayer.getPlayer();
-		String typeName = ChatColor.stripColor(lines[3]);
+		String typeName = ChatColor.stripColor(lines[1]);
 		SkullType skullType = SkullType.parse(typeName);
 		boolean vip = skullType == null || skullType.isVip();
 		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
 		
-		if(!vip || canUse)
+		if(!vip && canUse)
 		{
 			Location bLoc = sign.getLocation();
-			String nameColored = lines[3];
-			int cost = SkullType.getCost(skullType);
+			String nameColored = lines[0];
+			int cost = Integer.valueOf(lines[3]);
 			int exHours = 1;
 			if(bLoc.equals(bpPlayer.getShopItemLocation()))
 			{
@@ -74,7 +77,7 @@ public class ShopManager
 				}
 				
 				bpPlayer.setShopItemLocation(bLoc);
-				player.sendMessage(MessageType.SHOP_PURCHASE_ARMOR_QUESTION.getTranslation().getValue(lines[3], cost, exHours));
+				player.sendMessage(MessageType.SHOP_PURCHASE_ARMOR_QUESTION.getTranslation().getValue(lines[0], cost, exHours));
 			}
 		}
 		else
@@ -230,6 +233,32 @@ public class ShopManager
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public static void buildSkullShop(Location loc, int facing, String name, SkullType type, BlockFace faceing) {
+		int signData = getSignData(facing);
+		try {
+			World w = loc.getWorld();
+			Block b = w.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+			b.setTypeIdAndData(68, (byte) signData, true);
+			Sign s = (Sign) b.getState();
+			if (name == null || name == "") {
+				s.setLine(0, WordUtils.capitalize(type.name()));
+			} else {
+				s.setLine(0, ChatColor.translateAlternateColorCodes('&', name));	
+			}
+			s.setLine(1, type.name().toUpperCase());
+			s.setLine(2, MessageType.SHOP_ITEM_SKULL_LABEL.getTranslation().getValue());
+			s.setLine(3, String.valueOf(type.getCost()));	
+			
+			ItemFrame itemFrame = (ItemFrame) w.spawn(loc, ItemFrame.class);
+			BPSkull skull = new BPSkull(s.getLine(0), 1 * 60);
+			itemFrame.setItem(skull.getItemStack());
+			itemFrame.setFacingDirection(faceing);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static int getSignData(int facing)
 	{
 		if (facing == 0)

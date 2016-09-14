@@ -128,12 +128,16 @@ public class InventoryMenuManager
 		
 		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
 		
-		if (canUse)
+		if (canUse) {
 			displayVIPContents(bpPlayer, pi);
-		else
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 4; j++)
+		} else {
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 4; j++) {
 					pi.setItem(14 + i * 9 + j, getVipSlot());
+				}
+			}
+		}
+		
 		// Hotbar
 		pi.setItem(0, MapManager.getBreakpointMap(player));
 		pi.setItem(5, getWikiBook());
@@ -143,15 +147,6 @@ public class InventoryMenuManager
 		pi.setItem(8, getMoneyEmerald(bpPlayer));
 		MapManager.updateLobbyMapsForPlayer(bpPlayer);
 		player.updateInventory();
-	}
-
-	public static ItemStack getACMenu() 
-	{
-		ItemStack acMenu = new ItemStack(Material.DIODE);
-		ItemMeta im = acMenu.getItemMeta();
-		im.setDisplayName(ChatColor.RED + "AntiCheat Menu");
-		acMenu.setItemMeta(im);
-		return acMenu;
 	}
 	
 	public static ItemStack getWikiBook()

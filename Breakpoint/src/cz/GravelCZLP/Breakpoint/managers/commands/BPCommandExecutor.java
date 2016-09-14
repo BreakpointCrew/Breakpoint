@@ -31,6 +31,7 @@ import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.RandomShop;
 import cz.GravelCZLP.Breakpoint.achievements.AchievementType;
 import cz.GravelCZLP.Breakpoint.equipment.BPEquipment;
+import cz.GravelCZLP.Breakpoint.equipment.BPSkull.SkullType;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
@@ -434,50 +435,79 @@ public class BPCommandExecutor implements CommandExecutor
 			if(!(sender instanceof Player))
 				return true;
 			Player player = (Player) sender;
-			if(args.length >= 6)
-			{
-				Location loc;
-				int facing;
-				String color;
-				int[] cost;
-				int[] time;
-				String name;
-				try
+			if (args[1] == "armor") {
+				if(args.length >= 7)
 				{
-					loc = player.getLocation();
-					facing = Integer.parseInt(args[1]);
-					color = args[2];
-					name = "";
-					for(int i = 5; i < args.length; i++)
-						name += args[i] + " ";
-					name = name.substring(0, name.length() - 1);
-					String[] rawCost = args[3].split(",");
-					String[] rawTime = args[4].split(",");
-					if(rawCost.length != rawTime.length)
+					Location loc;
+					int facing;
+					String color;
+					int[] cost;
+					int[] time;
+					String name;
+					try
 					{
-						player.sendMessage(ChatColor.RED + "Pocet casu se musi rovnat poctu cen.");
+						loc = player.getLocation();
+						facing = Integer.parseInt(args[2]);
+						color = args[3];
+						name = "";
+						for(int i = 6; i < args.length; i++)
+							name += args[i] + " ";
+						name = name.substring(0, name.length() - 1);
+						String[] rawCost = args[4].split(",");
+						String[] rawTime = args[5].split(",");
+						if(rawCost.length != rawTime.length)
+						{
+							player.sendMessage(ChatColor.RED + "Pocet casu se musi rovnat poctu cen.");
+							return true;
+						}
+						cost = new int[rawCost.length];
+						time = new int[rawTime.length];
+						for(int i = 0; i < cost.length; i++)
+						{
+							cost[i] = Integer.parseInt(rawCost[i]);
+							time[i] = Integer.parseInt(rawTime[i]);
+						}
+					}
+					catch(Exception e)
+					{
+						player.sendMessage(ChatColor.RED + "Nespravne argumenty!");
 						return true;
 					}
-					cost = new int[rawCost.length];
-					time = new int[rawTime.length];
-					for(int i = 0; i < cost.length; i++)
-					{
-						cost[i] = Integer.parseInt(rawCost[i]);
-						time[i] = Integer.parseInt(rawTime[i]);
-					}
+					ShopManager.buildArmorShop(loc, facing, color, cost, time, name);
+					player.sendMessage(ChatColor.GREEN + "Obchod postaven!");
 				}
-				catch(Exception e)
+				else
 				{
 					player.sendMessage(ChatColor.RED + "Nespravne argumenty!");
-					return true;
+					player.sendMessage(ChatColor.GRAY + "/bp buildShop type [side] [#RGB] [cost,cost...] [time,time...] [name]");
+					//  								 cmd 0 			1 		2 		3 	4 		5 		6 		7    8
+				}	
+			} else if (args[1] == "skull") {
+				if (args.length >= 4) {
+					Location loc = null;
+					int faceing = 0;
+					String name = "";
+					SkullType type = null;
+					
+					try {
+						loc = player.getLocation();
+						faceing = Integer.parseInt(args[2]);
+						for (int i = 4; i < args.length; i++) {
+							name += args[i] + " ";
+						}
+						name = ChatColor.translateAlternateColorCodes('&', name);
+						type = SkullType.valueOf(args[3].toUpperCase());
+						ShopManager.buildSkullShop(loc, faceing, name, type, player.getLocation().getBlock().getFace(player.getLocation().getBlock()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				} else {
+					player.sendMessage(ChatColor.RED + "Nespravne Argumenty");
+					player.sendMessage(ChatColor.GRAY + "/bp buildShop type [side] [type] [name]");
 				}
-				ShopManager.buildArmorShop(loc, facing, color, cost, time, name);
-				player.sendMessage(ChatColor.GREEN + "Obchod postaven!");
-			}
-			else
-			{
-				player.sendMessage(ChatColor.RED + "Nespravne argumenty!");
-				player.sendMessage(ChatColor.GRAY + "/ps buildShop [side] [#RGB] [cost,cost...] [time,time...] [name]");
+			} else {
+				sender.sendMessage(ChatColor.RED + "/bp buildShop [type (skull, armor)]");
 			}
 		}
 		else if(args[0].equalsIgnoreCase("updateStatistics") || args[0].equalsIgnoreCase("updateStats"))

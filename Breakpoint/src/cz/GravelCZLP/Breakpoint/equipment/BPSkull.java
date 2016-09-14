@@ -109,7 +109,9 @@ public class BPSkull extends BPEquipment
 		OAK_LOG("MHF_OakLog", 60, "OAK LOG", true),
 		TNT("MHF_TNT", 200, true),
 		TNT2("MHF_TNT2", 200, true),
-		CHEST("MHF_Chest", 120, true);
+		CHEST("MHF_Chest", 120, true),
+		
+		GRAVELCZLP("GravelCZLP", 500, "GREJVL", true);
 		//}}
 		
 		private final boolean vip;
@@ -203,7 +205,7 @@ public class BPSkull extends BPEquipment
 			return alias;
 		}
 		
-		private int getCost()
+		public int getCost()
 		{
 			return cost;
 		}

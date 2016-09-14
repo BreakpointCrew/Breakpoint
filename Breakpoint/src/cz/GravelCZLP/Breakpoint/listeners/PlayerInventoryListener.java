@@ -3,6 +3,8 @@ package cz.GravelCZLP.Breakpoint.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +29,7 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 public class PlayerInventoryListener implements Listener
 {
@@ -191,6 +194,7 @@ public class PlayerInventoryListener implements Listener
 			Perk.onMenuClick(event, bpPlayer);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void onIngameMenuClick(InventoryClickEvent event, BPPlayer bpPlayer)
 	{
 		event.setCancelled(true);
@@ -236,7 +240,22 @@ public class PlayerInventoryListener implements Listener
 		else if(mat == Material.MONSTER_EGG)
 		{
 			CharacterType ct = null;
-			ct = CharacterType.getByMonsterEggId(item.getDurability());
+			
+			net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(item);
+			
+			NBTTagCompound tag = nmsIs.getTag();
+			
+			NBTTagCompound idTag = (NBTTagCompound) tag.get("EntityTag");
+			
+			EntityType e = null;
+			
+			if (idTag.getString("id").contains("LAVASLIME")) {
+				e = EntityType.MAGMA_CUBE;
+			} else {
+				e = EntityType.valueOf((idTag.getString("id").replaceAll("org.bukkit.entity.EntityType.", "").toUpperCase()));	
+			}
+			
+			ct = CharacterType.getByMonsterEggId(e.getTypeId());
 			if (ct != null)
 			{
 				String name = ct.getProperName();
