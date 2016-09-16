@@ -1,14 +1,11 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,7 +21,6 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.game.ctf.Team;
-import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
@@ -36,8 +32,6 @@ import cz.GravelCZLP.PingAPI.PingReply;
 import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
 import me.leoko.advancedban.utils.PunishmentType;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerListHeaderFooter;
 
 public class PlayerConnectionListener implements Listener
 {
@@ -56,7 +50,7 @@ public class PlayerConnectionListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		System.out.println("Logged in: " + player + " From IP: " + event.getHostname());
+		System.out.println("Logged in: " + player + " From IP: " + player.getAddress().getHostString());
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -99,14 +93,14 @@ public class PlayerConnectionListener implements Listener
 				bpPlayer.setTimeJoined(System.currentTimeMillis());
 				player.setHealthScaled(true);
 				
-				EntityPlayer handle = ((CraftPlayer) player).getHandle();
+				/*EntityPlayer handle = ((CraftPlayer) player).getHandle();
 				
-				handle.playerConnection.sendPacket(getTabListPakcet());
+				handle.playerConnection.sendPacket(getTabListPakcet());*/
 //			}
 //		});
 	}
 
-	private PacketPlayOutPlayerListHeaderFooter getTabListPakcet() {
+	/*private PacketPlayOutPlayerListHeaderFooter getTabListPakcet() {
 		try {
 			Object header = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + "\"}");
 			Object footer = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + "\n we <3 u" + "\"}");
@@ -120,7 +114,7 @@ public class PlayerConnectionListener implements Listener
 			e.printStackTrace();
 		}
 		return new PacketPlayOutPlayerListHeaderFooter();
-	}
+	}*/
 	
 /*	public void onPlayerDisconnect(Player player)
 	{
