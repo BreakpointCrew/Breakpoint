@@ -1,8 +1,14 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +17,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.map.MinecraftFont;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
@@ -19,13 +24,20 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.game.ctf.Team;
+import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.PingAPI.PingAPI;
+import cz.GravelCZLP.PingAPI.PingEvent;
+import cz.GravelCZLP.PingAPI.PingListener;
+import cz.GravelCZLP.PingAPI.PingReply;
 import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
 import me.leoko.advancedban.utils.PunishmentType;
+import net.minecraft.server.v1_10_R1.EntityPlayer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerListHeaderFooter;
 
 public class PlayerConnectionListener implements Listener
 {
@@ -35,6 +47,8 @@ public class PlayerConnectionListener implements Listener
 	public PlayerConnectionListener(Breakpoint p)
 	{
 		plugin = p;
+		
+		setupPings();
 	}
 	
 	@EventHandler
@@ -42,7 +56,7 @@ public class PlayerConnectionListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		System.out.println("Logged in: " + player);
+		System.out.println("Logged in: " + player + " From IP: " + event.getHostname());
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -84,10 +98,30 @@ public class PlayerConnectionListener implements Listener
 				bpPlayer.setPlayerListName();
 				bpPlayer.setTimeJoined(System.currentTimeMillis());
 				player.setHealthScaled(true);
+				
+				EntityPlayer handle = ((CraftPlayer) player).getHandle();
+				
+				handle.playerConnection.sendPacket(getTabListPakcet());
 //			}
 //		});
 	}
 
+	private PacketPlayOutPlayerListHeaderFooter getTabListPakcet() {
+		try {
+			Object header = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + "\"}");
+			Object footer = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + "\n we <3 u" + "\"}");
+			Constructor<?> cons = PacketPlayOutPlayerListHeaderFooter.class.getConstructor(net.minecraft.server.v1_10_R1.IChatBaseComponent.class);
+			PacketPlayOutPlayerListHeaderFooter o = (PacketPlayOutPlayerListHeaderFooter) cons.newInstance(header); 
+			Field field = o.getClass().getDeclaredField("b");
+			field.setAccessible(true);
+			field.set(cons, footer);
+			return o;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new PacketPlayOutPlayerListHeaderFooter();
+	}
+	
 /*	public void onPlayerDisconnect(Player player)
 	{
 		BPPlayer bpPlayer = BPPlayer.get(player);
@@ -153,23 +187,44 @@ public class PlayerConnectionListener implements Listener
 	{
 		event.setLeaveMessage(null);
 	}
-
-	@EventHandler
-	public void onServerPing(ServerListPingEvent event)
-	{
-		CTFGame ctfGame = null;
-		for (Game game : GameManager.getGames()) {
-			if (game.getType() == GameType.CTF) {
-				ctfGame = (CTFGame) game;
+	
+	public void setupPings() {
+		PingAPI.registerListener(new PingListener() {
+			@Override
+			public void onPing(PingEvent e) {
+				CTFGame ctfGame = null;
+				for (Game game : GameManager.getGames())
+					if (game.getType() == GameType.CTF)
+						ctfGame = (CTFGame) game;
+				
+				int blueId = Team.getId(Team.BLUE);
+				int redId = Team.getId(Team.RED);
+				int bodyBlue = ctfGame.getFlagManager().getScore()[blueId];
+				int bodyRed = ctfGame.getFlagManager().getScore()[redId];
+				
+				PingReply reply = e.getReply();
+				
+				reply.setMOTD("§c[------------§8[§d§lBREAKPOINT§r§8]§c-------§8[§6AAC§8]§c------]\n"
+						+ "§cC§dT§9F: §9Blue§8: " + bodyBlue + " §cRed§8: " + bodyRed);
+				
+				List<String> news = new ArrayList<String>();
+				
+				news.add("   §d§lBreakpoint");
+				news.add("--------------");
+				news.add("§aKity Za Emeraldy.");
+				news.add("§4Nové Mapy.");
+				news.add("§4Odebrány Perky.");
+				news.add("§62 typy VIP");
+				news.add("§4Anti-Cheat !");
+				news.add("§1A mnoho dalšího!");
+				
+				reply.setProtocolVersion(210);
+				reply.setProtocolName("§aNovinky...");
+				reply.setPlayerSample(news);
 			}
-		}
-		int blueId = Team.getId(Team.BLUE);
-		int redId = Team.getId(Team.RED);
-		int bodyBlue = ctfGame.getFlagManager().getScore()[blueId];
-		int bodyRed = ctfGame.getFlagManager().getScore()[redId];
-		event.setMotd("§c[--------------§8[§d§lBREAKPOINT§r§8]§c--------------]\n §cC§dT§9F: §9Blue:" + bodyBlue + " §cRed:" + bodyRed);
+		});
 	}
-	 
+	
 	public int getWidth(String string)
 	{
 		String noColors = ChatColor.stripColor(string);

@@ -435,7 +435,7 @@ public class BPCommandExecutor implements CommandExecutor
 			if(!(sender instanceof Player))
 				return true;
 			Player player = (Player) sender;
-			if (args[1] == "armor") {
+			if (args[1].equalsIgnoreCase("armor")) {
 				if(args.length >= 7)
 				{
 					Location loc;
@@ -482,7 +482,7 @@ public class BPCommandExecutor implements CommandExecutor
 					player.sendMessage(ChatColor.GRAY + "/bp buildShop type [side] [#RGB] [cost,cost...] [time,time...] [name]");
 					//  								 cmd 0 			1 		2 		3 	4 		5 		6 		7    8
 				}	
-			} else if (args[1] == "skull") {
+			} else if (args[1].equalsIgnoreCase("skull")) {
 				if (args.length >= 4) {
 					Location loc = null;
 					int faceing = 0;

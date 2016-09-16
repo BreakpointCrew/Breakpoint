@@ -250,6 +250,10 @@ public class ShopManager
 			s.setLine(2, MessageType.SHOP_ITEM_SKULL_LABEL.getTranslation().getValue());
 			s.setLine(3, String.valueOf(type.getCost()));	
 			
+			s.update(true);
+			
+			loc.setY(loc.getY() + 1.0);
+			
 			ItemFrame itemFrame = (ItemFrame) w.spawn(loc, ItemFrame.class);
 			BPSkull skull = new BPSkull(s.getLine(0), 1 * 60);
 			itemFrame.setItem(skull.getItemStack());
