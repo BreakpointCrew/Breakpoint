@@ -50,10 +50,14 @@ public class MapPoll
 		List<BPMap> allowedMaps = new ArrayList<BPMap>();
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		maps = new String[5];
-		for (BPMap map : availableMaps)
-			if(map.isPlayable())
-				if (map.isPlayableWith(players))
+		for (BPMap map : availableMaps) {
+			if(map.isPlayable()) {
+				if (map.isPlayableWith(players)) {
 					allowedMaps.add(map);
+				}
+			}
+		}
+
 		for (int i = 0; i < 5; i++)
 		{
 			BPMap topMap = null;
@@ -79,28 +83,26 @@ public class MapPoll
 		votes = result;
 	}
 
-	public int getBestMap()
-	{
+	public int getBestMap() {
 		int nejHlas = 0;
 		ArrayList<Integer> nejMapy = new ArrayList<Integer>();
-		for (int mapNo = 0; mapNo < maps.length; mapNo++)
-			if (maps[mapNo] != null)
-			{
+		for (int mapNo = 0; mapNo < maps.length; mapNo++) {
+			if (maps[mapNo] != null) {
 				String stringMap = maps[mapNo];
 				int hlasy = votes.get(stringMap);
-				if (hlasy >= nejHlas)
-				{
-					if (hlasy > nejHlas)
+				if (hlasy >= nejHlas) {
+					if (hlasy > nejHlas) {
 						nejMapy.clear();
+					}
 					nejMapy.add(mapNo);
 					nejHlas = hlasy;
 				}
-			}
-			else
+			} else {
 				break;
-		if (nejMapy.size() > 1)
-			for (int i = 0; i < nejMapy.size(); i++)
-			{
+			}
+		}
+		if (nejMapy.size() > 1) {
+			for (int i = 0; i < nejMapy.size(); i++) {
 				int bestMapIndex = nejMapy.get(i);
 				String bestMapName = maps[bestMapIndex];
 				BPMap bestMap = game.getMapByName(bestMapName);
@@ -110,13 +112,17 @@ public class MapPoll
 					break;
 				}
 			}
-		if (nejMapy.size() > 1)
-		{
+		}
+		if (nejMapy.size() > 1) {
 			Random rand = new Random();
 			return nejMapy.get(rand.nextInt(nejMapy.size()));
+		} else {
+			if (nejMapy.isEmpty()) {
+				return -0;
+			} else {
+				return nejMapy.get(0);
+			}
 		}
-		else
-			return nejMapy.get(1);
 	}
 
 	public void setMapImages()
@@ -218,6 +224,17 @@ public class MapPoll
 	{
 		voting = false;
 		int mapId = getBestMap();
+		if (mapId == -1) {
+			for (BPPlayer bpPlayer : game.getPlayers()) {
+				bpPlayer.setSingleTeleportLocation(null);
+				bpPlayer.setLeaveAfterDeath(true);
+				bpPlayer.getPlayer().setHealth(0.0);
+				bpPlayer.getPlayer().sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());
+				result = -1;
+				game.noPlayers = true;
+				return;
+			}
+		}
 		String mapName = maps[mapId];
 		int score = votes.get(mapName);
 		result = game.getMaps().indexOf(game.getMapByName(mapName));
@@ -233,6 +250,16 @@ public class MapPoll
 
 	public void endPoll()
 	{
+		if (result == -1) {
+			List<BPMap> maps = new ArrayList<BPMap>();
+			for (BPMap bpMap : game.getMaps()) {
+				if (bpMap.isPlayable()) {
+					maps.add(bpMap);
+				}
+			}
+			game.changeMap(game.getRandomMapWithCapacity(2));
+			return;
+		}
 		game.changeMap(result);
 		game.setMapPoll(null);
 	}

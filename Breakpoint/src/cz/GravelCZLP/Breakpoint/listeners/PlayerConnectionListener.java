@@ -56,13 +56,8 @@ public class PlayerConnectionListener implements Listener
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event)
 	{
-		event.setJoinMessage(null);
+		event.setJoinMessage("§8[§r+§8] §8" + event.getPlayer().getName());
 		
-//		Bukkit.getScheduler().scheduleSyncDelayedTask(Breakpoint.getInstance(), new Runnable()
-//		{
-//			@Override
-//			public void run()
-//			{
 				Player player = event.getPlayer();
 				String playerName = player.getName();
 				BPPlayer bpPlayer;
@@ -79,7 +74,6 @@ public class PlayerConnectionListener implements Listener
 				
 				bpPlayer.clearAfkSecondsToKick();
 				bpPlayer.reset();
-				//plugin.fim.loadPlayerData(player);
 				
 				if (player.isDead())
 					return;
@@ -92,46 +86,7 @@ public class PlayerConnectionListener implements Listener
 				bpPlayer.setPlayerListName();
 				bpPlayer.setTimeJoined(System.currentTimeMillis());
 				player.setHealthScaled(true);
-				
-				/*EntityPlayer handle = ((CraftPlayer) player).getHandle();
-				
-				handle.playerConnection.sendPacket(getTabListPakcet());*/
-//			}
-//		});
 	}
-
-	/*private PacketPlayOutPlayerListHeaderFooter getTabListPakcet() {
-		try {
-			Object header = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + "\"}");
-			Object footer = net.minecraft.server.v1_10_R1.IChatBaseComponent.class.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + "\n we <3 u" + "\"}");
-			Constructor<?> cons = PacketPlayOutPlayerListHeaderFooter.class.getConstructor(net.minecraft.server.v1_10_R1.IChatBaseComponent.class);
-			PacketPlayOutPlayerListHeaderFooter o = (PacketPlayOutPlayerListHeaderFooter) cons.newInstance(header); 
-			Field field = o.getClass().getDeclaredField("b");
-			field.setAccessible(true);
-			field.set(cons, footer);
-			return o;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new PacketPlayOutPlayerListHeaderFooter();
-	}*/
-	
-/*	public void onPlayerDisconnect(Player player)
-	{
-		BPPlayer bpPlayer = BPPlayer.get(player);
-		
-		if (!bpPlayer.isInGame())
-			InventoryMenuManager.saveLobbyMenu(player, bpPlayer);
-		else
-			bpPlayer.updateArmorMinutesLeft();
-		
-		bpPlayer.saveData();
-		//plugin.fim.savePlayerData(player);
-		bpPlayer.reset(plugin);
-		BPPlayer.removePlayer(bpPlayer);
-		bpPlayer.tryFinalize();
-		plugin.gm.updateTeamMapViews();
-	}*/
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)

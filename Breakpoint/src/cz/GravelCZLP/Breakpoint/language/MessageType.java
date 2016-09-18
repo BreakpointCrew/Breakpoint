@@ -213,6 +213,8 @@ public enum MessageType implements Translateable
 				LOBBY_TEAM_BALANCEJOINRED("&cThe teams are not balanced, join the &lRED &cteam, please."),
 				LOBBY_TEAM_BALANCEJOINBLUE("&cThe teams are not balanced, join the &9&lBLUE &cteam, please."),
 			//}}
+				//{OTHER
+				NOT_ENOUGH_PLAYERS_STARTGAME("&8There was not enough players to start the game, you have been kicked out of game"),
 		//}}
 		//{{CW
 			CW_BROADCAST_PREFIX("&8[&a{1}&8] [&7{2} &fVS &7{3}&8]"),

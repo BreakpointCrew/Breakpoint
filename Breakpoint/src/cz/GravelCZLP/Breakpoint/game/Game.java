@@ -74,6 +74,7 @@ public abstract class Game
 	private final SizeRenderer playerAmountRenderer;
 	private final CurrentMapRenderer currentMapRenderer;
 	private String firstBloodPlayerName, lastBloodPlayerName;
+	public boolean noPlayers;
 	
 	public Game(GameType type, String name, Location signLoc, LinkedList<? extends BPMap> maps)
 	{
@@ -200,6 +201,11 @@ public abstract class Game
 	
 	public void join(BPPlayer bpPlayer) throws Exception
 	{
+		
+		if (noPlayers) {
+			return;
+		}
+		
 		Player player = bpPlayer.getPlayer();
 		
 		player.setGameMode(GameMode.ADVENTURE);
@@ -384,6 +390,8 @@ public abstract class Game
 		updateCurrentMapRenderer();
 		setFirstBloodPlayerName(null);
 		setLastBloodPlayerName(null);
+		
+		noPlayers = false;
 		
 		for(World world : Bukkit.getWorlds())
 			world.setGameRuleValue("doDaylightCycle", "false");
