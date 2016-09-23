@@ -77,11 +77,12 @@ public enum MessageType implements Translateable
 			MENU_SETTINGS_SHOWENCHANTMENTS_DESC("&7When disabled, enchantments are\\nnot going to be visible client-side.\\nThis may help increase FPS."),
 			MENU_SETTINGS_SHOWENCHANTMENTS_ENABLE("&aClient-side enchantments have been enabled."),
 			MENU_SETTINGS_SHOWENCHANTMENTS_DISABLE("&cClient-side enchantments have been disabled."),
-			MENU_SETTINGS_ACGUI_DESC("&7When enabled, you will be able to see GUI \\nwhen clicking with diode(Redstone Repater)"),
-			MENU_SETTINGS_ACGUI_TURNON("&aEnable Anticheat GUI"),
-			MENU_SETTINGS_ACGUI_TURNOFF("&cDisbale Anticheat GUI"),
-			MENU_SETTINGS_ACGUI_ENABLE("&aAnticheat GUI have been enabled"),
-			MENU_SETTINGS_ACGUI_DISABLE("&cAnticheat GUI have been disabled"),
+
+			MENU_SETTINGS_DISCORDMESSAGES_DESC("&7When Enabled, mesaages from discord \n will be sent to you \n while you are in lobby"),
+			MENU_SETTINGS_DISCORDMESSAGES_TURNON("&aEnable Discord Messages"),
+			MENU_SETTINGS_DISCORDMESSAGES_TURNOFF("&cDisable Discord Messages"),
+			MENU_SETTINGS_DISCORDMESSAGES_ENABLE("&aDiscord messages have been enabled"),
+			MENU_SETTINGS_DISCORDMESSAGES_DISABLE("&cDiscord messages have been disabled"),
 			//}}
 			//{{PERKS
 				MENU_PERKS_NAME("&dPerks"),

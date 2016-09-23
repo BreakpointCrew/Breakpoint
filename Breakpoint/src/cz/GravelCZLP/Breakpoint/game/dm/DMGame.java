@@ -579,6 +579,19 @@ public class DMGame extends Game
 		return points.containsKey(bpPlayer);
 	}
 	
+	public String getCurrentBestPlayer()
+	{
+		BPPlayer bpPlayer = null;
+		for (Entry<BPPlayer, Integer> entry : points.entrySet()) {
+			int bestPoints = 0;
+			if (entry.getValue() > bestPoints) {
+				bestPoints = entry.getValue();
+				bpPlayer = entry.getKey();
+			}
+		}
+		return bpPlayer.getPlayer().getName();
+	}
+	
 	public LinkedList<BPPlayer> getPlayersOrderedByKillsThisRound()
 	{
 		LinkedList<BPPlayer> unordered = new LinkedList<BPPlayer>();

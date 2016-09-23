@@ -23,6 +23,7 @@ public class Settings
 	private boolean deathMessages;
 	private boolean extraSounds;
 	private boolean showEnchantments;
+	private boolean discordMessages;
 	
 	public Settings()
 	{
@@ -31,11 +32,12 @@ public class Settings
 		showEnchantments = true;
 	}
 	
-	public Settings(boolean deathMessages, boolean extraSounds, boolean showEnchantments) 
+	public Settings(boolean deathMessages, boolean extraSounds, boolean showEnchantments, boolean discordMessages) 
 	{
 		this.deathMessages = deathMessages;
 		this.extraSounds = extraSounds;
 		this.showEnchantments = showEnchantments;
+		this.discordMessages = discordMessages;
 	}
 	
 	public static final Settings load(Storage storage) throws Exception
@@ -43,8 +45,9 @@ public class Settings
 		boolean deathMessages = storage.get(Boolean.class, "deathMessages", true);
 		boolean extraSounds = storage.get(Boolean.class, "extraSounds", true);
 		boolean showEnchantments = storage.get(Boolean.class, "showEnchantments", true);
+		boolean sendDiscordMessages = storage.get(Boolean.class, "discordMessages", true);
 		
-		return new Settings(deathMessages, extraSounds, showEnchantments);
+		return new Settings(deathMessages, extraSounds, showEnchantments, sendDiscordMessages);
 	}
 	
 	public void save(Storage storage)
@@ -52,6 +55,7 @@ public class Settings
 		storage.put("deathMessages", deathMessages);
 		storage.put("extraSounds", extraSounds);
 		storage.put("showEnchantments", showEnchantments);
+		storage.put("discordMessages", discordMessages);
 	}
 	
 	public static List<Column> getRequiredMySQLColumns()
@@ -59,13 +63,14 @@ public class Settings
 		return Arrays.asList(
 				new Column("deathMessages", ColumnType.BOOLEAN),
 				new Column("extraSounds", ColumnType.BOOLEAN),
-				new Column("showEnchantments", ColumnType.BOOLEAN)
+				new Column("showEnchantments", ColumnType.BOOLEAN),
+				new Column("discordMessages", ColumnType.BOOLEAN)
 				);
 	}
 	
 	public boolean areDefault()
 	{
-		return deathMessages == true && extraSounds == true && showEnchantments == true;
+		return deathMessages == true && extraSounds == true && showEnchantments == true && discordMessages == true;
 	}
 	
 	public boolean toggleExtraSounds()
@@ -108,6 +113,14 @@ public class Settings
 	public void setShowEnchantments(boolean showEnchantments)
 	{
 		this.showEnchantments = showEnchantments;
+	}
+	public boolean hasDiscordMessages()
+	{
+		return discordMessages;
+	}
+	public void setDiscordMessages(boolean b)
+	{
+		discordMessages = b;
 	}
 	// INVENTORY
 	
@@ -172,6 +185,25 @@ public class Settings
 				public void setEnabled(Settings settings, boolean enabled)
 				{
 					settings.showEnchantments = enabled;
+				}
+			},
+			new SettingsButton(
+					MessageType.MENU_SETTINGS_DISCORDMESSAGES_DESC, 
+					MessageType.MENU_SETTINGS_DISCORDMESSAGES_TURNON, 
+					MessageType.MENU_SETTINGS_DISCORDMESSAGES_TURNOFF, 
+					MessageType.MENU_SETTINGS_DISCORDMESSAGES_ENABLE,
+					MessageType.MENU_SETTINGS_DISCORDMESSAGES_DISABLE, 
+					6
+				) {
+				
+				@Override
+				public void setEnabled(Settings settings, boolean enabled) {
+					settings.discordMessages = enabled;
+				}
+				
+				@Override
+				public boolean isEnabled(Settings settings) {
+					return settings.discordMessages;
 				}
 			}
 		};

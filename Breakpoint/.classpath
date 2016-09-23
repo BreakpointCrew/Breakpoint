@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry exported="true" kind="lib" path="/home/jindra/Stažené/Discord4j-2.5.4-shaded.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/jindra/Plocha/libs/internet/kryonet-2.21-all.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/libs/spigot-1.10.2-R0.1-SNAPSHOT.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/home/jindra/Plocha/spigot%20docs/spigotdocs.zip!/"/>
@@ -10,6 +11,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/ProtocolLib.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/BpServer/plugins/AdvancedBan.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/PingAPi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PingAPi"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

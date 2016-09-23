@@ -12,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.map.MinecraftFont;
 
@@ -43,14 +42,6 @@ public class PlayerConnectionListener implements Listener
 		plugin = p;
 		
 		setupPings();
-	}
-	
-	@EventHandler
-	public void onPlayerLogin(PlayerLoginEvent event)
-	{
-		Player player = event.getPlayer();
-		
-		System.out.println("Logged in: " + player + " From IP: " + player.getAddress().getHostString());
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -119,7 +110,7 @@ public class PlayerConnectionListener implements Listener
 			long start = TimeManager.getTime();
 			long end = TimeManager.getTime() + (86400000L * 2);
 			
-			new Punishment(name, uuid, "Odpojení při prohledávání", "CONSOLE", type, start, end, "", -1)
+			new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint", type, start, end, "", -1)
 			.create();
 		}
 		

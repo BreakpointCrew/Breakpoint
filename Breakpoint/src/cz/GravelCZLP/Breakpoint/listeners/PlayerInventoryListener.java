@@ -125,11 +125,6 @@ public class PlayerInventoryListener implements Listener
 							ItemStack[] armor = pi.getArmorContents();
 							if(equipment instanceof BPArmor)
 							{
-								Material mat = is.getType();
-								int armorId = BPArmor.getTypeId(mat);
-								if(armorId < 0)
-									return;
-								if(armor[armorId].getTypeId() != 0)
 									event.setCancelled(true);
 							}
 							else if(armor[3].getTypeId() != 0)
@@ -249,11 +244,17 @@ public class PlayerInventoryListener implements Listener
 			
 			EntityType e = null;
 			
-			if (idTag.getString("id").contains("LAVASLIME")) {
-				e = EntityType.MAGMA_CUBE;
-			} else {
-				e = EntityType.valueOf((idTag.getString("id").replaceAll("org.bukkit.entity.EntityType.", "").toUpperCase()));	
-			}
+			String entity = idTag.getString("id");
+			
+			System.out.println(entity);
+			
+			entity = entity.replaceAll("org.bukkit.entity.EntityType.", "");
+			entity = entity.replaceAll("LAVASLIME", "MAGMA_CUBE");
+			entity = entity.toUpperCase();
+			
+			System.out.println(entity);
+			
+			e = EntityType.valueOf(entity);	
 			
 			ct = CharacterType.getByMonsterEggId(e.getTypeId());
 			if (ct != null)

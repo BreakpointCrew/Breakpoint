@@ -118,7 +118,7 @@ public class MapPoll
 			return nejMapy.get(rand.nextInt(nejMapy.size()));
 		} else {
 			if (nejMapy.isEmpty()) {
-				return -0;
+				return -1;
 			} else {
 				return nejMapy.get(0);
 			}
@@ -220,19 +220,20 @@ public class MapPoll
 		return curVotes;
 	}
 
-	public void endVoting()
-	{
+	public void endVoting() {
 		voting = false;
 		int mapId = getBestMap();
 		if (mapId == -1) {
-			for (BPPlayer bpPlayer : game.getPlayers()) {
-				bpPlayer.setSingleTeleportLocation(null);
-				bpPlayer.setLeaveAfterDeath(true);
-				bpPlayer.getPlayer().setHealth(0.0);
-				bpPlayer.getPlayer().sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());
-				result = -1;
-				game.noPlayers = true;
-				return;
+			if (game.getPlayers() != null) {
+				for (BPPlayer bpPlayer : game.getPlayers()) {
+					bpPlayer.setSingleTeleportLocation(null);
+					bpPlayer.setLeaveAfterDeath(true);
+					bpPlayer.getPlayer().setHealth(0.0);
+					bpPlayer.getPlayer().sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());
+					result = -1;
+					game.noPlayers = true;
+					return;
+				}
 			}
 		}
 		String mapName = maps[mapId];

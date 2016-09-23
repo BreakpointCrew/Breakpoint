@@ -6,12 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -63,7 +66,9 @@ import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
+import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
 import me.limeth.storageAPI.StorageType;
+import net.minecraft.server.v1_10_R1.PropertyManager;
 
 public class Breakpoint extends JavaPlugin
 {
@@ -79,6 +84,8 @@ public class Breakpoint extends JavaPlugin
 	public EventManager evtm;
 	public boolean successfullyEnabled;
 	public TopKillsManager topKill;
+	
+	private DataListenerMain data = null;
 	
 	@Override
 	public void onEnable()
@@ -115,17 +122,33 @@ public class Breakpoint extends JavaPlugin
 			DoubleMoneyManager.startBoostLoop();
 			StatisticsManager.updateStatistics();
 			
+			PropertyManager propsManager = ((CraftServer) Bukkit.getServer()).getServer().getPropertyManager();
+			Properties props = propsManager.properties;
+			props.setProperty("enable-query","true");
+			Logger loger = Logger.getLogger("Minecraft");
+			loger.warning("Minecraft Server query was forcibly enabled by Breakpoint !!");
+			propsManager.savePropertiesFile();
+			
 			getServer().clearRecipes();
 			World world = config.getLobbyLocation().getWorld();
 			world.setStorm(false);
 			world.setThundering(false);
 			world.setWeatherDuration(1000000000);
 			successfullyEnabled = true;
+			
+			data = new DataListenerMain(this);
+			
+			try {
+				data.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			return;
 		} else {
 			successfullyEnabled = false;
-			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
-			System.out.println("#Není licence na spuštění Breakpointu #");
+			System.out.println("  #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			System.out.println(" # Není licence na spuštění Breakpointu #");
 			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 		}
 		//TODO: getServer().getPluginManager().registerEvents(new BanListener(), this);
@@ -141,6 +164,8 @@ public class Breakpoint extends JavaPlugin
 		kickPlayers();
 		
 		//topKill.DeleteAndDespawn();
+		
+		data.stop();
 		
 		if(evtm != null)
 			evtm.save();
