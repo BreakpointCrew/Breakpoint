@@ -8,6 +8,8 @@ IP: None
 
 * Spigot 1.10.2
 * ProtocolLib (1.10)
+* AdvancedBans
+* PingAPI (Fork on my github)
 
 ## License
 
