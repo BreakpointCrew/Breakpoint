@@ -15,11 +15,11 @@ public class ListenersDiscord {
 	public void onChat(MessageReceivedEvent e) {
 		String author = e.getMessage().getAuthor().getName();
 		String msg = e.getMessage().getContent();
-		
+
 		String formattedMessage = "§8(Discord) " + author + ": " + msg;
-		
+
 		Collection<? extends Player> players = Breakpoint.getInstance().getServer().getOnlinePlayers();
-		
+
 		for (Player p : players) {
 			BPPlayer bpPlayer = BPPlayer.get(p);
 			if (!bpPlayer.isInGame()) {

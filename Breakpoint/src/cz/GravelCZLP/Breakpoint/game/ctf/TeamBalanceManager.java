@@ -11,78 +11,70 @@ import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
-public class TeamBalanceManager
-{
+public class TeamBalanceManager {
 	private final CTFGame game;
 	private int loopId;
 
-	public TeamBalanceManager(CTFGame game)
-	{
+	public TeamBalanceManager(CTFGame game) {
 		this.game = game;
 	}
-	
-	public void checkTeams()
-	{
+
+	public void checkTeams() {
 		Random random = new Random();
-		List<BPPlayer> red = game.getPlayersInTeam(Team.RED);
-		List<BPPlayer> blue = game.getPlayersInTeam(Team.BLUE);
-		while (red.size() > blue.size() + 1)
-		{
+		List<BPPlayer> red = this.game.getPlayersInTeam(Team.RED);
+		List<BPPlayer> blue = this.game.getPlayersInTeam(Team.BLUE);
+		while (red.size() > blue.size() + 1) {
 			movePlayerToTeam(red.get(random.nextInt(red.size())), Team.BLUE);
-			red = game.getPlayersInTeam(Team.RED);
-			blue = game.getPlayersInTeam(Team.BLUE);
+			red = this.game.getPlayersInTeam(Team.RED);
+			blue = this.game.getPlayersInTeam(Team.BLUE);
 		}
-		while (blue.size() > red.size() + 1)
-		{
+		while (blue.size() > red.size() + 1) {
 			movePlayerToTeam(blue.get(random.nextInt(blue.size())), Team.RED);
-			red = game.getPlayersInTeam(Team.RED);
-			blue = game.getPlayersInTeam(Team.BLUE);
+			red = this.game.getPlayersInTeam(Team.RED);
+			blue = this.game.getPlayersInTeam(Team.BLUE);
 		}
 	}
 
-	public void movePlayerToTeam(BPPlayer bpPlayer, Team team)
-	{
+	public void movePlayerToTeam(BPPlayer bpPlayer, Team team) {
 		Player player = bpPlayer.getPlayer();
 		CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
-		FlagManager flm = game.getFlagManager();
-		
+		FlagManager flm = this.game.getFlagManager();
+
 		props.setTeam(team);
 		bpPlayer.spawn();
-		
-		if (flm.isHoldingFlag(bpPlayer))
+
+		if (flm.isHoldingFlag(bpPlayer)) {
 			flm.dropFlag(bpPlayer);
-		
+		}
+
 		bpPlayer.setPlayerListName();
-		
+
 		player.updateInventory();
 		player.sendMessage(ChatColor.DARK_RED + "--- --- --- --- ---");
-		
-		if(team == Team.RED)
+
+		if (team == Team.RED) {
 			player.sendMessage(MessageType.BALANCE_MOVERED.getTranslation().getValue());
-		else if(team == Team.BLUE)
+		} else if (team == Team.BLUE) {
 			player.sendMessage(MessageType.BALANCE_MOVEBLUE.getTranslation().getValue());
-		
+		}
+
 		player.sendMessage(ChatColor.DARK_RED + "--- --- --- --- ---");
 	}
 
-	public void startLoop()
-	{
-		loopId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), new Runnable() {
+	public void startLoop() {
+		this.loopId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				checkTeams();
 			}
 		}, 20L * 60, 20L * 60);
 	}
 
-	public CTFGame getGame()
-	{
-		return game;
+	public CTFGame getGame() {
+		return this.game;
 	}
 
-	public int getLoopId()
-	{
-		return loopId;
+	public int getLoopId() {
+		return this.loopId;
 	}
 }

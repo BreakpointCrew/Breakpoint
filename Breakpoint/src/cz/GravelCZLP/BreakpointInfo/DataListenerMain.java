@@ -29,61 +29,63 @@ import cz.GravelCZLP.BreakpointInfo.threads.UnBanThread;
 public class DataListenerMain {
 
 	Breakpoint bp;
-	
+
 	public HashMap<String, Integer> requestsPerMin; // 5 per 1 minute
-	public List<String> banned; // if more then 20 per minute; unban every 10 mins
-	public HashMap<String, Integer> connectionsPerMinute; // max 20 conn. per minute
-	
+	public List<String> banned; // if more then 20 per minute; unban every 10
+								// mins
+	public HashMap<String, Integer> connectionsPerMinute; // max 20 conn. per
+															// minute
+
 	private Timer timer = null;
-	
+
 	private static Server server;
-	
+
 	public DataListenerMain(Breakpoint bp) {
-		banned = new ArrayList<String>();
-		requestsPerMin = new HashMap<String, Integer>();
-		connectionsPerMinute = new HashMap<String, Integer>();
+		this.banned = new ArrayList<>();
+		this.requestsPerMin = new HashMap<>();
+		this.connectionsPerMinute = new HashMap<>();
 		this.bp = bp;
 	}
-	
+
 	public void start() throws IOException {
 		server = new Server();
 		server.start();
-		
+
 		Kryo kryo = server.getKryo();
 		kryo.register(DataRequestPacket.class);
 		kryo.register(DataResponcePacket.class);
 		kryo.register(BPInfo.class);
-		
+
 		server.bind(33698, 33697);
-		
+
 		server.addListener(new PacketsListener(this));
-		
-		timer = new Timer();
-		timer.schedule(new UnBanThread(this), (1000 * 60 * 10));
-		timer.schedule(new MinuteLimiterListener(this), (1000 * 60));
+
+		this.timer = new Timer();
+		this.timer.schedule(new UnBanThread(this), 1000 * 60 * 10);
+		this.timer.schedule(new MinuteLimiterListener(this), 1000 * 60);
 	}
 
 	public void stop() {
 		for (Connection conn : server.getConnections()) {
 			conn.close();
 		}
-		timer.cancel();
+		this.timer.cancel();
 		server.stop();
 	}
-	
+
 	public boolean canReqquest(Connection conn) {
 		String ip = conn.getRemoteAddressTCP().getAddress().toString();
-		if (banned.contains(conn.getRemoteAddressTCP().getAddress().toString())) {
+		if (this.banned.contains(conn.getRemoteAddressTCP().getAddress().toString())) {
 			return false;
 		}
-		if (!requestsPerMin.containsKey(ip)) {
-			requestsPerMin.put(ip, 1);
+		if (!this.requestsPerMin.containsKey(ip)) {
+			this.requestsPerMin.put(ip, 1);
 		}
-		int i = requestsPerMin.get(conn.getRemoteAddressTCP().getAddress().toString());
+		int i = this.requestsPerMin.get(conn.getRemoteAddressTCP().getAddress().toString());
 		if (i < 5) {
 			return true;
 		} else if (i > 20) {
-			banned.add(ip);
+			this.banned.add(ip);
 			return false;
 		} else {
 			return false;
@@ -92,60 +94,67 @@ public class DataListenerMain {
 
 	public boolean canConnect(Connection conn) {
 		String ip = conn.getRemoteAddressTCP().getAddress().toString();
-		if (banned.contains(ip)) {
+		if (this.banned.contains(ip)) {
 			return false;
 		}
-		if (!connectionsPerMinute.containsKey(ip)) {
-			connectionsPerMinute.put(ip, 1);
+		if (!this.connectionsPerMinute.containsKey(ip)) {
+			this.connectionsPerMinute.put(ip, 1);
 		}
-		if (connectionsPerMinute.get(ip) > 20) {
-			banned.add(ip);
+		if (this.connectionsPerMinute.get(ip) > 20) {
+			this.banned.add(ip);
 			return false;
 		}
 		return true;
 	}
-	
+
 	@SuppressWarnings("static-access")
 	public BPInfo getBPInfo() {
 		BPInfo info = null;
-		
+
 		int playersInLobby = 0;
 		int playersInGame = 0;
 		int playersInCTF = 0;
 		int playersInDM = 0;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			BPPlayer bpPlayer = BPPlayer.get(p);
-			if (!bpPlayer.isInGame())
+			if (!bpPlayer.isInGame()) {
 				playersInLobby++;
-			if (bpPlayer.isInGame())
+			}
+			if (bpPlayer.isInGame()) {
 				playersInGame++;
-				if (bpPlayer.getGame().getType() == GameType.CTF) {
-					playersInCTF++;
-				} else if (bpPlayer.getGame().getType() == GameType.DM) {
-					playersInDM++;
-				}
+			}
+			if (bpPlayer.getGame().getType() == GameType.CTF) {
+				playersInCTF++;
+			} else if (bpPlayer.getGame().getType() == GameType.DM) {
+				playersInDM++;
+			}
 		}
 		CTFGame ctfGame = null;
-		for (Game game : GameManager.getGames())
-			if (game.getType() == GameType.CTF)
+		for (Game game : GameManager.getGames()) {
+			if (game.getType() == GameType.CTF) {
 				ctfGame = (CTFGame) game;
-		
+			}
+		}
+
 		int blueId = Team.getId(Team.BLUE);
 		int redId = Team.getId(Team.RED);
 		int bodyBlue = ctfGame.getFlagManager().getScore()[blueId];
 		int bodyRed = ctfGame.getFlagManager().getScore()[redId];
-		
-		String CWGame = bp.getBreakpointConfig().getCWChallengeGame();
-		
+
+		String CWGame = Breakpoint.getBreakpointConfig().getCWChallengeGame();
+
 		DMGame dmGame = null;
-		for (Game game : GameManager.getGames())
-			if (game.getType() == GameType.DM)
+		for (Game game : GameManager.getGames()) {
+			if (game.getType() == GameType.DM) {
 				dmGame = (DMGame) game;
-		
+			}
+		}
+
 		String bestPlayerInDM = dmGame.getCurrentBestPlayer();
-		
-		info = new BPInfo(playersInLobby, playersInGame, bodyRed, bodyBlue, bestPlayerInDM, CWGame, playersInCTF, playersInDM);
-		
+
+		info = new BPInfo(playersInLobby, playersInGame, bodyRed, bodyBlue, bestPlayerInDM, CWGame, playersInCTF,
+				playersInDM);
+
 		return info;
 	}
 }

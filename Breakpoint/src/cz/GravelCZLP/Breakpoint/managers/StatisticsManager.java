@@ -21,256 +21,246 @@ import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import cz.GravelCZLP.Breakpoint.statistics.Statistics;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
 
-public class StatisticsManager
-{
+public class StatisticsManager {
 	public static final int MAX_AMOUNT = Integer.MAX_VALUE;
 	private static TotalPlayerStatistics totalStats;
 	public static List<PlayerStatistics> playersRankedByKills;
 	private static List<Clan> clansRankedByPoints;
 	private static boolean updating = false;
-	
-	public static void startLoop()
-	{
+
+	public static void startLoop() {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), new Runnable() {
 
 			@Override
-			public void run()
-			{
+			public void run() {
 				asyncUpdate();
 			}
-			
+
 		}, 0, 20L * 60 * 10);
 	}
-	
-	public static void asyncUpdate()
-	{
-		if(isUpdating())
+
+	public static void asyncUpdate() {
+		if (isUpdating()) {
 			return;
-		
+		}
+
 		Thread t = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				update();
 			}
 		}, "Async Rank Update");
-		
+
 		t.setPriority(Thread.MAX_PRIORITY);
 		t.start();
 	}
-	
-	private static synchronized void update()
-	{
+
+	private static synchronized void update() {
 		updating = true;
 		updatePlayerRanksByKills();
 		updateClanRanksByPoints();
 		updateStatistics();
 		updating = false;
-		
+
 		Breakpoint.warn("Statistics have been updated!");
 	}
 
-	public static void updateStatistics()
-	{
+	public static void updateStatistics() {
 		TotalPlayerStatistics stats = new TotalPlayerStatistics();
-		
+
 		if (playersRankedByKills == null) {
 			return;
 		}
-		
-		for(PlayerStatistics stat : playersRankedByKills)
+
+		for (PlayerStatistics stat : playersRankedByKills) {
 			stats.add(stat);
-		
+		}
+
 		totalStats = stats;
 	}
 
-	public static void updateClanRanksByPoints()
-	{
-		List<Clan> unorderedClans = new ArrayList<Clan>(Clan.clans);
-		List<Clan> orderedClans = new ArrayList<Clan>();
-		
-		for(Clan clan : unorderedClans)
-		{
+	public static void updateClanRanksByPoints() {
+		List<Clan> unorderedClans = new ArrayList<>(Clan.clans);
+		List<Clan> orderedClans = new ArrayList<>();
+
+		for (Clan clan : unorderedClans) {
 			int points = clan.getPoints();
 			int i = 0;
-			
-			while(i < orderedClans.size())
-			{
+
+			while (i < orderedClans.size()) {
 				Clan ordered = orderedClans.get(i);
 				int orderedPoints = ordered.getPoints();
-				
-				if(points > orderedPoints)
+
+				if (points > orderedPoints) {
 					break;
-				else if(points == orderedPoints)
-						break;
-				
+				} else if (points == orderedPoints) {
+					break;
+				}
+
 				i++;
 			}
-			
+
 			orderedClans.add(i, clan);
 		}
-		
+
 		clansRankedByPoints = orderedClans;
 	}
 
-	public static void updatePlayerRanksByKills()
-	{
+	public static void updatePlayerRanksByKills() {
 		Configuration config = Breakpoint.getBreakpointConfig();
 		StorageType storageType = config.getStorageType();
 		List<String> playerNames = BPPlayer.getPlayerNames(storageType);
-		List<PlayerStatistics> unorderedList = new LinkedList<PlayerStatistics>();
-		List<PlayerStatistics> orderedList = new LinkedList<PlayerStatistics>();
-		
-		if (playerNames == null) 
+		List<PlayerStatistics> unorderedList = new LinkedList<>();
+		List<PlayerStatistics> orderedList = new LinkedList<>();
+
+		if (playerNames == null) {
 			return;
-		
-		for(String playerName : playerNames)
-			if(isPlayer(playerName))
-			{
+		}
+
+		for (String playerName : playerNames) {
+			if (isPlayer(playerName)) {
 				PlayerStatistics stat = PlayerStatistics.loadPlayerStatistics(playerName);
 				unorderedList.add(stat);
 			}
-		
-		while(unorderedList.size() > 0 && orderedList.size() < MAX_AMOUNT)
-		{
+		}
+
+		while (unorderedList.size() > 0 && orderedList.size() < MAX_AMOUNT) {
 			PlayerStatistics topStat = null;
-			
-			for(PlayerStatistics stat : unorderedList)
-			{
+
+			for (PlayerStatistics stat : unorderedList) {
 				int kills = stat.getKills();
-				
-				if(topStat == null || kills > topStat.getKills())
+
+				if (topStat == null || kills > topStat.getKills()) {
 					topStat = stat;
+				}
 			}
-			
-			if(topStat != null)
-			{
+
+			if (topStat != null) {
 				unorderedList.remove(topStat);
 				orderedList.add(topStat);
-			}
-			else
+			} else {
 				break;
+			}
 		}
-		
+
 		playersRankedByKills = orderedList;
 	}
 
-	public static Integer getRank(String playerName)
-	{
-		if(playersRankedByKills == null)
+	public static Integer getRank(String playerName) {
+		if (playersRankedByKills == null) {
 			return null;
-		
-		for(int i = 0; i < playersRankedByKills.size(); i++)
-		{
+		}
+
+		for (int i = 0; i < playersRankedByKills.size(); i++) {
 			PlayerStatistics stat = playersRankedByKills.get(i);
-			
-			if(stat.getName().equals(playerName))
+
+			if (stat.getName().equals(playerName)) {
 				return i + 1;
+			}
 		}
 		return 0;
 	}
-	
-	public static Integer getRank(Clan clan)
-	{
-		if(clansRankedByPoints == null)
+
+	public static Integer getRank(Clan clan) {
+		if (clansRankedByPoints == null) {
 			return null;
-		
-		for(int i = 0; i < clansRankedByPoints.size(); i++)
-		{
+		}
+
+		for (int i = 0; i < clansRankedByPoints.size(); i++) {
 			Clan curClan = clansRankedByPoints.get(i);
-			
-			if(curClan.equals(clan))
+
+			if (curClan.equals(clan)) {
 				return i + 1;
+			}
 		}
 		return 0;
 	}
-	
-	public static PlayerStatistics getPlayerStatistics(String playerName)
-	{
-		if(playersRankedByKills == null)
+
+	public static PlayerStatistics getPlayerStatistics(String playerName) {
+		if (playersRankedByKills == null) {
 			return null;
-		
-		for(PlayerStatistics stat : playersRankedByKills)
-			if(stat.getName().equals(playerName))
+		}
+
+		for (PlayerStatistics stat : playersRankedByKills) {
+			if (stat.getName().equals(playerName)) {
 				return stat;
-		
+			}
+		}
+
 		return null;
 	}
 
-	private static boolean isPlayer(String playerName)
-	{
-		for(OfflinePlayer op : Bukkit.getOperators())
-			if(op.getName().equalsIgnoreCase(playerName))
+	private static boolean isPlayer(String playerName) {
+		for (OfflinePlayer op : Bukkit.getOperators()) {
+			if (op.getName().equalsIgnoreCase(playerName)) {
 				return false;
+			}
+		}
 		return true;
 	}
-	
-	public static void listTopClans(CommandSender sender, int length, int page)
-	{
-		if(clansRankedByPoints == null)
+
+	public static void listTopClans(CommandSender sender, int length, int page) {
+		if (clansRankedByPoints == null) {
 			sender.sendMessage(MessageType.RANK_TOP_UPDATING.getTranslation().getValue());
-		
-		if(length * (page - 1) + 1 > clansRankedByPoints.size())
-		{
+		}
+
+		if (length * (page - 1) + 1 > clansRankedByPoints.size()) {
 			sender.sendMessage(MessageType.RANK_TOP_CLANEMPTYPAGE.getTranslation().getValue());
 			return;
 		}
-		for(int i = length * (page - 1); i < length * page; i++)
-			if(i < clansRankedByPoints.size())
-			{
+		for (int i = length * (page - 1); i < length * page; i++) {
+			if (i < clansRankedByPoints.size()) {
 				Clan clan = clansRankedByPoints.get(i);
 				String clanName = clan.getColoredName();
 				int points = clan.getPoints();
 				sender.sendMessage(MessageType.RANK_TOP_CLANFORMAT.getTranslation().getValue(i + 1, clanName, points));
-			}
-			else
+			} else {
 				break;
+			}
+		}
 	}
 
-	public static void listTopPlayers(CommandSender sender, int length, int page)
-	{
-		if(playersRankedByKills == null)
+	public static void listTopPlayers(CommandSender sender, int length, int page) {
+		if (playersRankedByKills == null) {
 			sender.sendMessage(MessageType.RANK_TOP_UPDATING.getTranslation().getValue());
-		
-		if(length * (page - 1) + 1 > playersRankedByKills.size())
-		{
+		}
+
+		if (length * (page - 1) + 1 > playersRankedByKills.size()) {
 			sender.sendMessage(MessageType.RANK_TOP_EMPTYPAGE.getTranslation().getValue());
 			return;
 		}
-		for(int i = length * (page - 1); i < length * page; i++)
-			if(i < playersRankedByKills.size())
-			{
+		for (int i = length * (page - 1); i < length * page; i++) {
+			if (i < playersRankedByKills.size()) {
 				Statistics stat = playersRankedByKills.get(i);
 				String playerName = stat.getName();
 				int kills = stat.getKills();
 				int deaths = stat.getDeaths();
-				String kdr = InventoryMenuManager.trimKdr(Double.toString(((double) kills) / ((double) deaths)));
-				sender.sendMessage(MessageType.RANK_TOP_FORMAT.getTranslation().getValue(i + 1, playerName, kills, deaths, kdr));
-			}
-			else
+				String kdr = InventoryMenuManager.trimKdr(Double.toString((double) kills / (double) deaths));
+				sender.sendMessage(
+						MessageType.RANK_TOP_FORMAT.getTranslation().getValue(i + 1, playerName, kills, deaths, kdr));
+			} else {
 				break;
+			}
+		}
 	}
 
-	public static String format(String label, Object amount)
-	{
+	public static String format(String label, Object amount) {
 		return ChatColor.GRAY + label + ": " + ChatColor.YELLOW + amount;
 	}
 
-	public static void showStatistics(CommandSender sender, String targetName)
-	{
+	public static void showStatistics(CommandSender sender, String targetName) {
 		PlayerStatistics stats = getPlayerStatistics(targetName);
-		
-		if(stats == null)
-		{
+
+		if (stats == null) {
 			sender.sendMessage(MessageType.RANK_PLAYER_NOTFOUND.getTranslation().getValue(targetName));
 			return;
 		}
-		
+
 		Integer rawRank = getRank(targetName);
 		String rank = rawRank != null ? Integer.toString(rawRank) : "?";
 		int kills = stats.getKills();
 		int deaths = stats.getDeaths();
-		String kdr = Double.toString(((double) kills) / ((double) deaths));
+		String kdr = Double.toString((double) kills / (double) deaths);
 		kdr = InventoryMenuManager.trimKdr(kdr);
 		int achievements = Achievement.getUnlockedAchievementAmount(targetName);
 		int bought = stats.getBought();
@@ -286,18 +276,15 @@ public class StatisticsManager
 		sender.sendMessage(MessageType.RANK_PLAYER_CRYSTALSCAPTURED.getTranslation().getValue(flagCaptures));
 	}
 
-	public static boolean isUpdating()
-	{
+	public static boolean isUpdating() {
 		return updating;
 	}
-	
-	public static boolean hasTotalStats()
-	{
+
+	public static boolean hasTotalStats() {
 		return totalStats != null;
 	}
 
-	public static TotalPlayerStatistics getTotalStats()
-	{
+	public static TotalPlayerStatistics getTotalStats() {
 		return totalStats;
 	}
 }

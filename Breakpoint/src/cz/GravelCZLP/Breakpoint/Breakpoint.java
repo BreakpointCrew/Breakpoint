@@ -6,17 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,7 +46,6 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.Licence;
 import cz.GravelCZLP.Breakpoint.managers.LobbyInfoManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
-import cz.GravelCZLP.Breakpoint.managers.TopKillsManager;
 import cz.GravelCZLP.Breakpoint.managers.VIPManager;
 import cz.GravelCZLP.Breakpoint.managers.commands.AchievementsCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.BPCommandExecutor;
@@ -67,43 +65,45 @@ import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
+import cz.GravelCZLP.DiscordChatBot.MainMCChat;
 import me.limeth.storageAPI.StorageType;
-import net.minecraft.server.v1_10_R1.PropertyManager;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 
-public class Breakpoint extends JavaPlugin
-{
+public class Breakpoint extends JavaPlugin {
 	private static Breakpoint instance;
 	private static Configuration config;
 	private static FruitSQL mySQL;
 	public static final String PLUGIN_NAME = "Breakpoint";
-	
+
 	public AbilityManager am = new AbilityManager(this);
 	public AfkManager afkm = new AfkManager(this);
 	public MapManager mapm;
-	public ProtocolManager prm; //BPPlayer-520, this-181 a 80, PlayerManager-355
+	public ProtocolManager prm; // BPPlayer-520, this-181 a 80,
+								// PlayerManager-355
 	public EventManager evtm;
 	public boolean successfullyEnabled;
-	public TopKillsManager topKill;
-	
+
 	private DataListenerMain data = null;
-	
+	private MainMCChat discord = null;
+
 	@Override
-	public void onEnable()
-	{
-		if(Licence.isAllowed()) {
+	public void onEnable() {
+		if (Licence.isAllowed()) {
 			instance = this;
-			prm = ProtocolLibrary.getProtocolManager();
+			this.prm = ProtocolLibrary.getProtocolManager();
 			MapManager.setup();
 			Clan.loadClans();
 			config = Configuration.load();
-			
-			if(config.getStorageType() == StorageType.MYSQL)
+
+			if (config.getStorageType() == StorageType.MYSQL) {
 				mySQL = config.connectToMySQL();
-				
+			}
+
 			if (getConfig() != null) {
 				saveDefaultConfig();
 			}
-			
+
 			BPPlayer.updateTable(mySQL);
 			Language.loadLanguage(PLUGIN_NAME, config.getLanguageFileName());
 			config.getRandomShop().build();
@@ -114,92 +114,107 @@ public class Breakpoint extends JavaPlugin
 			redirectCommands();
 			StatisticsManager.startLoop();
 			registerListeners();
-			afkm.startLoop();
+			this.afkm.startLoop();
 			VIPManager.startLoops();
 			LobbyInfoManager.startLoop();
 			setEventManager();
 			DoubleMoneyManager.update();
 			DoubleMoneyManager.startBoostLoop();
 			StatisticsManager.updateStatistics();
-			
-			PropertyManager propsManager = ((CraftServer) Bukkit.getServer()).getServer().getPropertyManager();
-			Properties props = propsManager.properties;
-			props.setProperty("enable-query","true");
-			Logger loger = Logger.getLogger("Minecraft");
-			loger.warning("Minecraft Server query was forcibly enabled by Breakpoint !!");
-			propsManager.savePropertiesFile();
-			
+
 			getServer().clearRecipes();
 			World world = config.getLobbyLocation().getWorld();
 			world.setStorm(false);
 			world.setThundering(false);
 			world.setWeatherDuration(1000000000);
-			successfullyEnabled = true;
-			
-			data = new DataListenerMain(this);
-			
+			this.successfullyEnabled = true;
+
+			this.data = new DataListenerMain(this);
+
+			this.discord = new MainMCChat(this);
+
 			try {
-				data.start();
+				this.discord.start();
+			} catch (DiscordException e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				this.data.start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
+			for (World w : Bukkit.getWorlds()) {
+				List<Entity> entites = w.getEntities();
+				for (Entity e : entites) {
+					if (e instanceof Item) {
+						Item i = (Item) e;
+						if (i.getItemStack().getType() == Material.SPECKLED_MELON) {
+							e.remove();
+						}
+					}
+				}
+			}
+
 			return;
 		} else {
-			successfullyEnabled = false;
+			this.successfullyEnabled = false;
 			System.out.println("  #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 			System.out.println(" # Není licence na spuštění Breakpointu #");
 			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 		}
-		//TODO: getServer().getPluginManager().registerEvents(new BanListener(), this);
+		// TODO: getServer().getPluginManager().registerEvents(new
+		// BanListener(), this);
 	}
 
 	@Override
-	public void onDisable()
-	{
-		if (!successfullyEnabled)
+	public void onDisable() {
+		if (!this.successfullyEnabled) {
 			return;
-		
+		}
+
 		trySave();
 		kickPlayers();
-		
-		//topKill.DeleteAndDespawn();
-		
-		data.stop();
-		
-		if(evtm != null)
-			evtm.save();
-		
+
+		// topKill.DeleteAndDespawn();
+
+		this.data.stop();
+
+		try {
+			this.discord.stop();
+		} catch (RateLimitException | DiscordException e) {
+			e.printStackTrace();
+		}
+
+		if (this.evtm != null) {
+			this.evtm.save();
+		}
+
 		getServer().getScheduler().cancelTasks(this);
 		instance = null;
 		config = null;
 	}
-	
-	public void save() throws IOException
-	{
+
+	public void save() throws IOException {
 		BPPlayer.saveOnlinePlayersData();
 		Clan.saveClans();
 		config.save();
 		GameManager.saveGames();
 	}
-	
-	public void trySave()
-	{
-		try
-		{
+
+	public void trySave() {
+		try {
 			save();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			warn("Error when saving Breakpoint data: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
-	public void redirectCommands()
-	{
+	public void redirectCommands() {
 		Server server = getServer();
-		
+
 		server.getPluginCommand("bp").setExecutor(new BPCommandExecutor(this));
 		server.getPluginCommand("helpop").setExecutor(new HelpOPCommandExecutor());
 		server.getPluginCommand("clan").setExecutor(new ClanCommandExecutor());
@@ -213,213 +228,218 @@ public class Breakpoint extends JavaPlugin
 		server.getPluginCommand("cw").setExecutor(new CWCommandExecutor());
 	}
 
-	public void registerListeners()
-	{
+	public void registerListeners() {
 		PluginManager pm = getServer().getPluginManager();
-		
+
 		pm.registerEvents(new PlayerInteractListener(this), this);
 		pm.registerEvents(new PlayerConnectionListener(this), this);
 		pm.registerEvents(new PVPListener(this), this);
 		pm.registerEvents(new ChatListener(), this);
 		pm.registerEvents(new PlayerInventoryListener(this), this);
-		
-	//	if(NametagEditManager.isLoaded())
-	//		pm.registerEvents(new TagAPIListener(this), this);
-		
+
+		// if(NametagEditManager.isLoaded())
+		// pm.registerEvents(new TagAPIListener(this), this);
+
 		// Disable enchantments
-		prm./*getAsynchronousManager().registerAsyncHandler*/addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_EQUIPMENT) {
-			@Override
-			public void onPacketSending(PacketEvent event)
-			{
-				Player player = event.getPlayer();
-				
-				if(player == null)
-					return;
-				
-				World world = player.getWorld();
-				PacketContainer packet = event.getPacket();
-				Entity entity = packet.getEntityModifier(world).read(0);
-				
-				if (entity instanceof Player)
-				{
-					Player viewed = (Player) entity;
-					String viewedName = viewed.getName();
-					String playerName = player.getName();
-					Clan viewedClan = Clan.getByPlayer(viewedName);
-					Clan playerClan = Clan.getByPlayer(playerName);
-					if (viewedClan != null && playerClan != null)
-						if (viewedClan.equals(playerClan))
+		this.prm./* getAsynchronousManager().registerAsyncHandler */addPacketListener(
+				new PacketAdapter(this, PacketType.Play.Server.ENTITY_EQUIPMENT) {
+					@Override
+					public void onPacketSending(PacketEvent event) {
+						Player player = event.getPlayer();
+
+						if (player == null) {
 							return;
-				}
-				
-				ItemStack stack = packet.getItemModifier().read(0);
-				
-				if (stack != null)
-				{
-					Set<Enchantment> encs = stack.getEnchantments().keySet();
-					for (Enchantment enc : encs)
-						stack.removeEnchantment(enc);
-				}
-			}
-		});
-		
-		prm./*getAsynchronousManager().registerAsyncHandler*/addPacketListener(new PacketAdapter(this, PacketType.Play.Server.WINDOW_ITEMS) {
-			@Override
-			public void onPacketSending(PacketEvent event)
-			{
-				Player player = event.getPlayer();
-				BPPlayer bpPlayer = BPPlayer.get(player);
-				
-				if(bpPlayer == null || !bpPlayer.isInGame())
-					return;
-				
-				Settings settings = bpPlayer.getSettings();
-				
-				if(settings.hasShowEnchantments())
-					return;
-				
-				PacketContainer packet = event.getPacket();
-				ItemStack[] stacks = packet.getItemArrayModifier().read(0);
-				
-				if(stacks != null)
-					for(ItemStack stack : stacks)
-						if(stack != null)
+						}
+
+						World world = player.getWorld();
+						PacketContainer packet = event.getPacket();
+						Entity entity = packet.getEntityModifier(world).read(0);
+
+						if (entity instanceof Player) {
+							Player viewed = (Player) entity;
+							String viewedName = viewed.getName();
+							String playerName = player.getName();
+							Clan viewedClan = Clan.getByPlayer(viewedName);
+							Clan playerClan = Clan.getByPlayer(playerName);
+							if (viewedClan != null && playerClan != null) {
+								if (viewedClan.equals(playerClan)) {
+									return;
+								}
+							}
+						}
+
+						ItemStack stack = packet.getItemModifier().read(0);
+
+						if (stack != null) {
+							Set<Enchantment> encs = stack.getEnchantments().keySet();
+							for (Enchantment enc : encs) {
+								stack.removeEnchantment(enc);
+							}
+						}
+					}
+				});
+
+		this.prm./* getAsynchronousManager().registerAsyncHandler */addPacketListener(
+				new PacketAdapter(this, PacketType.Play.Server.WINDOW_ITEMS) {
+					@Override
+					public void onPacketSending(PacketEvent event) {
+						Player player = event.getPlayer();
+						BPPlayer bpPlayer = BPPlayer.get(player);
+
+						if (bpPlayer == null || !bpPlayer.isInGame()) {
+							return;
+						}
+
+						Settings settings = bpPlayer.getSettings();
+
+						if (settings.hasShowEnchantments()) {
+							return;
+						}
+
+						PacketContainer packet = event.getPacket();
+						ItemStack[] stacks = packet.getItemArrayModifier().read(0);
+
+						if (stacks != null) {
+							for (ItemStack stack : stacks) {
+								if (stack != null) {
+									removeEnchantments(stack);
+								}
+							}
+						}
+					}
+				});
+
+		this.prm./* getAsynchronousManager().registerAsyncHandler */addPacketListener(
+				new PacketAdapter(this, PacketType.Play.Server.SET_SLOT) {
+					@Override
+					public void onPacketSending(PacketEvent event) {
+						Player player = event.getPlayer();
+						BPPlayer bpPlayer = BPPlayer.get(player);
+
+						if (bpPlayer == null || !bpPlayer.isInGame()) {
+							return;
+						}
+
+						Settings settings = bpPlayer.getSettings();
+
+						if (settings.hasShowEnchantments()) {
+							return;
+						}
+
+						PacketContainer packet = event.getPacket();
+						ItemStack stack = packet.getItemModifier().read(0);
+
+						if (stack != null) {
 							removeEnchantments(stack);
-			}
-		});
-		
-		prm./*getAsynchronousManager().registerAsyncHandler*/addPacketListener(new PacketAdapter(this, PacketType.Play.Server.SET_SLOT) {
-			@Override
-			public void onPacketSending(PacketEvent event)
-			{
-				Player player = event.getPlayer();
-				BPPlayer bpPlayer = BPPlayer.get(player);
-				
-				if(bpPlayer == null || !bpPlayer.isInGame())
-					return;
-				
-				Settings settings = bpPlayer.getSettings();
-				
-				if(settings.hasShowEnchantments())
-					return;
-				
-				PacketContainer packet = event.getPacket();
-				ItemStack stack = packet.getItemModifier().read(0);
-				
-				if(stack != null)
-					removeEnchantments(stack);
-			}
-		});
+						}
+					}
+				});
 	}
-	
-	private static void removeEnchantments(ItemStack stack)
-	{
+
+	private static void removeEnchantments(ItemStack stack) {
 		Map<Enchantment, Integer> entries = stack.getEnchantments();
-		
-		if(entries == null || entries.size() <= 0)
+
+		if (entries == null || entries.size() <= 0) {
 			return;
-		
+		}
+
 		ItemMeta im = stack.getItemMeta();
-		List<String> lore = im.hasLore() ? im.getLore() : new LinkedList<String>();
-		
-		for(Entry<Enchantment, Integer> entry : entries.entrySet())
-		{
+		List<String> lore = im.hasLore() ? im.getLore() : new LinkedList<>();
+
+		for (Entry<Enchantment, Integer> entry : entries.entrySet()) {
 			Enchantment type = entry.getKey();
 			Integer level = entry.getValue();
-			
+
 			im.removeEnchant(type);
 			lore.add(ChatColor.GRAY + type.getName() + " " + level);
 		}
-		
+
 		im.setLore(lore);
 		stack.setItemMeta(im);
 	}
 
-	public static void info(String string)
-	{
+	public static void info(String string) {
 		Bukkit.getConsoleSender().sendMessage("[Breakpoint] " + string);
 	}
 
-	public static void warn(String string)
-	{
+	public static void warn(String string) {
 		Bukkit.getConsoleSender().sendMessage("[Breakpoint] [Warning] " + string);
-		for (Player player : Bukkit.getOnlinePlayers())
-			if (player.hasPermission("Breakpoint.receiveWarnings"))
-				player.sendMessage(MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + ChatColor.RED + " [Warning] " + string);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (player.hasPermission("Breakpoint.receiveWarnings")) {
+				player.sendMessage(MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + ChatColor.RED
+						+ " [Warning] " + string);
+			}
+		}
 	}
 
-	public static void broadcast(String string, boolean prefix)
-	{
-		for (Player player : Bukkit.getOnlinePlayers())
-			player.sendMessage((prefix ? MessageType.CHAT_BREAKPOINT.getTranslation().getValue() : ChatColor.YELLOW) + " " + string);
-		
+	public static void broadcast(String string, boolean prefix) {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.sendMessage((prefix ? MessageType.CHAT_BREAKPOINT.getTranslation().getValue() : ChatColor.YELLOW)
+					+ " " + string);
+		}
+
 		Bukkit.getConsoleSender().sendMessage("[Breakpoint] [Broadcast] " + string);
 	}
 
-	public static void broadcast(String string)
-	{
+	public static void broadcast(String string) {
 		broadcast(string, false);
 	}
-	
-	public static void clearChat()
-	{
-		for (Player player : Bukkit.getOnlinePlayers())
-			for (int i = 0; i < 10; i++)
+
+	public static void clearChat() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			for (int i = 0; i < 10; i++) {
 				player.sendMessage("");
+			}
+		}
 	}
 
-	public void clearChat(Player player)
-	{
-		for (int i = 0; i < 10; i++)
+	public void clearChat(Player player) {
+		for (int i = 0; i < 10; i++) {
 			player.sendMessage("");
+		}
 	}
-	
-	public void kickPlayers()
-	{
-		String msg = MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + " " + MessageType.OTHER_RESTART.getTranslation().getValue();
-		
-		for (Player player : Bukkit.getOnlinePlayers())
+
+	public void kickPlayers() {
+		String msg = MessageType.CHAT_BREAKPOINT.getTranslation().getValue() + " "
+				+ MessageType.OTHER_RESTART.getTranslation().getValue();
+
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.kickPlayer(msg);
+		}
 	}
-	
-	public void setEventManager()
-	{
+
+	public void setEventManager() {
 		Calendar calendar = Calendar.getInstance();
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
 		int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-		
-		if(month == Calendar.DECEMBER && dayOfMonth <= AdventManager.LAST_DAY)
-			evtm = AdventManager.load(year);
-	}
-	
-	public boolean hasEvent()
-	{
-		return evtm != null;
-	}
-	
-	public EventManager getEventManager()
-	{
-		return evtm;
+
+		if (month == Calendar.DECEMBER && dayOfMonth <= AdventManager.LAST_DAY) {
+			this.evtm = AdventManager.load(year);
+		}
 	}
 
-	public static Breakpoint getInstance()
-	{
+	public boolean hasEvent() {
+		return this.evtm != null;
+	}
+
+	public EventManager getEventManager() {
+		return this.evtm;
+	}
+
+	public static Breakpoint getInstance() {
 		return instance;
 	}
 
-	public static Configuration getBreakpointConfig()
-	{
+	public static Configuration getBreakpointConfig() {
 		return config;
 	}
 
-	public static FruitSQL getMySQL()
-	{
+	public static FruitSQL getMySQL() {
 		return mySQL;
 	}
 
-	public static boolean hasMySQL()
-	{
+	public static boolean hasMySQL() {
 		return mySQL != null;
 	}
 }

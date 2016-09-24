@@ -32,123 +32,117 @@ import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
 import me.leoko.advancedban.utils.PunishmentType;
 
-public class PlayerConnectionListener implements Listener
-{
+public class PlayerConnectionListener implements Listener {
 	Breakpoint plugin;
 	public static final int spaceWidth = 5;
 
-	public PlayerConnectionListener(Breakpoint p)
-	{
-		plugin = p;
-		
+	public PlayerConnectionListener(Breakpoint p) {
+		this.plugin = p;
+
 		setupPings();
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerJoin(final PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(final PlayerJoinEvent event) {
 		event.setJoinMessage("§8[§r+§8] §8" + event.getPlayer().getName());
-		
-				Player player = event.getPlayer();
-				String playerName = player.getName();
-				BPPlayer bpPlayer;
-				
-				try
-				{					
-					bpPlayer = BPPlayer.get(playerName, true);
-				}
-				catch(Exception e)
-				{
-					player.kickPlayer(ChatColor.RED + "Breakpoint Error: " + e.getMessage());
-					return;
-				}
-				
-				bpPlayer.clearAfkSecondsToKick();
-				bpPlayer.reset();
-				
-				if (player.isDead())
-					return;
-				
-				SBManager sbm = bpPlayer.getScoreboardManager();
-				
-				player.setGameMode(GameMode.ADVENTURE);
-				bpPlayer.spawn();
-				sbm.updateLobbyObjective();
-				bpPlayer.setPlayerListName();
-				bpPlayer.setTimeJoined(System.currentTimeMillis());
-				player.setHealthScaled(true);
+
+		Player player = event.getPlayer();
+		String playerName = player.getName();
+		BPPlayer bpPlayer;
+
+		try {
+			bpPlayer = BPPlayer.get(playerName, true);
+		} catch (Exception e) {
+			player.kickPlayer(ChatColor.RED + "Breakpoint Error: " + e.getMessage());
+			return;
+		}
+
+		bpPlayer.clearAfkSecondsToKick();
+		bpPlayer.reset();
+
+		if (player.isDead()) {
+			return;
+		}
+
+		SBManager sbm = bpPlayer.getScoreboardManager();
+
+		player.setGameMode(GameMode.ADVENTURE);
+		bpPlayer.spawn();
+		sbm.updateLobbyObjective();
+		bpPlayer.setPlayerListName();
+		bpPlayer.setTimeJoined(System.currentTimeMillis());
+		player.setHealthScaled(true);
 	}
 
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event)
-	{
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(null);
-		
+
 		Player player = event.getPlayer();
 		BPPlayer bpPlayer = BPPlayer.get(player);
-		
-		if(bpPlayer == null)
+
+		if (bpPlayer == null) {
 			return;
-		
-		if (!bpPlayer.isInGame())
+		}
+
+		if (!bpPlayer.isInGame()) {
 			InventoryMenuManager.saveLobbyMenu(bpPlayer);
-		else
-		{
+		} else {
 			Game game = bpPlayer.getGame();
-			
+
 			bpPlayer.updateArmorMinutesLeft();
 			game.onPlayerLeaveGame(bpPlayer);
 		}
-		
+
 		if (bpPlayer.isBeingControled()) {
-			
-			String name = bpPlayer.getPlayer().getName(); 
+
+			String name = bpPlayer.getPlayer().getName();
 			String uuid = bpPlayer.getPlayer().getUniqueId().toString();
-			
+
 			PunishmentType type = PunishmentType.TEMP_BAN;
-			
+
 			long start = TimeManager.getTime();
-			long end = TimeManager.getTime() + (86400000L * 2);
-			
-			new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint", type, start, end, "", -1)
-			.create();
+			long end = TimeManager.getTime() + 86400000L * 2;
+
+			new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint", type, start, end, "", -1).create();
 		}
-		
+
 		bpPlayer.trySave();
 		bpPlayer.reset();
 		BPPlayer.removePlayer(bpPlayer);
 		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		bpPlayer.getScoreboardManager().unregister();
-	
+
 	}
 
 	@EventHandler
-	public void onPlayerKick(PlayerKickEvent event)
-	{
+	public void onPlayerKick(PlayerKickEvent event) {
 		event.setLeaveMessage(null);
 	}
-	
+
 	public void setupPings() {
 		PingAPI.registerListener(new PingListener() {
 			@Override
 			public void onPing(PingEvent e) {
 				CTFGame ctfGame = null;
-				for (Game game : GameManager.getGames())
-					if (game.getType() == GameType.CTF)
+				for (Game game : GameManager.getGames()) {
+					if (game.getType() == GameType.CTF) {
 						ctfGame = (CTFGame) game;
-				
+					}
+				}
+
 				int blueId = Team.getId(Team.BLUE);
 				int redId = Team.getId(Team.RED);
 				int bodyBlue = ctfGame.getFlagManager().getScore()[blueId];
 				int bodyRed = ctfGame.getFlagManager().getScore()[redId];
-				
+
 				PingReply reply = e.getReply();
-				
+
 				reply.setMOTD("§c[------------§8[§d§lBREAKPOINT§r§8]§c-------§8[§6AAC§8]§c------]\n"
 						+ "§cC§dT§9F: §9Blue§8: " + bodyBlue + " §cRed§8: " + bodyRed);
-				
-				List<String> news = new ArrayList<String>();
-				
+
+				List<String> news = new ArrayList<>();
+
 				news.add("   §d§lBreakpoint");
 				news.add("--------------");
 				news.add("§aKity Za Emeraldy.");
@@ -157,23 +151,24 @@ public class PlayerConnectionListener implements Listener
 				news.add("§62 typy VIP");
 				news.add("§4Anti-Cheat !");
 				news.add("§1A mnoho dalšího!");
-				
+
 				reply.setProtocolVersion(210);
 				reply.setProtocolName("§aNovinky...");
 				reply.setPlayerSample(news);
 			}
 		});
 	}
-	
-	public int getWidth(String string)
-	{
+
+	public int getWidth(String string) {
 		String noColors = ChatColor.stripColor(string);
 		int width = 0;
 		String noSpaces = noColors.replace(" ", "");
 		int spaces = 0;
-		for (int i = 0; i < noColors.length(); i++)
-			if (string.charAt(i) == ' ')
+		for (int i = 0; i < noColors.length(); i++) {
+			if (string.charAt(i) == ' ') {
 				spaces += spaceWidth;
+			}
+		}
 		width += MinecraftFont.Font.getWidth(noSpaces);
 		width += spaces;
 		return width;

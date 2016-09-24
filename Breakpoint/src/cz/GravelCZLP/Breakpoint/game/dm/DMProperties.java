@@ -10,106 +10,91 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
-public class DMProperties extends GameProperties
-{
+public class DMProperties extends GameProperties {
 	private Location spawnedAt;
-	
-	public DMProperties(DMGame game, BPPlayer bpPlayer)
-	{
+
+	public DMProperties(DMGame game, BPPlayer bpPlayer) {
 		super(game, bpPlayer);
 	}
 
-	public void chooseCharacter(CharacterType ct, boolean spawnPlayer)
-	{
+	public void chooseCharacter(CharacterType ct, boolean spawnPlayer) {
 		setCharacterType(ct);
 		BPPlayer bpPlayer = getPlayer();
-		
-		if(spawnPlayer)
-		{
+
+		if (spawnPlayer) {
 			bpPlayer.setArmorWoreSince();
 			bpPlayer.spawn();
 		}
 	}
-	
-	public void equip()
-	{
+
+	public void equip() {
 		BPPlayer bpPlayer = getPlayer();
 		Player player = bpPlayer.getPlayer();
-		
-		if (isPlaying())
-		{
+
+		if (isPlaying()) {
 			DMGame game = getGame();
-			
+
 			bpPlayer.equipArmor();
 			getCharacterType().equipPlayer(player);
 			getCharacterType().applyEffects(player);
 			InventoryMenuManager.showIngameMenu(bpPlayer);
-			
-			if (game.votingInProgress())
-			{
+
+			if (game.votingInProgress()) {
 				String playerName = player.getName();
-				if (game.getMapPoll().hasVoted(playerName))
+				if (game.getMapPoll().hasVoted(playerName)) {
 					PlayerManager.clearHotBar(player.getInventory());
-				else
-				{
+				} else {
 					game.getMapPoll().showOptions(bpPlayer);
 					player.updateInventory();
 				}
 			}
-		}
-		else
+		} else {
 			bpPlayer.clearInventory();
+		}
 	}
 
 	@Override
-	public boolean isPlaying()
-	{
+	public boolean isPlaying() {
 		return getCharacterType() != null;
 	}
 
 	@Override
-	public boolean hasSpawnProtection()
-	{
+	public boolean hasSpawnProtection() {
 		BPPlayer bpPlayer = getPlayer();
 		long spawnTime = bpPlayer.getSpawnTime();
-		
-		if(spawnTime >= System.currentTimeMillis() - (1000 * DMGame.spawnProtectionSeconds))
-		{
+
+		if (spawnTime >= System.currentTimeMillis() - 1000 * DMGame.spawnProtectionSeconds) {
 			Player player = bpPlayer.getPlayer();
 			Location loc = player.getLocation();
-			
-			if(loc.distance(spawnedAt) <= 2)
+
+			if (loc.distance(this.spawnedAt) <= 2) {
 				return true;
+			}
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public String getChatPrefix()
-	{
+	public String getChatPrefix() {
 		return "" + ChatColor.WHITE;
 	}
 
 	@Override
-	public String getTagPrefix()
-	{
+	public String getTagPrefix() {
 		return "";
 	}
 
-	public Location getSpawnedAt()
-	{
-		return spawnedAt;
+	public Location getSpawnedAt() {
+		return this.spawnedAt;
 	}
 
-	public void setSpawnedAt(Location spawnedAt)
-	{
+	public void setSpawnedAt(Location spawnedAt) {
 		this.spawnedAt = spawnedAt;
 	}
-	
+
 	@Override
-	public DMGame getGame()
-	{
+	public DMGame getGame() {
 		return (DMGame) super.getGame();
 	}
 }

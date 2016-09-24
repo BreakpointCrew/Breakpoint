@@ -8,46 +8,45 @@ import org.bukkit.entity.Player;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.VIPManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
-public class FlyCommandExecutor implements CommandExecutor
-{
+public class FlyCommandExecutor implements CommandExecutor {
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(!(sender instanceof Player))
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!(sender instanceof Player)) {
 			return true;
-		
+		}
+
 		Player player = (Player) sender;
 		BPPlayer bpPlayer = BPPlayer.get(player);
-		
-		boolean canUse = (player.hasPermission("Breakpoint.vipplus")) || bpPlayer.isStaff() || bpPlayer.isSponsor();
-		
-		if(!canUse)
-		{
+
+		ServerPosition pos = bpPlayer.getServerPosition();
+		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIPPlus() || pos.isYoutube();
+
+		if (!b) {
 			player.sendMessage(MessageType.COMMAND_FLY_VIPPLUSSONLY.getTranslation().getValue());
 			return true;
 		}
-		
-		if(!bpPlayer.isInLobby())
-		{
+
+		if (!bpPlayer.isInLobby()) {
 			player.sendMessage(MessageType.COMMAND_FLY_NOTLOBBY.getTranslation().getValue());
 			return true;
 		}
-		
-		if(VIPManager.isFarFromSpawnToUseFly(player))
-		{
+
+		if (VIPManager.isFarFromSpawnToUseFly(player)) {
 			player.sendMessage(MessageType.COMMAND_FLY_TOOFAR.getTranslation().getValue());
 			return true;
 		}
-		
+
 		boolean value = !player.getAllowFlight();
 		player.setAllowFlight(value);
-		
-		if(value)
+
+		if (value) {
 			player.sendMessage(MessageType.COMMAND_FLY_ENABLED.getTranslation().getValue());
-		else
+		} else {
 			player.sendMessage(MessageType.COMMAND_FLY_DISABLED.getTranslation().getValue());
-		
+		}
+
 		return true;
 	}
 }

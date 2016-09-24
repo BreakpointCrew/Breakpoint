@@ -7,31 +7,27 @@ import org.bukkit.map.MinecraftFont;
 
 import cz.GravelCZLP.Breakpoint.game.BPMap;
 
-public class VoteRenderer extends BPMapRenderer
-{
+public class VoteRenderer extends BPMapRenderer {
 	String name;
 	byte[][] image;
 
-	public VoteRenderer(BPMap bpMap)
-	{
-		name = removeSpecial(bpMap.getName());
-		image = toBytes(bpMap.getImage());
+	public VoteRenderer(BPMap bpMap) {
+		this.name = removeSpecial(bpMap.getName());
+		this.image = toBytes(bpMap.getImage());
 	}
 
 	@Override
-	public void render(MapView view, MapCanvas canvas, Player player)
-	{
+	public void render(MapView view, MapCanvas canvas, Player player) {
 		byte textFrontColor = BPMapPalette.getColor(BPMapPalette.WHITE, 2);
 		byte textBackColor = BPMapPalette.getColor(BPMapPalette.DARK_GRAY, 0);
-		int textWidth = 2;//MAP_SIZE / getWidth(name);
+		int textWidth = 2;// MAP_SIZE / getWidth(name);
 		int textHeight = 2;
-		drawBytes(canvas, image);
-		drawText(canvas, 3, 3, textWidth, textHeight, MinecraftFont.Font, name, textBackColor);
-		drawText(canvas, 2, 2, textWidth, textHeight, MinecraftFont.Font, name, textFrontColor);
+		drawBytes(canvas, this.image);
+		drawText(canvas, 3, 3, textWidth, textHeight, MinecraftFont.Font, this.name, textBackColor);
+		drawText(canvas, 2, 2, textWidth, textHeight, MinecraftFont.Font, this.name, textFrontColor);
 	}
 
-	public static String removeSpecial(String string)
-	{
+	public static String removeSpecial(String string) {
 		string = string.replaceAll("á", "a");
 		string = string.replaceAll("í", "i");
 		string = string.replaceAll("é", "e");

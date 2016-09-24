@@ -29,160 +29,148 @@ import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
-public class CTFListener extends GameListener
-{
-	public CTFListener(Game game)
-	{
+public class CTFListener extends GameListener {
+	public CTFListener(Game game) {
 		super(game, CTFGame.class);
 	}
-	public CTFListener(Game game, Class<? extends Game> gameClass)
-	{
+
+	public CTFListener(Game game, Class<? extends Game> gameClass) {
 		super(game, gameClass);
 	}
-	
+
 	@Override
-	public void onPlayerDeath(PlayerDeathEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerDeath(PlayerDeathEvent event, BPPlayer bpPlayer) {
 		CTFGame game = getGame();
 		FlagManager flm = game.getFlagManager();
-		
-		if(flm.isHoldingFlag(bpPlayer))
+
+		if (flm.isHoldingFlag(bpPlayer)) {
 			flm.dropFlag(bpPlayer);
-		
+		}
+
 		CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 		Team team = props.getTeam();
-		
-		if(team != null)
-		{
+
+		if (team != null) {
 			Player player = bpPlayer.getPlayer();
 			Location loc = player.getLocation();
 			Location effectLoc = loc.clone().add(0, 1, 0);
-			
+
 			team.displayDeathEffect(effectLoc);
 		}
 	}
 
 	@Override
-	public void onPlayerRespawn(PlayerRespawnEvent event, BPPlayer bpPlayer, boolean leaveAfterDeath)
-	{
+	public void onPlayerRespawn(PlayerRespawnEvent event, BPPlayer bpPlayer, boolean leaveAfterDeath) {
 		CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 		CharacterType qct = bpPlayer.getQueueCharacter();
 		CTFGame game = getGame();
-		
-		if(qct != null)
-		{
-			if(qct != null)
+
+		if (qct != null) {
+			if (qct != null) {
 				props.chooseCharacter(qct, false);
+			}
 			bpPlayer.setQueueCharacter(null);
 		}
-		
-		if(leaveAfterDeath)
+
+		if (leaveAfterDeath) {
 			game.updateTeamMapViews();
-		else
+		} else {
 			game.spawn(bpPlayer);
+		}
 	}
 
 	@Override
-	public void onPlayerShootBow(EntityShootBowEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerShootBow(EntityShootBowEvent event, BPPlayer bpPlayer) {
 	}
 
 	@Override
-	public void onPlayerSplashedByPotion(PotionSplashEvent event, BPPlayer bpShooter, BPPlayer bpTarget)
-	{
+	public void onPlayerSplashedByPotion(PotionSplashEvent event, BPPlayer bpShooter, BPPlayer bpTarget) {
 		CTFProperties targetProps = (CTFProperties) bpTarget.getGameProperties();
 		Player target = bpTarget.getPlayer();
 		CTFGame game = getGame();
-		
-		if(targetProps.isEnemy(bpShooter) && !game.hasRoundEnded())
-		{
-			if(targetProps.hasSpawnProtection())
-			{
+
+		if (targetProps.isEnemy(bpShooter) && !game.hasRoundEnded()) {
+			if (targetProps.hasSpawnProtection()) {
 				Player shooter = bpShooter.getPlayer();
 				shooter.sendMessage(MessageType.PVP_SPAWNKILLING.getTranslation().getValue());
 				event.setIntensity(target, 0);
 			}
-		}
-		else
+		} else {
 			event.setIntensity(target, 0);
+		}
 	}
 
 	@Override
-	public void onEntityDamage(EntityDamageEvent dmgEvent)
-	{
+	public void onEntityDamage(EntityDamageEvent dmgEvent) {
 		Entity eVictim = dmgEvent.getEntity();
-		
+
 		if (eVictim instanceof EnderCrystal) {
 			dmgEvent.setCancelled(true);
 		}
-		
-		if(eVictim instanceof Player)
-		{
+
+		if (eVictim instanceof Player) {
 			Player victim = (Player) eVictim;
 			BPPlayer bpVictim = BPPlayer.get(victim);
 			Game vGame = bpVictim.getGame();
 			CTFGame game = getGame();
-			
-			if(!game.equals(vGame))
+
+			if (!game.equals(vGame)) {
 				return;
-			
-			if(!(dmgEvent instanceof EntityDamageByEntityEvent))
+			}
+
+			if (!(dmgEvent instanceof EntityDamageByEntityEvent)) {
 				return;
-			
+			}
+
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) dmgEvent;
 			Entity eDamager = event.getDamager();
-			
-			if(eDamager instanceof Projectile)
+
+			if (eDamager instanceof Projectile) {
 				eDamager = (Entity) ((Projectile) eDamager).getShooter();
-			
-			if(!(eDamager instanceof Player))
-			{
+			}
+
+			if (!(eDamager instanceof Player)) {
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			Player damager = (Player) eDamager;
 			BPPlayer bpDamager = BPPlayer.get(damager);
-			
-			if(!bpVictim.isInGameWith(bpDamager))
-			{
+
+			if (!bpVictim.isInGameWith(bpDamager)) {
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			CTFProperties victimProps = (CTFProperties) bpVictim.getGameProperties();
-			
-			if(!victimProps.isEnemy(bpDamager))
+
+			if (!victimProps.isEnemy(bpDamager)) {
 				event.setCancelled(true);
-		}
-		else if(eVictim instanceof EnderCrystal)
-		{
+			}
+		} else if (eVictim instanceof EnderCrystal) {
 			dmgEvent.setCancelled(true);
-			
-			if(dmgEvent instanceof EntityDamageByEntityEvent)
-			{
+
+			if (dmgEvent instanceof EntityDamageByEntityEvent) {
 				CTFGame game = getGame();
 				FlagManager flm = game.getFlagManager();
 				EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) dmgEvent;
-				
+
 				flm.onTryFlagTake(event);
 			}
 		}
 	}
 
 	@Override
-	public void onPlayerTeleport(PlayerTeleportEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerTeleport(PlayerTeleportEvent event, BPPlayer bpPlayer) {
 		TeleportCause cause = event.getCause();
-		
-		if(cause == TeleportCause.ENDER_PEARL)
-		{
+
+		if (cause == TeleportCause.ENDER_PEARL) {
 			CTFGame game = getGame();
 			FlagManager flm = game.getFlagManager();
-			
-			if(flm.isHoldingFlag(bpPlayer))
-			{
+
+			if (flm.isHoldingFlag(bpPlayer)) {
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);
 				player.sendMessage(MessageType.OTHER_WARNPEARL.getTranslation().getValue());
@@ -192,17 +180,14 @@ public class CTFListener extends GameListener
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item)
-	{
+	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item) {
 		Material type = item.getType();
-		
-		if(type == Material.ENDER_PEARL)
-		{
+
+		if (type == Material.ENDER_PEARL) {
 			CTFGame game = getGame();
 			FlagManager flm = game.getFlagManager();
-			
-			if(flm.isHoldingFlag(bpPlayer))
-			{
+
+			if (flm.isHoldingFlag(bpPlayer)) {
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);
 				player.setItemInHand(PlayerManager.decreaseItem(item));
@@ -212,153 +197,140 @@ public class CTFListener extends GameListener
 	}
 
 	@Override
-	public void onPlayerLeftClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item)
-	{
+	public void onPlayerLeftClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item) {
 	}
 
 	@Override
-	public void onPlayerRightClickBlock(PlayerInteractEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerRightClickBlock(PlayerInteractEvent event, BPPlayer bpPlayer) {
 		Block block = event.getClickedBlock();
 		Material mat = block.getType();
-		if(mat == Material.STONE_BUTTON)
-		{
+		if (mat == Material.STONE_BUTTON) {
 			Button button = (Button) block.getState().getData();
 			Block attBlock = block.getRelative(button.getAttachedFace());
-			if(attBlock.getType() == Material.WOOL)
+			if (attBlock.getType() == Material.WOOL) {
 				clickedWoolButton(event, attBlock, bpPlayer);
-		}
-		else if(mat == Material.WALL_SIGN || mat == Material.SIGN_POST)
-		{
+			}
+		} else if (mat == Material.WALL_SIGN || mat == Material.SIGN_POST) {
 			Sign sign = (Sign) block.getState();
 			String[] lines = sign.getLines();
-			
-			if(ChatColor.stripColor(lines[0]).equals(MessageType.CHARACTER_SELECT.getTranslation().getValue()))
-			{
+
+			if (ChatColor.stripColor(lines[0]).equals(MessageType.CHARACTER_SELECT.getTranslation().getValue())) {
 				Player player = bpPlayer.getPlayer();
 				CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 				Team team = props.getTeam();
-				if(team != null)
-				{
+				if (team != null) {
 					CharacterType selectedCT = props.getCharacterType();
-					if(selectedCT == null)
-					{
+					if (selectedCT == null) {
 						String rawCharType = ChatColor.stripColor(lines[1]);
 						CharacterType charType = null;
-						for(CharacterType ct : CharacterType.values())
-							if(rawCharType.equalsIgnoreCase(ct.getProperName()))
-							{
+						for (CharacterType ct : CharacterType.values()) {
+							if (rawCharType.equalsIgnoreCase(ct.getProperName())) {
 								charType = ct;
 								break;
 							}
-						if(charType != null)
-						{
+						}
+						if (charType != null) {
 							String name = charType.getProperName();
-							
-							boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor(); 
-							
-							if(charType.requiresVIP() && !canUse)
-							{
+
+							ServerPosition pos = bpPlayer.getServerPosition();
+							boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
+									|| pos.isYoutube();
+
+							if (charType.requiresVIP() && !b) {
 								player.sendMessage(ChatColor.DARK_GRAY + "---");
-								player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
+								player.sendMessage(
+										MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
 								player.sendMessage(ChatColor.DARK_GRAY + "---");
 								return;
 							}
 							props.chooseCharacter(charType, true);
 							player.sendMessage(MessageType.LOBBY_CHARACTER_SELECTED.getTranslation().getValue(name));
+						} else {
+							player.sendMessage(
+									MessageType.LOBBY_CHARACTER_NOTFOUND.getTranslation().getValue(rawCharType));
 						}
-						else
-							player.sendMessage(MessageType.LOBBY_CHARACTER_NOTFOUND.getTranslation().getValue(rawCharType));
-					}
-					else
-					{
+					} else {
 						String charName = selectedCT.getProperName();
-						player.sendMessage(MessageType.LOBBY_CHARACTER_ALREADYSELECTED.getTranslation().getValue(charName));
+						player.sendMessage(
+								MessageType.LOBBY_CHARACTER_ALREADYSELECTED.getTranslation().getValue(charName));
 					}
-				}
-				else
+				} else {
 					player.sendMessage(MessageType.LOBBY_TEAM_WARN.getTranslation().getValue());
+				}
 			}
 		}
 	}
 
 	@Override
-	public void onPlayerPhysicallyInteractWithBlock(PlayerInteractEvent event, BPPlayer bpPlayer, Block blockBelow)
-	{
+	public void onPlayerPhysicallyInteractWithBlock(PlayerInteractEvent event, BPPlayer bpPlayer, Block blockBelow) {
 		Material type = blockBelow.getType();
 		@SuppressWarnings("deprecation")
 		byte data = blockBelow.getData();
-		
-		if(type == Material.WOOL && data == 2)
-		{
+
+		if (type == Material.WOOL && data == 2) {
 			CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 			props.chooseRandomTeam();
 		}
 	}
 
-	public void clickedWoolButton(PlayerInteractEvent event, Block block, BPPlayer bpPlayer)
-	{
+	public void clickedWoolButton(PlayerInteractEvent event, Block block, BPPlayer bpPlayer) {
 		Player player = bpPlayer.getPlayer();
 		@SuppressWarnings("deprecation")
 		byte data = block.getData();
-		
-		if(data == (byte) 11)
-		{
-			boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
-			if(!canUse)
-			{
+
+		if (data == (byte) 11) {
+			ServerPosition pos = bpPlayer.getServerPosition();
+			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+
+			if (!b) {
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());
 				return;
 			}
-			
+
 			CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 			Team team = props.getTeam();
-			
-			if(team == null)
-			{
+
+			if (team == null) {
 				CTFGame game = getGame();
-				if(game.canJoinTeam(Team.BLUE))
+				if (game.canJoinTeam(Team.BLUE)) {
 					props.chooseTeam(Team.BLUE);
-				else
+				} else {
 					player.sendMessage(MessageType.LOBBY_TEAM_BALANCEJOINRED.getTranslation().getValue());
+				}
 			}
-		}
-		else if(data == (byte) 14)
-		{
-			boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
-			if(!canUse)
-			{
+		} else if (data == (byte) 14) {
+			ServerPosition pos = bpPlayer.getServerPosition();
+			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+
+			if (!b) {
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());
 				return;
 			}
-			
+
 			CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 			Team team = props.getTeam();
-			
-			if(team == null)
-			{
+
+			if (team == null) {
 				CTFGame game = getGame();
-				
-				if(game.canJoinTeam(Team.RED))
+
+				if (game.canJoinTeam(Team.RED)) {
 					props.chooseTeam(Team.RED);
-				else
+				} else {
 					player.sendMessage(MessageType.LOBBY_TEAM_BALANCEJOINBLUE.getTranslation().getValue());
+				}
 			}
 		}
 	}
 
 	@Override
-	public boolean onPlayerChat(AsyncPlayerChatEvent event, BPPlayer bpPlayer)
-	{
+	public boolean onPlayerChat(AsyncPlayerChatEvent event, BPPlayer bpPlayer) {
 		CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 		Team team = props.getTeam();
-		if(team != null)
-		{
+		if (team != null) {
 			String message = event.getMessage();
-			if(message.charAt(0) == '@')
-			{
+			if (message.charAt(0) == '@') {
 				CTFGame game = getGame();
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);
@@ -370,10 +342,9 @@ public class CTFListener extends GameListener
 		}
 		return true;
 	}
-	
+
 	@Override
-	public CTFGame getGame()
-	{
+	public CTFGame getGame() {
 		return (CTFGame) super.getGame();
 	}
 }

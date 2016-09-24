@@ -7,31 +7,26 @@ import org.bukkit.command.CommandSender;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 
-public class TopClansCommandExecutor implements CommandExecutor
-{
+public class TopClansCommandExecutor implements CommandExecutor {
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(args.length <= 0)
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (args.length <= 0) {
 			StatisticsManager.listTopClans(sender, 10, 1);
-		else
-		{
+		} else {
 			int page;
-			try
-			{
+			try {
 				page = Integer.parseInt(args[0]);
-			}
-			catch(NumberFormatException e)
-			{
+			} catch (NumberFormatException e) {
 				sender.sendMessage(MessageType.COMMAND_TOP_EXE_INCORRECTPAGE.getTranslation().getValue());
 				return true;
 			}
-			if(page > 0)
+			if (page > 0) {
 				StatisticsManager.listTopClans(sender, 10, page);
-			else
+			} else {
 				sender.sendMessage(MessageType.COMMAND_TOP_EXE_NEGATIVEORZERO.getTranslation().getValue());
+			}
 		}
-		
+
 		return true;
 	}
 }

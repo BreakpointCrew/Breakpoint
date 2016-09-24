@@ -9,111 +9,82 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 
-public class BPSkull extends BPEquipment
-{
-	public BPSkull(String name, int minutesLeft)
-	{
+public class BPSkull extends BPEquipment {
+	public BPSkull(String name, int minutesLeft) {
 		super(name, minutesLeft);
 	}
 
 	@Override
-	public String getEquipmentLabel()
-	{
+	public String getEquipmentLabel() {
 		return "skull";
 	}
 
 	@Override
-	protected ItemStack getItemStackRaw()
-	{
+	protected ItemStack getItemStackRaw() {
 		String name = getName();
 		ItemStack is = new ItemStack(Material.SKULL_ITEM);
 		SkullType st = SkullType.parse(name);
 		SkullMeta sm = (SkullMeta) is.getItemMeta();
-		if (st == null)
-		{
+		if (st == null) {
 			is.setDurability((short) 3);
 			sm.setOwner(name);
 			sm.setDisplayName(MessageType.EQUIPMENT_PLAYERSKULLNAME.getTranslation().getValue(name));
-		}
-		else
-		{
+		} else {
 			name = st.getFormattedName();
-			
+
 			is.setDurability(st.getData());
-			
-			if(st.hasSkullTag())
+
+			if (st.hasSkullTag()) {
 				sm.setOwner(st.getSkullTag());
-			
+			}
+
 			sm.setDisplayName(MessageType.EQUIPMENT_SKULLNAME.getTranslation().getValue(name));
 		}
-		List<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		lore.add(MessageType.EQUIPMENT_SKULLOWNER.getTranslation().getValue(name));
 		sm.setLore(lore);
 		is.setItemMeta(sm);
 		return is;
 	}
 
-	public static boolean canBeRenamedTo(String name)
-	{
+	public static boolean canBeRenamedTo(String name) {
 		return SkullType.parse(name) == null;
 	}
 
-	public boolean canBeRenamed()
-	{
+	public boolean canBeRenamed() {
 		return SkullType.parse(getName()) == null;
 	}
-	
+
 	@Override
-	public BPSkull clone()
-	{
+	public BPSkull clone() {
 		return new BPSkull(getName(), getMinutesLeft());
 	}
 
 	@Override
-	protected String serializeRaw()
-	{
+	protected String serializeRaw() {
 		return getName() + "," + getMinutesLeft();
 	}
 
-	public static enum SkullType
-	{
-		//{{Non-VIP Skulls
-		WITHER(1, 145),
-		GHAST("MHF_Ghast", 140),
-		LAVA_SLIME("MHF_LavaSlime", 135, "MAGMA CUBE"),
-		BLAZE("MHF_Blaze", 130),
-		ENDERMAN("MHF_Enderman", 125),
-		MUSHROOM_COW("MHF_MushroomCow", 120, "MOOSHROOM"),
-		GOLEM("MHF_Golem", 115),
-		ZOMBIE_PIGMAN("MHF_PigZombie", 110, "PIGMAN"),
-		SLIME("MHF_Slime", 105),
-		CAVE_SPIDER("MHF_CaveSpider", 100, "CAVE SPIDER"),
-		SPIDER("MHF_Spider", 95),
-		CREEPER(4, 90),
-		SKELETON(0, 85),
-		ZOMBIE(2, 80),
-		VILLAGER("MHF_Villager", 75),
-		OCELOT("MHF_Ocelot", 70),
-		SQUID("MHF_Squid", 65),
-		SHEEP("MHF_Sheep", 60),
-		COW("MHF_Cow", 55),
-		PIG("MHF_Pig", 50),
-		CHICKEN("MHF_Chicken", 45),
-		//}}
-		
-		//{{VIP Skulls
-		CAKE("MHF_Cake", 250, true),
-		CACTUS("MHF_Cactus", 80, true),
-		MELON("MHF_Melon", 100, true),
-		PUMPKIN("MHF_Pumpkin", 100, true),
-		OAK_LOG("MHF_OakLog", 60, "OAK LOG", true),
-		TNT("MHF_TNT", 200, true),
-		TNT2("MHF_TNT2", 200, true),
-		CHEST("MHF_Chest", 120, true),
-		
+	public static enum SkullType {
+		// {{Non-VIP Skulls
+		WITHER(1, 145), GHAST("MHF_Ghast", 140), LAVA_SLIME("MHF_LavaSlime", 135, "MAGMA CUBE"), BLAZE("MHF_Blaze",
+				130), ENDERMAN("MHF_Enderman", 125), MUSHROOM_COW("MHF_MushroomCow", 120, "MOOSHROOM"), GOLEM(
+						"MHF_Golem", 115), ZOMBIE_PIGMAN("MHF_PigZombie", 110, "PIGMAN"), SLIME("MHF_Slime",
+								105), CAVE_SPIDER("MHF_CaveSpider", 100, "CAVE SPIDER"), SPIDER("MHF_Spider",
+										95), CREEPER(4, 90), SKELETON(0, 85), ZOMBIE(2, 80), VILLAGER("MHF_Villager",
+												75), OCELOT("MHF_Ocelot", 70), SQUID("MHF_Squid",
+														65), SHEEP("MHF_Sheep", 60), COW("MHF_Cow",
+																55), PIG("MHF_Pig", 50), CHICKEN("MHF_Chicken", 45),
+		// }}
+
+		// {{VIP Skulls
+		CAKE("MHF_Cake", 250, true), CACTUS("MHF_Cactus", 80, true), MELON("MHF_Melon", 100, true), PUMPKIN(
+				"MHF_Pumpkin", 100, true), OAK_LOG("MHF_OakLog", 60, "OAK LOG",
+						true), TNT("MHF_TNT", 200, true), TNT2("MHF_TNT2", 200, true), CHEST("MHF_Chest", 120, true),
+
 		GRAVELCZLP("GravelCZLP", 500, "GREJVL", true);
-		//}}
-		
+		// }}
+
 		private final boolean vip;
 		private final int data;
 		private final int cost;
@@ -121,108 +92,94 @@ public class BPSkull extends BPEquipment
 		private final String alias;
 		private static final int playerCost = 150;
 
-		private SkullType(int data, int cost, String alias, boolean vip)
-		{
+		private SkullType(int data, int cost, String alias, boolean vip) {
 			this.data = data;
 			this.alias = alias;
 			this.cost = cost;
-			skullTag = null;
+			this.skullTag = null;
 			this.vip = vip;
 		}
-		
-		private SkullType(String skullTag, int cost, String alias, boolean vip)
-		{
-			data = 3;
+
+		private SkullType(String skullTag, int cost, String alias, boolean vip) {
+			this.data = 3;
 			this.alias = alias;
 			this.cost = cost;
 			this.skullTag = skullTag;
 			this.vip = vip;
 		}
 
-		private SkullType(int data, int cost)
-		{
+		private SkullType(int data, int cost) {
 			this(data, cost, null, false);
 		}
-		
-		private SkullType(String skullTag, int cost)
-		{
+
+		private SkullType(String skullTag, int cost) {
 			this(skullTag, cost, null, false);
 		}
 
-		private SkullType(int data, int cost, boolean vip)
-		{
+		private SkullType(int data, int cost, boolean vip) {
 			this(data, cost, null, vip);
 		}
-		
-		private SkullType(String skullTag, int cost, boolean vip)
-		{
+
+		private SkullType(String skullTag, int cost, boolean vip) {
 			this(skullTag, cost, null, vip);
 		}
 
-		private SkullType(int data, int cost, String alias)
-		{
+		private SkullType(int data, int cost, String alias) {
 			this(data, cost, alias, false);
 		}
-		
-		private SkullType(String skullTag, int cost, String alias)
-		{
+
+		private SkullType(String skullTag, int cost, String alias) {
 			this(skullTag, cost, alias, false);
 		}
-		
-		public static SkullType parse(String string)
-		{
-			for (SkullType st : values())
-				if (st.name().equals(string) || (string.equals(st.getAlias())) || (st.hasSkullTag() && st.getSkullTag().equals(string)))
+
+		public static SkullType parse(String string) {
+			for (SkullType st : values()) {
+				if (st.name().equals(string) || string.equals(st.getAlias())
+						|| st.hasSkullTag() && st.getSkullTag().equals(string)) {
 					return st;
+				}
+			}
 			return null;
 		}
-		
-		public String getFormattedName()
-		{
+
+		public String getFormattedName() {
 			return hasAlias() ? getAlias() : name();
 		}
 
-		public static int getCost(SkullType st)
-		{
-			if (st == null)
+		public static int getCost(SkullType st) {
+			if (st == null) {
 				return playerCost;
-			else
+			} else {
 				return st.getCost();
+			}
 		}
 
-		public short getData()
-		{
-			return (short) data;
-		}
-		
-		public boolean hasAlias()
-		{
-			return alias != null;
+		public short getData() {
+			return (short) this.data;
 		}
 
-		public String getAlias()
-		{
-			return alias;
-		}
-		
-		public int getCost()
-		{
-			return cost;
-		}
-		
-		public boolean hasSkullTag()
-		{
-			return skullTag != null;
+		public boolean hasAlias() {
+			return this.alias != null;
 		}
 
-		public String getSkullTag()
-		{
-			return skullTag;
+		public String getAlias() {
+			return this.alias;
 		}
 
-		public boolean isVip()
-		{
-			return vip;
+		public int getCost() {
+			return this.cost;
+		}
+
+		public boolean hasSkullTag() {
+			return this.skullTag != null;
+		}
+
+		public String getSkullTag() {
+			return this.skullTag;
+		}
+
+		public boolean isVip() {
+			return this.vip;
 		}
 	}
 }

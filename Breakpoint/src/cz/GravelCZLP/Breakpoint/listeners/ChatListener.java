@@ -14,52 +14,47 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 
-public class ChatListener implements Listener
-{
-	
-	
+public class ChatListener implements Listener {
+
 	@EventHandler(ignoreCancelled = true)
-	public void onPlayerChat(AsyncPlayerChatEvent event)
-	{
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		BPPlayer bpPlayer = BPPlayer.get(player);
 		String message = event.getMessage();
 		String lastMsg = bpPlayer.getLastMessage();
-		
-		if (ChatUtils.isAd(message) && !bpPlayer.isStaff()) {
+
+		if (ChatUtils.isAd(message) && !bpPlayer.getServerPosition().isStaff()) {
 			player.kickPlayer("§4Reklama: web/server");
 			event.setCancelled(true);
 			return;
 		}
-		
-		if(message.equals(lastMsg))
-		{
+
+		if (message.equals(lastMsg)) {
 			event.setCancelled(true);
 			return;
-		}
-		else
+		} else {
 			bpPlayer.setLastMessage(message);
-		
+		}
+
 		Game game = bpPlayer.getGame();
 		boolean cont = game != null ? game.getListener().onPlayerChat(event, bpPlayer) : true;
-		
-		if(!cont)
+
+		if (!cont) {
 			return;
-		
-		if (bpPlayer.isStaff()) {
+		}
+
+		if (bpPlayer.getServerPosition().isStaff()) {
 			message = ChatColor.translateAlternateColorCodes('&', message);
 		}
-		
+
 		if (message.contains("hacky")) {
 			event.setCancelled(true);
 			player.sendMessage("§cOd toho je /report :)");
 			return;
 		}
-		
-		if(message.charAt(0) == '#')
-		{
-			if(bpPlayer.isStaff())
-			{
+
+		if (message.charAt(0) == '#') {
+			if (bpPlayer.getServerPosition().isStaff()) {
 				message = message.substring(1);
 				event.setCancelled(true);
 				String playerName = player.getName();
@@ -67,13 +62,10 @@ public class ChatListener implements Listener
 				Breakpoint.info("Staff chat: " + playerName + ": " + message);
 				return;
 			}
-		}
-		else if(message.charAt(0) == '&')
-		{
+		} else if (message.charAt(0) == '&') {
 			String playerName = player.getName();
 			Clan clan = Clan.getByPlayer(playerName);
-			if(clan != null)
-			{
+			if (clan != null) {
 				event.setCancelled(true);
 				bpPlayer.sendClanMessage(message);
 				Breakpoint.info("Clan [" + clan.getName() + "] chat: " + playerName + ": " + message);
@@ -88,22 +80,22 @@ public class ChatListener implements Listener
 		private static String web = "<\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>";
 		private static String IPV4 = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
 		private static String IPV6 = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
-		
+
 		private static Pattern webPattern = Pattern.compile(web);
 		private static Pattern ipv4Pattern = Pattern.compile(IPV4);
 		private static Pattern ipv6pattern = Pattern.compile(IPV6);
-		
+
 		public static boolean isAd(String input) {
-			
+
 			Matcher m = webPattern.matcher(input);
 			Matcher m1 = ipv4Pattern.matcher(input);
 			Matcher m2 = ipv6pattern.matcher(input);
 			if (m.matches() || m2.matches() || m1.matches()) {
 				return true;
 			}
-			
+
 			return false;
 		}
 	}
-	
+
 }

@@ -7,15 +7,15 @@ import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
 public class MinuteLimiterListener extends TimerTask {
 
 	DataListenerMain main;
-	
+
 	public MinuteLimiterListener(DataListenerMain d) {
-		main = d;
+		this.main = d;
 	}
 
 	@Override
 	public void run() {
-		main.connectionsPerMinute.clear();
-		main.requestsPerMin.clear();
+		this.main.connectionsPerMinute.clear();
+		this.main.requestsPerMin.clear();
 	}
 
 }

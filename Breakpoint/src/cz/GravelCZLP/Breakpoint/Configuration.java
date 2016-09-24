@@ -14,19 +14,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.fijistudios.jordan.FruitSQL;
 
-public class Configuration
-{
+public class Configuration {
 	private StorageType storageType;
-	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName, cwChallengeGame, token;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc, staffListLocation;
+	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName,
+			cwChallengeGame, token;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc,
+			staffListLocation;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
-	
-	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase, String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName, String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation, Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit, int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc, Location topKillsSign, Location staffListLocation,long BoostMelounTime, String token)
-	{
+
+	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase,
+			String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName,
+			String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation,
+			Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit,
+			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc,
+			Location topKillsSign, Location staffListLocation, long BoostMelounTime, String token) {
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
 		this.mySQLPort = mySQLPort;
@@ -51,394 +56,332 @@ public class Configuration
 		this.staffListLocation = staffListLocation;
 		this.token = token;
 	}
-	
-	public static Configuration load()
-	{
+
+	public static Configuration load() {
 		File file = getFile();
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
-		
+
 		String rawStorageType = yamlConfig.getString("storageType", "YAML");
 		StorageType storageType;
-		
-		try
-		{
+
+		try {
 			storageType = StorageType.valueOf(rawStorageType.toUpperCase());
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			storageType = StorageType.YAML;
 		}
-		
+
 		String mySQLHost = yamlConfig.getString("mySQL.host", "127.0.0.1");
 		int mySQLPort = yamlConfig.getInt("mySQL.port", 3306);
 		String mySQLDatabase = yamlConfig.getString("mySQL.database", "Breakpoint");
 		String mySQLUsername = yamlConfig.getString("mySQL.username", "admin");
 		String mySQLPassword = yamlConfig.getString("mySQL.password", "password");
 		String mySQLTablePlayers = yamlConfig.getString("mySQL.table.players", "breakpoint_players");
-		
+
 		String languageFileName = yamlConfig.getString("lang", "en");
 		String challengeGameName = yamlConfig.getString("cwChallengeGame", "CW");
-		
+
 		String token = yamlConfig.getString("tokens.discord", "NULL");
-		
+
 		Location lobbyLocation = deserializeLocation(yamlConfig.getString("locations.lobby", "world,0,64,0,0,0"));
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
-		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
-		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
-		
+		Location moneyInfoLocation = deserializeLocation(
+				yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
+		Location staffListLocation = deserializeLocation(
+				yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
+
 		Location topNPCLoc = deserializeLocation(yamlConfig.getString("locations.topkills.npc", "world,0,64,8,0,0"));
 		Location topSignLoc = deserializeLocation(yamlConfig.getString("locations.topkills.sign", "world,0,64,8,0,0"));
-		
+
 		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 18);
 		int cwEndHour = yamlConfig.getInt("cwEndHour", 21);
 		int cwWinLimit = yamlConfig.getInt("cwWinLimit", 3);
 		int cwEmeraldsForTotalWin = yamlConfig.getInt("cwEmeraldsForTotalWin", 25);
-		
+
 		long BoostMelounTime = yamlConfig.getLong("TimeForBoostMelounToSpawn", 10000L);
-		
+
 		List<String> lobbyMessages = yamlConfig.getStringList("lobbyMessages");
-		
-		if(lobbyMessages == null)
-			lobbyMessages = new LinkedList<String>();
-		
+
+		if (lobbyMessages == null) {
+			lobbyMessages = new LinkedList<>();
+		}
+
 		String[] vipFeatures = null;
 		List<String> list = yamlConfig.getStringList("vipFeatures");
 		int size = list.size();
-		
-		if(list == null || size <= 0)
+
+		if (list == null || size <= 0) {
 			vipFeatures = null;
-		else
+		} else {
 			vipFeatures = list.toArray(new String[size]);
-		
+		}
+
 		RandomShop randomShop = null;
 		String[] rawRSLoc = ((String) yamlConfig.get("randomshoploc", "world,0,0,0,0,0")).split(",");
-		Location rsLoc = new Location(Bukkit.getWorld(rawRSLoc[0]), Integer.parseInt(rawRSLoc[1]), Integer.parseInt(rawRSLoc[2]), Integer.parseInt(rawRSLoc[3]));
+		Location rsLoc = new Location(Bukkit.getWorld(rawRSLoc[0]), Integer.parseInt(rawRSLoc[1]),
+				Integer.parseInt(rawRSLoc[2]), Integer.parseInt(rawRSLoc[3]));
 		int rsDir = Integer.parseInt(rawRSLoc[4]);
 		randomShop = new RandomShop(rsLoc, rsDir);
-		
-		return new Configuration(
-				storageType,
-				mySQLHost,
-				mySQLPort,
-				mySQLDatabase,
-				mySQLUsername,
-				mySQLPassword,
-				mySQLTablePlayers,
-				languageFileName,
-				challengeGameName,
-				lobbyLocation,
-				shopLocation,
-				vipInfoLocation,
-				moneyInfoLocation,
-				randomShop,
-				cwBeginHour,
-				cwEndHour,
-				cwWinLimit,
-				cwEmeraldsForTotalWin,
-				lobbyMessages,
-				vipFeatures,
-				topNPCLoc,
-				topSignLoc,
-				staffListLocation,
-				BoostMelounTime,
-				token
-				);
+
+		return new Configuration(storageType, mySQLHost, mySQLPort, mySQLDatabase, mySQLUsername, mySQLPassword,
+				mySQLTablePlayers, languageFileName, challengeGameName, lobbyLocation, shopLocation, vipInfoLocation,
+				moneyInfoLocation, randomShop, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin, lobbyMessages,
+				vipFeatures, topNPCLoc, topSignLoc, staffListLocation, BoostMelounTime, token);
 	}
-	
-	public void save() throws IOException
-	{
+
+	public void save() throws IOException {
 		File file = getFile();
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
-		
-		yamlConfig.set("storageType", storageType.name());
-		
-		yamlConfig.set("mySQL.host", mySQLHost);
-		yamlConfig.set("mySQL.port", mySQLPort);
-		yamlConfig.set("mySQL.database", mySQLDatabase);
-		yamlConfig.set("mySQL.username", mySQLUsername);
-		yamlConfig.set("mySQL.password", mySQLPassword);
-		yamlConfig.set("mySQL.table.players", mySQLTablePlayers);
-		
-		yamlConfig.set("locations.lobby", serialize(lobbyLocation));
-		yamlConfig.set("locations.shop", serialize(shopLocation));
-		yamlConfig.set("locations.vipInfo", serialize(vipInfoLocation));
-		yamlConfig.set("locations.moneyInfo", serialize(moneyInfoLocation));
-		yamlConfig.set("locations.stafflist", serialize(staffListLocation));
-		yamlConfig.set("lobbyMessages", lobbyMessages);
-		yamlConfig.set("lang", languageFileName);
-		yamlConfig.set("vipFeatures", vipFeatures != null ? Arrays.asList(vipFeatures) : null);
-		
-		yamlConfig.set("cwChallengeGame", cwChallengeGame);
-		yamlConfig.set("cwBeginHour", cwBeginHour);
-		yamlConfig.set("cwEndHour", cwEndHour);
-		yamlConfig.set("cwWinLimit", cwWinLimit);
-		yamlConfig.set("cwEmeraldsForTotalWin", cwEmeraldsForTotalWin);
-		
-		/*yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
-		yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));*/
-		
+
+		yamlConfig.set("storageType", this.storageType.name());
+
+		yamlConfig.set("mySQL.host", this.mySQLHost);
+		yamlConfig.set("mySQL.port", this.mySQLPort);
+		yamlConfig.set("mySQL.database", this.mySQLDatabase);
+		yamlConfig.set("mySQL.username", this.mySQLUsername);
+		yamlConfig.set("mySQL.password", this.mySQLPassword);
+		yamlConfig.set("mySQL.table.players", this.mySQLTablePlayers);
+
+		yamlConfig.set("locations.lobby", serialize(this.lobbyLocation));
+		yamlConfig.set("locations.shop", serialize(this.shopLocation));
+		yamlConfig.set("locations.vipInfo", serialize(this.vipInfoLocation));
+		yamlConfig.set("locations.moneyInfo", serialize(this.moneyInfoLocation));
+		yamlConfig.set("locations.stafflist", serialize(this.staffListLocation));
+		yamlConfig.set("lobbyMessages", this.lobbyMessages);
+		yamlConfig.set("lang", this.languageFileName);
+		yamlConfig.set("vipFeatures", this.vipFeatures != null ? Arrays.asList(this.vipFeatures) : null);
+
+		yamlConfig.set("cwChallengeGame", this.cwChallengeGame);
+		yamlConfig.set("cwBeginHour", this.cwBeginHour);
+		yamlConfig.set("cwEndHour", this.cwEndHour);
+		yamlConfig.set("cwWinLimit", this.cwWinLimit);
+		yamlConfig.set("cwEmeraldsForTotalWin", this.cwEmeraldsForTotalWin);
+
+		/*
+		 * yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
+		 * yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));
+		 */
+
 		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
-		
+
 		yamlConfig.set("tokens.discord", "NULL");
-		
-		Location rsLoc = randomShop.getLocation();
-		int rsDir = randomShop.getDirection();
-		
-		yamlConfig.set("randomshoploc", rsLoc.getWorld().getName() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY() + "," + rsLoc.getBlockZ() + "," + rsDir);
+
+		Location rsLoc = this.randomShop.getLocation();
+		int rsDir = this.randomShop.getDirection();
+
+		yamlConfig.set("randomshoploc", rsLoc.getWorld().getName() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY()
+				+ "," + rsLoc.getBlockZ() + "," + rsDir);
 		yamlConfig.save(file);
 	}
-	
-	public FruitSQL connectToMySQL()
-	{
-		return new FruitSQL(mySQLHost, mySQLPort, mySQLDatabase, mySQLUsername, mySQLPassword);
+
+	public FruitSQL connectToMySQL() {
+		return new FruitSQL(this.mySQLHost, this.mySQLPort, this.mySQLDatabase, this.mySQLUsername, this.mySQLPassword);
 	}
-	
-	private static String serialize(Location loc)
-	{
-		if (loc == null) 
+
+	private static String serialize(Location loc) {
+		if (loc == null) {
 			return "";
-		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
+		}
+		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw()
+				+ "," + loc.getPitch();
 	}
-	
-	public static Location deserializeLocation(String raw)
-	{
+
+	public static Location deserializeLocation(String raw) {
 		String[] rawSplit = raw.split(",");
-		return new Location(Bukkit.getServer().getWorld(rawSplit[0]), Double.parseDouble(rawSplit[1]), Double.parseDouble(rawSplit[2]), Double.parseDouble(rawSplit[3]), Float.parseFloat(rawSplit[4]), rawSplit.length >= 6 ? Float.parseFloat(rawSplit[5]) : 0F);
+		return new Location(Bukkit.getServer().getWorld(rawSplit[0]), Double.parseDouble(rawSplit[1]),
+				Double.parseDouble(rawSplit[2]), Double.parseDouble(rawSplit[3]), Float.parseFloat(rawSplit[4]),
+				rawSplit.length >= 6 ? Float.parseFloat(rawSplit[5]) : 0F);
 	}
-	
-	public static File getFile()
-	{
+
+	public static File getFile() {
 		return new File("plugins/Breakpoint/config.yml");
 	}
 
-	public String getLanguageFileName()
-	{
-		return languageFileName;
+	public String getLanguageFileName() {
+		return this.languageFileName;
 	}
-	
-	public void setLanguageFileName(String languageFileName)
-	{
+
+	public void setLanguageFileName(String languageFileName) {
 		this.languageFileName = languageFileName;
 	}
 
-	public Location getLobbyLocation()
-	{
-		return lobbyLocation;
+	public Location getLobbyLocation() {
+		return this.lobbyLocation;
 	}
 
-	public void setLobbyLocation(Location lobbyLocation)
-	{
+	public void setLobbyLocation(Location lobbyLocation) {
 		this.lobbyLocation = lobbyLocation;
 	}
 
-	public Location getShopLocation()
-	{
-		return shopLocation;
+	public Location getShopLocation() {
+		return this.shopLocation;
 	}
 
-	public void setShopLocation(Location shopLocation)
-	{
+	public void setShopLocation(Location shopLocation) {
 		this.shopLocation = shopLocation;
 	}
 
-	public Location getVipInfoLocation()
-	{
-		return vipInfoLocation;
+	public Location getVipInfoLocation() {
+		return this.vipInfoLocation;
 	}
 
-	public void setVipInfoLocation(Location vipInfoLocation)
-	{
+	public void setVipInfoLocation(Location vipInfoLocation) {
 		this.vipInfoLocation = vipInfoLocation;
 	}
 
-	public Location getMoneyInfoLocation()
-	{
-		return moneyInfoLocation;
+	public Location getMoneyInfoLocation() {
+		return this.moneyInfoLocation;
 	}
 
-	public void setMoneyInfoLocation(Location moneyInfoLocation)
-	{
+	public void setMoneyInfoLocation(Location moneyInfoLocation) {
 		this.moneyInfoLocation = moneyInfoLocation;
 	}
 
-	public RandomShop getRandomShop()
-	{
-		return randomShop;
+	public RandomShop getRandomShop() {
+		return this.randomShop;
 	}
 
-	public void setRandomShop(RandomShop randomShop)
-	{
+	public void setRandomShop(RandomShop randomShop) {
 		this.randomShop = randomShop;
 	}
 
-	public List<String> getLobbyMessages()
-	{
-		return lobbyMessages;
+	public List<String> getLobbyMessages() {
+		return this.lobbyMessages;
 	}
 
-	public void setLobbyMessages(List<String> lobbyMessages)
-	{
+	public void setLobbyMessages(List<String> lobbyMessages) {
 		this.lobbyMessages = lobbyMessages;
 	}
 
-	public String[] getVIPFeatures()
-	{
-		return vipFeatures;
+	public String[] getVIPFeatures() {
+		return this.vipFeatures;
 	}
 
-	public void setVIPFeatures(String[] vipFeatures)
-	{
+	public void setVIPFeatures(String[] vipFeatures) {
 		this.vipFeatures = vipFeatures;
 	}
 
-	public String getCWChallengeGame()
-	{
-		return cwChallengeGame;
+	public String getCWChallengeGame() {
+		return this.cwChallengeGame;
 	}
 
-	public void setCWChallengeGame(String cwChallengeGame)
-	{
+	public void setCWChallengeGame(String cwChallengeGame) {
 		this.cwChallengeGame = cwChallengeGame;
 	}
 
-	public int getCWBeginHour()
-	{
-		return cwBeginHour;
+	public int getCWBeginHour() {
+		return this.cwBeginHour;
 	}
 
-	public void setCWBeginHour(int cwBeginHour)
-	{
+	public void setCWBeginHour(int cwBeginHour) {
 		this.cwBeginHour = cwBeginHour;
 	}
 
-	public int getCWEndHour()
-	{
-		return cwEndHour;
+	public int getCWEndHour() {
+		return this.cwEndHour;
 	}
 
-	public void setCWEndHour(int cwEndHour)
-	{
+	public void setCWEndHour(int cwEndHour) {
 		this.cwEndHour = cwEndHour;
 	}
 
-	public int getCWWinLimit()
-	{
-		return cwWinLimit;
+	public int getCWWinLimit() {
+		return this.cwWinLimit;
 	}
 
-	public void setCWWinLimit(int cwWinLimit)
-	{
+	public void setCWWinLimit(int cwWinLimit) {
 		this.cwWinLimit = cwWinLimit;
 	}
 
-	public int getCWEmeraldsForTotalWin()
-	{
-		return cwEmeraldsForTotalWin;
+	public int getCWEmeraldsForTotalWin() {
+		return this.cwEmeraldsForTotalWin;
 	}
 
-	public void setCWEmeraldsForTotalWin(int cwEmeraldsForTotalWin)
-	{
+	public void setCWEmeraldsForTotalWin(int cwEmeraldsForTotalWin) {
 		this.cwEmeraldsForTotalWin = cwEmeraldsForTotalWin;
 	}
 
-	public StorageType getStorageType()
-	{
-		return storageType;
+	public StorageType getStorageType() {
+		return this.storageType;
 	}
 
-	public void setStorageType(StorageType storageType)
-	{
+	public void setStorageType(StorageType storageType) {
 		this.storageType = storageType;
 	}
 
-	public String getMySQLHost()
-	{
-		return mySQLHost;
+	public String getMySQLHost() {
+		return this.mySQLHost;
 	}
 
-	public void setMySQLHost(String mySQLHost)
-	{
+	public void setMySQLHost(String mySQLHost) {
 		this.mySQLHost = mySQLHost;
 	}
 
-	public String getMySQLDatabase()
-	{
-		return mySQLDatabase;
+	public String getMySQLDatabase() {
+		return this.mySQLDatabase;
 	}
 
-	public void setMySQLDatabase(String mySQLDatabase)
-	{
+	public void setMySQLDatabase(String mySQLDatabase) {
 		this.mySQLDatabase = mySQLDatabase;
 	}
 
-	public String getMySQLUsername()
-	{
-		return mySQLUsername;
+	public String getMySQLUsername() {
+		return this.mySQLUsername;
 	}
 
-	public void setMySQLUsername(String mySQLUsername)
-	{
+	public void setMySQLUsername(String mySQLUsername) {
 		this.mySQLUsername = mySQLUsername;
 	}
 
-	public String getMySQLPassword()
-	{
-		return mySQLPassword;
+	public String getMySQLPassword() {
+		return this.mySQLPassword;
 	}
 
-	public void setMySQLPassword(String mySQLPassword)
-	{
+	public void setMySQLPassword(String mySQLPassword) {
 		this.mySQLPassword = mySQLPassword;
 	}
 
-	public int getMySQLPort()
-	{
-		return mySQLPort;
+	public int getMySQLPort() {
+		return this.mySQLPort;
 	}
 
-	public void setMySQLPort(int mySQLPort)
-	{
+	public void setMySQLPort(int mySQLPort) {
 		this.mySQLPort = mySQLPort;
 	}
 
-	public String getMySQLTablePlayers()
-	{
-		return mySQLTablePlayers;
+	public String getMySQLTablePlayers() {
+		return this.mySQLTablePlayers;
 	}
 
-	public void setMySQLTablePlayers(String mySQLTablePlayers)
-	{
+	public void setMySQLTablePlayers(String mySQLTablePlayers) {
 		this.mySQLTablePlayers = mySQLTablePlayers;
 	}
-	public void setTopSignLocation(Location loc) 
-	{
-		TopKillSignLoc = loc;
-	}
-	public void setTopNPCLocation(Location loc)
-	{
-		NPCTopKillLoc = loc;
-	}
-	public Location getTopSignLocation()
-	{
-		return TopKillSignLoc;
-	}
-	public Location getTopNPCLocation()
-	{
-		return NPCTopKillLoc;
+
+	public void setTopSignLocation(Location loc) {
+		this.TopKillSignLoc = loc;
 	}
 
-	public Location getStaffListLocation() 
-	{
-		return staffListLocation;
+	public void setTopNPCLocation(Location loc) {
+		this.NPCTopKillLoc = loc;
 	}
-	
-	public long getTimeForSpeedMeloun() 
-	{
-		return BoostMelounTime;
+
+	public Location getTopSignLocation() {
+		return this.TopKillSignLoc;
+	}
+
+	public Location getTopNPCLocation() {
+		return this.NPCTopKillLoc;
+	}
+
+	public Location getStaffListLocation() {
+		return this.staffListLocation;
+	}
+
+	public long getTimeForSpeedMeloun() {
+		return this.BoostMelounTime;
 	}
 
 	public String getBotToken() {
-		return token;
+		return this.token;
 	}
 }

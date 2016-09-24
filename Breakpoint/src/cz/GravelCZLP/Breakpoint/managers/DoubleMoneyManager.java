@@ -13,39 +13,34 @@ import org.bukkit.inventory.meta.ItemMeta;
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFMap;
 
-public class DoubleMoneyManager
-{
+public class DoubleMoneyManager {
 	private static boolean doubleXP;
-	
-	public static void update()
-	{
+
+	public static void update() {
 		updateDoubleXP();
 	}
-	
-	private static void updateDoubleXP()
-	{
+
+	private static void updateDoubleXP() {
 		Calendar calendar = Calendar.getInstance();
 		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		
+
 		doubleXP = day == Calendar.SUNDAY;
 	}
-	
-	public static boolean isDoubleXP()
-	{
+
+	public static boolean isDoubleXP() {
 		return doubleXP;
 	}
-	
-	public static void startBoostLoop()
-	{
+
+	public static void startBoostLoop() {
 		if (!isDoubleXP()) {
 			return;
 		}
 		Bukkit.getScheduler().runTaskTimer(Breakpoint.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-			
+
 				CTFMap map = (CTFMap) GameManager.getGame("ctf").getCurrentMap();
-				
+
 				for (Location loc : map.getMelounBoostsLocations()) {
 					for (Entity ent : loc.getWorld().getNearbyEntities(loc, 1, 1, 1)) {
 						if (ent instanceof Item) {

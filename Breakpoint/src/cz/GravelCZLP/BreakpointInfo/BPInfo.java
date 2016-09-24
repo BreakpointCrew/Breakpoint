@@ -10,41 +10,48 @@ public class BPInfo {
 	private String Cwg;
 	private int pictf;
 	private int pidm;
-	
-	public BPInfo(int playersInLobby, int playersInGame, int redCrystals, int blueCrystals, 
-			String bestPlayerInDM, String CWGame, int playersInCTF, int playersInDM) {
-		pil = playersInLobby;
-		pig = playersInGame;
-		rc = redCrystals;
-		bc = blueCrystals;
-		bestPlayerDm = bestPlayerInDM;
-		Cwg = CWGame;
-		pictf = playersInCTF;
-		pidm = playersInDM;
+
+	public BPInfo(int playersInLobby, int playersInGame, int redCrystals, int blueCrystals, String bestPlayerInDM,
+			String CWGame, int playersInCTF, int playersInDM) {
+		this.pil = playersInLobby;
+		this.pig = playersInGame;
+		this.rc = redCrystals;
+		this.bc = blueCrystals;
+		this.bestPlayerDm = bestPlayerInDM;
+		this.Cwg = CWGame;
+		this.pictf = playersInCTF;
+		this.pidm = playersInDM;
 	}
-	
+
 	public int getPlayerIsLobby() {
-		return pil;
+		return this.pil;
 	}
+
 	public int getPlayerInGame() {
-		return pig;
+		return this.pig;
 	}
+
 	public int getRedCrystals() {
-		return rc;
+		return this.rc;
 	}
+
 	public int getBlueCrystals() {
-		return bc;
+		return this.bc;
 	}
+
 	public String getBestPlayerInDM() {
-		return bestPlayerDm;
+		return this.bestPlayerDm;
 	}
+
 	public String getCWGame() {
-		return Cwg;
+		return this.Cwg;
 	}
+
 	public int getPlayersInCTF() {
-		return pictf;
+		return this.pictf;
 	}
+
 	public int getPlayersInDM() {
-		return pidm;
+		return this.pidm;
 	}
 }

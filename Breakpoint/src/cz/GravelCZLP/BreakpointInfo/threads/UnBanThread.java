@@ -7,14 +7,14 @@ import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
 public class UnBanThread extends TimerTask {
 
 	DataListenerMain main;
-	
+
 	public UnBanThread(DataListenerMain data) {
-		main = data;
+		this.main = data;
 	}
-	
+
 	@Override
 	public void run() {
-		main.banned.clear();
+		this.main.banned.clear();
 	}
-	
+
 }

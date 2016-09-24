@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry exported="true" kind="lib" path="/home/jindra/Stažené/Discord4j-2.5.4-shaded.jar"/>
 	<classpathentry exported="true" kind="lib" path="/home/jindra/Plocha/libs/internet/kryonet-2.21-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/jindra/Stažené/Discord4j-2.5.4-shaded.jar"/>
 	<classpathentry kind="lib" path="/home/jindra/Plocha/libs/spigot-1.10.2-R0.1-SNAPSHOT.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/home/jindra/Plocha/spigot%20docs/spigotdocs.zip!/"/>

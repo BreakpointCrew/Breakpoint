@@ -23,8 +23,7 @@ import cz.GravelCZLP.Breakpoint.maps.VoteRenderer;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
 @SuppressWarnings("deprecation")
-public class MapPoll
-{
+public class MapPoll {
 	private final Game game;
 	private Map<String, Integer> votes;
 	public String[] maps;
@@ -33,63 +32,57 @@ public class MapPoll
 	private int result;
 	private final short mapViewId;
 
-	public MapPoll(Game game)
-	{
+	public MapPoll(Game game) {
 		this.game = game;
-		votes = new HashMap<String, Integer>();
-		haveVoted = new ArrayList<String>();
-		voting = false;
-		mapViewId = game.getVotingMapId();
+		this.votes = new HashMap<>();
+		this.haveVoted = new ArrayList<>();
+		this.voting = false;
+		this.mapViewId = game.getVotingMapId();
 		getMapsInOrder(game.getMaps(), game.getPlayers().size());
 		setMapImages();
 		startCountdown();
 	}
 
-	public void getMapsInOrder(List<? extends BPMap> availableMaps, int players)
-	{
-		List<BPMap> allowedMaps = new ArrayList<BPMap>();
-		Map<String, Integer> result = new HashMap<String, Integer>();
-		maps = new String[5];
+	public void getMapsInOrder(List<? extends BPMap> availableMaps, int players) {
+		List<BPMap> allowedMaps = new ArrayList<>();
+		Map<String, Integer> result = new HashMap<>();
+		this.maps = new String[5];
 		for (BPMap map : availableMaps) {
-			if(map.isPlayable()) {
+			if (map.isPlayable()) {
 				if (map.isPlayableWith(players)) {
 					allowedMaps.add(map);
 				}
 			}
 		}
 
-		for (int i = 0; i < 5; i++)
-		{
+		for (int i = 0; i < 5; i++) {
 			BPMap topMap = null;
 			long topTime = 1000000000000000000L;
-			for (BPMap map : allowedMaps)
-			{
+			for (BPMap map : allowedMaps) {
 				long lastTimePlayed = map.getLastTimePlayed();
-				if (lastTimePlayed < topTime)
-				{
+				if (lastTimePlayed < topTime) {
 					topMap = map;
 					topTime = lastTimePlayed;
 				}
 			}
-			if (topMap != null)
-			{
+			if (topMap != null) {
 				allowedMaps.remove(topMap);
 				result.put(topMap.getName(), 0);
-				maps[i] = topMap.getName();
-			}
-			else
+				this.maps[i] = topMap.getName();
+			} else {
 				break;
+			}
 		}
-		votes = result;
+		this.votes = result;
 	}
 
 	public int getBestMap() {
 		int nejHlas = 0;
-		ArrayList<Integer> nejMapy = new ArrayList<Integer>();
-		for (int mapNo = 0; mapNo < maps.length; mapNo++) {
-			if (maps[mapNo] != null) {
-				String stringMap = maps[mapNo];
-				int hlasy = votes.get(stringMap);
+		ArrayList<Integer> nejMapy = new ArrayList<>();
+		for (int mapNo = 0; mapNo < this.maps.length; mapNo++) {
+			if (this.maps[mapNo] != null) {
+				String stringMap = this.maps[mapNo];
+				int hlasy = this.votes.get(stringMap);
 				if (hlasy >= nejHlas) {
 					if (hlasy > nejHlas) {
 						nejMapy.clear();
@@ -104,10 +97,9 @@ public class MapPoll
 		if (nejMapy.size() > 1) {
 			for (int i = 0; i < nejMapy.size(); i++) {
 				int bestMapIndex = nejMapy.get(i);
-				String bestMapName = maps[bestMapIndex];
-				BPMap bestMap = game.getMapByName(bestMapName);
-				if(game.isMapActive(bestMap))
-				{
+				String bestMapName = this.maps[bestMapIndex];
+				BPMap bestMap = this.game.getMapByName(bestMapName);
+				if (this.game.isMapActive(bestMap)) {
 					nejMapy.remove(i);
 					break;
 				}
@@ -125,183 +117,183 @@ public class MapPoll
 		}
 	}
 
-	public void setMapImages()
-	{
-		for (int i = 0; i < maps.length; i++)
-			if (maps[i] != null)
-				setMapImage(i, maps[i]);
+	public void setMapImages() {
+		for (int i = 0; i < this.maps.length; i++) {
+			if (this.maps[i] != null) {
+				setMapImage(i, this.maps[i]);
+			}
+		}
 	}
 
-	public void setMapImage(int mapId, String mapName)
-	{
-		VoteRenderer vr = new VoteRenderer(game.getMapByName(mapName));
-		MapView mv = Bukkit.getMap((short) (mapViewId + mapId));
+	public void setMapImage(int mapId, String mapName) {
+		VoteRenderer vr = new VoteRenderer(this.game.getMapByName(mapName));
+		MapView mv = Bukkit.getMap((short) (this.mapViewId + mapId));
 		vr.set(mv);
 	}
 
-	public void showOptions()
-	{
-		for (BPPlayer bpPlayer : game.getPlayers())
-			if (bpPlayer.isInGame())
+	public void showOptions() {
+		for (BPPlayer bpPlayer : this.game.getPlayers()) {
+			if (bpPlayer.isInGame()) {
 				showOptions(bpPlayer);
+			}
+		}
 	}
 
-	public void showOptions(BPPlayer bpPlayer)
-	{
+	public void showOptions(BPPlayer bpPlayer) {
 		Player player = bpPlayer.getPlayer();
 		PlayerInventory inv = player.getInventory();
 		PlayerManager.clearHotBar(inv);
-		for (int i = 0; i < maps.length; i++)
-			if (maps[i] != null)
+		for (int i = 0; i < this.maps.length; i++) {
+			if (this.maps[i] != null) {
 				inv.setItem(i, getMapItem(i));
+			}
+		}
 		updateOptions(player);
 	}
 
-	public void updateOptions(Player player)
-	{
-		for (int i = 0; i < maps.length; i++)
-			if (maps[i] != null)
-				player.sendMap(Bukkit.getMap((short) (mapViewId + i)));
+	public void updateOptions(Player player) {
+		for (int i = 0; i < this.maps.length; i++) {
+			if (this.maps[i] != null) {
+				player.sendMap(Bukkit.getMap((short) (this.mapViewId + i)));
+			}
+		}
 	}
 
-	public ItemStack getMapItem(int i)
-	{
-		ItemStack is = new ItemStack(Material.MAP, 1, (short) (mapViewId + i));
+	public ItemStack getMapItem(int i) {
+		ItemStack is = new ItemStack(Material.MAP, 1, (short) (this.mapViewId + i));
 		ItemMeta im = is.getItemMeta();
-		im.setDisplayName("" + ChatColor.YELLOW + ChatColor.GOLD + maps[i]);
+		im.setDisplayName("" + ChatColor.YELLOW + ChatColor.GOLD + this.maps[i]);
 		is.setItemMeta(im);
 		return is;
 	}
 
-	public boolean isColored(int amount)
-	{
-		if (amount <= 0)
+	public boolean isColored(int amount) {
+		if (amount <= 0) {
 			return false;
-		for (int i : votes.values())
-			if (i > amount)
+		}
+		for (int i : this.votes.values()) {
+			if (i > amount) {
 				return false;
+			}
+		}
 		return true;
 	}
 
-	public int getMapPercentage(double curVotes)
-	{
+	public int getMapPercentage(double curVotes) {
 		double allVotes = 0;
-		for (int i : votes.values())
+		for (int i : this.votes.values()) {
 			allVotes += i;
-		return (int) ((curVotes / allVotes) * 100);
+		}
+		return (int) (curVotes / allVotes * 100);
 	}
 
-	public boolean hasVoted(String playerName)
-	{
-		return haveVoted.contains(playerName);
+	public boolean hasVoted(String playerName) {
+		return this.haveVoted.contains(playerName);
 	}
 
-	public boolean isIdCorrect(int id)
-	{
+	public boolean isIdCorrect(int id) {
 		int size = 0;
-		for (int i = 0; i < maps.length; i++)
-			if (maps[i] != null)
+		for (String map : this.maps) {
+			if (map != null) {
 				size++;
-			else
+			} else {
 				break;
+			}
+		}
 		return id >= 0 && id <= size;
 	}
-	
-	public int vote(String playerName, int mapId, int strength)
-	{
-		String mapName = maps[mapId];
-		int curVotes = votes.get(mapName) + strength;
-		votes.put(mapName, curVotes);
-		haveVoted.add(playerName);
-		
-		for(BPPlayer bpPlayer : game.getPlayers())
-			bpPlayer.getScoreboardManager().updateVoteOptions(votes);
-		
+
+	public int vote(String playerName, int mapId, int strength) {
+		String mapName = this.maps[mapId];
+		int curVotes = this.votes.get(mapName) + strength;
+		this.votes.put(mapName, curVotes);
+		this.haveVoted.add(playerName);
+
+		for (BPPlayer bpPlayer : this.game.getPlayers()) {
+			bpPlayer.getScoreboardManager().updateVoteOptions(this.votes);
+		}
+
 		return curVotes;
 	}
 
 	public void endVoting() {
-		voting = false;
+		this.voting = false;
 		int mapId = getBestMap();
 		if (mapId == -1) {
-			if (game.getPlayers() != null) {
-				for (BPPlayer bpPlayer : game.getPlayers()) {
+			if (this.game.getPlayers() != null) {
+				for (BPPlayer bpPlayer : this.game.getPlayers()) {
 					bpPlayer.setSingleTeleportLocation(null);
 					bpPlayer.setLeaveAfterDeath(true);
 					bpPlayer.getPlayer().setHealth(0.0);
-					bpPlayer.getPlayer().sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());
-					result = -1;
-					game.noPlayers = true;
+					bpPlayer.getPlayer()
+							.sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());
+					this.result = -1;
+					this.game.noPlayers = true;
 					return;
 				}
 			}
+			return;
 		}
-		String mapName = maps[mapId];
-		int score = votes.get(mapName);
-		result = game.getMaps().indexOf(game.getMapByName(mapName));
+		String mapName = this.maps[mapId];
+		int score = this.votes.get(mapName);
+		this.result = this.game.getMaps().indexOf(this.game.getMapByName(mapName));
 		int perc = getMapPercentage(score);
-		
+
 		PlayerManager.clearHotBars();
-		
-		for(BPPlayer bpPlayer : game.getPlayers())
+
+		for (BPPlayer bpPlayer : this.game.getPlayers()) {
 			bpPlayer.getScoreboardManager().updateSidebarObjective();
-		
-		game.broadcast(MessageType.VOTING_END.getTranslation().getValue(mapName, score, perc), true);
+		}
+
+		this.game.broadcast(MessageType.VOTING_END.getTranslation().getValue(mapName, score, perc), true);
 	}
 
-	public void endPoll()
-	{
-		if (result == -1) {
-			List<BPMap> maps = new ArrayList<BPMap>();
-			for (BPMap bpMap : game.getMaps()) {
+	public void endPoll() {
+		if (this.result == -1) {
+			List<BPMap> maps = new ArrayList<>();
+			for (BPMap bpMap : this.game.getMaps()) {
 				if (bpMap.isPlayable()) {
 					maps.add(bpMap);
 				}
 			}
-			game.changeMap(game.getRandomMapWithCapacity(2));
+			this.game.changeMap(this.game.getRandomMapWithCapacity(2));
 			return;
 		}
-		game.changeMap(result);
-		game.setMapPoll(null);
+		this.game.changeMap(this.result);
+		this.game.setMapPoll(null);
 	}
 
-	public void startCountdown()
-	{
-		voting = true;
+	public void startCountdown() {
+		this.voting = true;
 		Breakpoint plugin = Breakpoint.getInstance();
-		
-		for(BPPlayer bpPlayer : game.getPlayers())
-		{
+
+		for (BPPlayer bpPlayer : this.game.getPlayers()) {
 			SBManager sbm = bpPlayer.getScoreboardManager();
-			
+
 			showOptions();
 			sbm.restartVoteObj();
-			sbm.updateVoteOptions(votes);
+			sbm.updateVoteOptions(this.votes);
 			sbm.updateSidebarObjective();
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				endVoting();
 			}
 		}, 20L * 30);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				endPoll();
 			}
 		}, 20L * 40);
 	}
 
-	public boolean getVoting()
-	{
-		return voting;
+	public boolean getVoting() {
+		return this.voting;
 	}
 
-	public int getNumOfMaps()
-	{
-		return maps.length;
+	public int getNumOfMaps() {
+		return this.maps.length;
 	}
 }

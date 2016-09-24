@@ -1,35 +1,28 @@
 package cz.GravelCZLP.Breakpoint.players;
 
-public enum CooldownType
-{
-	HEAL("Breakpoint.heal"), 
-	POTION_RAW("Breakpoint.chemik.potion.", true), 
-	BOW_PYRO("Breakpoint.pyroman.bow"), 
-	BOW_SNIPER("Breakpoint.odstrelovac.bow"), 
-	BLAZE_ROD_MAGE("Breakpoint.cernokneznik.blaze_rod"), 
-	STICK_MAGE("Breakpoint.cernokneznik.stick"), 
-	FEATHER_MAGE("Breakpoint.cernokneznik.feather");
+public enum CooldownType {
+	HEAL("Breakpoint.heal"), POTION_RAW("Breakpoint.chemik.potion.", true), BOW_PYRO(
+			"Breakpoint.pyroman.bow"), BOW_SNIPER("Breakpoint.odstrelovac.bow"), BLAZE_ROD_MAGE(
+					"Breakpoint.cernokneznik.blaze_rod"), STICK_MAGE(
+							"Breakpoint.cernokneznik.stick"), FEATHER_MAGE("Breakpoint.cernokneznik.feather");
+
 	private final String path;
 	private final boolean raw;
 
-	private CooldownType(String path)
-	{
+	private CooldownType(String path) {
 		this(path, false);
 	}
 
-	private CooldownType(String path, boolean raw)
-	{
+	private CooldownType(String path, boolean raw) {
 		this.path = path;
 		this.raw = raw;
 	}
 
-	public String getPath()
-	{
-		return path;
+	public String getPath() {
+		return this.path;
 	}
 
-	public boolean isRaw()
-	{
-		return raw;
+	public boolean isRaw() {
+		return this.raw;
 	}
 }

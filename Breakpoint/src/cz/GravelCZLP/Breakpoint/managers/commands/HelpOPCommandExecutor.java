@@ -10,52 +10,44 @@ import org.bukkit.entity.Player;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
-public class HelpOPCommandExecutor implements CommandExecutor
-{
+public class HelpOPCommandExecutor implements CommandExecutor {
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(!(sender instanceof Player))
-		{
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage("Players only.");
 			return false;
 		}
-		
+
 		Player player = (Player) sender;
-		
-		if(args.length <= 0)
-		{
+
+		if (args.length <= 0) {
 			player.sendMessage(MessageType.COMMAND_HELPOP_USAGE.getTranslation().getValue(label));
 			return false;
 		}
-		
+
 		String question = args[0];
-		
-		for(int i = 1; i < args.length; i++)
+
+		for (int i = 1; i < args.length; i++) {
 			question += " " + args[i];
-		
+		}
+
 		boolean success = askHelpers(player, question);
-		
-		if(success)
-		{
+
+		if (success) {
 			player.sendMessage(MessageType.COMMAND_HELPOP_SUCCESS.getTranslation().getValue());
 			return true;
-		}
-		else
-		{
+		} else {
 			player.sendMessage(MessageType.COMMAND_HELPOP_FAILURE.getTranslation().getValue());
 			return false;
 		}
 	}
-	
-	private static boolean askHelpers(Player sender, String question)
-	{
+
+	private static boolean askHelpers(Player sender, String question) {
 		int count = 0;
-		
-		for(Player player : Bukkit.getOnlinePlayers()) {
+
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			BPPlayer bpPlayer = BPPlayer.get(player);
-			if(bpPlayer.getPlayer().hasPermission("Breakpoint.helper"))
-			{
+			if (bpPlayer.getPlayer().hasPermission("Breakpoint.helper")) {
 				player.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + sender.getName() + ": " + question);
 				count++;
 			}

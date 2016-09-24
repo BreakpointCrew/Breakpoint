@@ -2,43 +2,37 @@ package cz.GravelCZLP.Breakpoint.equipment;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 
-public enum ArmorMerchandiseType
-{
-	BOOTS(MessageType.SHOP_ITEM_ARMOR_BOOTS, 4),
-	LEGGINGS(MessageType.SHOP_ITEM_ARMOR_LEGGINGS, 7),
-	CHESTPLATE(MessageType.SHOP_ITEM_ARMOR_CHESTPLATE, 8),
-	HELMET(MessageType.SHOP_ITEM_ARMOR_HELMET, 5);
-	
+public enum ArmorMerchandiseType {
+	BOOTS(MessageType.SHOP_ITEM_ARMOR_BOOTS, 4), LEGGINGS(MessageType.SHOP_ITEM_ARMOR_LEGGINGS,
+			7), CHESTPLATE(MessageType.SHOP_ITEM_ARMOR_CHESTPLATE, 8), HELMET(MessageType.SHOP_ITEM_ARMOR_HELMET, 5);
+
 	private final MessageType messageType;
 	private final int materialAmount;
-	
-	private ArmorMerchandiseType(MessageType messageType, int materialAmount)
-	{
+
+	private ArmorMerchandiseType(MessageType messageType, int materialAmount) {
 		this.messageType = messageType;
 		this.materialAmount = materialAmount;
 	}
-	
-	public static ArmorMerchandiseType parse(String string)
-	{
-		for(ArmorMerchandiseType amt : values())
-			if(amt.getTranslated().equalsIgnoreCase(string))
+
+	public static ArmorMerchandiseType parse(String string) {
+		for (ArmorMerchandiseType amt : values()) {
+			if (amt.getTranslated().equalsIgnoreCase(string)) {
 				return amt;
-		
+			}
+		}
+
 		return null;
 	}
-	
-	public String getTranslated()
-	{
+
+	public String getTranslated() {
 		return getMessageType().getTranslation().getValue();
 	}
 
-	public MessageType getMessageType()
-	{
-		return messageType;
+	public MessageType getMessageType() {
+		return this.messageType;
 	}
 
-	public int getMaterialAmount()
-	{
-		return materialAmount;
+	public int getMaterialAmount() {
+		return this.materialAmount;
 	}
 }

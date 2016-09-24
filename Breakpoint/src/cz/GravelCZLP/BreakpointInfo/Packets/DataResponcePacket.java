@@ -5,13 +5,13 @@ import cz.GravelCZLP.BreakpointInfo.BPInfo;
 public class DataResponcePacket {
 
 	private BPInfo bpInfo;
-	
+
 	public DataResponcePacket(BPInfo info) {
-		bpInfo = info;
+		this.bpInfo = info;
 	}
-	
+
 	public BPInfo getBreakpointInfo() {
-		return bpInfo;
+		return this.bpInfo;
 	}
 
 }

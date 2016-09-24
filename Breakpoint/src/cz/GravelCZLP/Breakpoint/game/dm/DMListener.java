@@ -23,143 +23,129 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
-public class DMListener extends GameListener
-{
-	public DMListener(Game game)
-	{
+public class DMListener extends GameListener {
+	public DMListener(Game game) {
 		super(game, DMGame.class);
 	}
 
 	@Override
-	public boolean onPlayerChat(AsyncPlayerChatEvent event, BPPlayer bpPlayer)
-	{
+	public boolean onPlayerChat(AsyncPlayerChatEvent event, BPPlayer bpPlayer) {
 		return true;
 	}
 
 	@Override
-	public void onPlayerDeath(PlayerDeathEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerDeath(PlayerDeathEvent event, BPPlayer bpPlayer) {
 		DMGame game = getGame();
-		
+
 		game.increasePointsOfOthers(bpPlayer);
-		
+
 		Player player = bpPlayer.getPlayer();
 		Location loc = player.getLocation();
 		Location effectLoc = loc.clone().add(0, 1, 0);
 		Player killer = player.getKiller();
-		
-		if(killer != null)
-		{
+
+		if (killer != null) {
 			BPPlayer bpKiller = BPPlayer.get(killer);
 			game.increasePoints(bpKiller);
 		}
-		
+
 		game.updateProgressObjectiveScores();
 		showBlood(effectLoc);
 	}
 
-	public static void showBlood(Location loc)
-	{
+	public static void showBlood(Location loc) {
 		World world = loc.getWorld();
 		world.playEffect(loc, Effect.STEP_SOUND, 152);
 		world.playEffect(loc, Effect.STEP_SOUND, 55);
 	}
 
 	@Override
-	public void onPlayerRespawn(PlayerRespawnEvent event, BPPlayer bpPlayer, boolean leaveAfterDeath)
-	{
+	public void onPlayerRespawn(PlayerRespawnEvent event, BPPlayer bpPlayer, boolean leaveAfterDeath) {
 		DMProperties props = (DMProperties) bpPlayer.getGameProperties();
 		CharacterType qct = bpPlayer.getQueueCharacter();
-		
-		if(qct != null)
-		{
-			if(qct != null)
+
+		if (qct != null) {
+			if (qct != null) {
 				props.chooseCharacter(qct, false);
-			
+			}
+
 			bpPlayer.setQueueCharacter(null);
 		}
-		
-		if(!leaveAfterDeath)
-		{
+
+		if (!leaveAfterDeath) {
 			DMGame game = getGame();
-			
+
 			game.spawn(bpPlayer);
 		}
 	}
 
 	@Override
-	public void onEntityDamage(EntityDamageEvent dmgEvent)
-	{
+	public void onEntityDamage(EntityDamageEvent dmgEvent) {
 	}
 
 	@Override
-	public void onPlayerShootBow(EntityShootBowEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerShootBow(EntityShootBowEvent event, BPPlayer bpPlayer) {
 	}
 
 	@Override
-	public void onPlayerSplashedByPotion(PotionSplashEvent event, BPPlayer bpShooter, BPPlayer bpVictim)
-	{
+	public void onPlayerSplashedByPotion(PotionSplashEvent event, BPPlayer bpShooter, BPPlayer bpVictim) {
 		DMGame game = getGame();
-		
-		if(game.hasRoundEnded())
+
+		if (game.hasRoundEnded()) {
 			event.setIntensity(bpVictim.getPlayer(), 0);
-		
-		if(bpVictim.equals(bpShooter))
+		}
+
+		if (bpVictim.equals(bpShooter)) {
 			event.setIntensity(bpVictim.getPlayer(), 0);
+		}
 	}
 
 	@Override
-	public void onPlayerRightClickBlock(PlayerInteractEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerRightClickBlock(PlayerInteractEvent event, BPPlayer bpPlayer) {
 		Block block = event.getClickedBlock();
 		Material mat = block.getType();
-		if(mat == Material.WALL_SIGN || mat == Material.SIGN_POST)
-		{
+		if (mat == Material.WALL_SIGN || mat == Material.SIGN_POST) {
 			Sign sign = (Sign) block.getState();
 			String[] lines = sign.getLines();
-			
-			if(ChatColor.stripColor(lines[0]).equals(MessageType.CHARACTER_SELECT.getTranslation().getValue()))
-			{
+
+			if (ChatColor.stripColor(lines[0]).equals(MessageType.CHARACTER_SELECT.getTranslation().getValue())) {
 				Player player = bpPlayer.getPlayer();
 				DMProperties props = (DMProperties) bpPlayer.getGameProperties();
 				CharacterType selectedCT = props.getCharacterType();
-				
-				if(selectedCT == null)
-				{
+
+				if (selectedCT == null) {
 					String rawCharType = ChatColor.stripColor(lines[1]);
 					CharacterType charType = null;
-					
-					for(CharacterType ct : CharacterType.values())
-						if(rawCharType.equalsIgnoreCase(ct.getProperName()))
-						{
+
+					for (CharacterType ct : CharacterType.values()) {
+						if (rawCharType.equalsIgnoreCase(ct.getProperName())) {
 							charType = ct;
 							break;
 						}
-					
-					if(charType != null)
-					{
+					}
+
+					if (charType != null) {
 						String name = charType.getProperName();
-						
-						boolean canUse = bpPlayer.isVIP() || bpPlayer.isSponsor() || bpPlayer.isStaff();
-						
-						if(charType.requiresVIP() && !canUse)
-						{
+
+						ServerPosition pos = bpPlayer.getServerPosition();
+						boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
+								|| pos.isYoutube();
+
+						if (charType.requiresVIP() && !b) {
 							player.sendMessage(ChatColor.DARK_GRAY + "---");
 							player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
 							player.sendMessage(ChatColor.DARK_GRAY + "---");
 							return;
 						}
-						
+
 						props.chooseCharacter(charType, true);
 						player.sendMessage(MessageType.LOBBY_CHARACTER_SELECTED.getTranslation().getValue(name));
-					}
-					else
+					} else {
 						player.sendMessage(MessageType.LOBBY_CHARACTER_NOTFOUND.getTranslation().getValue(rawCharType));
-				}
-				else
-				{
+					}
+				} else {
 					String charName = selectedCT.getProperName();
 					player.sendMessage(MessageType.LOBBY_CHARACTER_ALREADYSELECTED.getTranslation().getValue(charName));
 				}
@@ -168,28 +154,23 @@ public class DMListener extends GameListener
 	}
 
 	@Override
-	public void onPlayerPhysicallyInteractWithBlock(PlayerInteractEvent event, BPPlayer bpPlayer, Block blockBelow)
-	{
+	public void onPlayerPhysicallyInteractWithBlock(PlayerInteractEvent event, BPPlayer bpPlayer, Block blockBelow) {
 	}
 
 	@Override
-	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item)
-	{
+	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item) {
 	}
 
 	@Override
-	public void onPlayerLeftClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item)
-	{
+	public void onPlayerLeftClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item) {
 	}
 
 	@Override
-	public void onPlayerTeleport(PlayerTeleportEvent event, BPPlayer bpPlayer)
-	{
+	public void onPlayerTeleport(PlayerTeleportEvent event, BPPlayer bpPlayer) {
 	}
-	
+
 	@Override
-	public DMGame getGame()
-	{
+	public DMGame getGame() {
 		return (DMGame) super.getGame();
 	}
 }

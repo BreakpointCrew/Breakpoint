@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.GravelCZLP.Breakpoint</groupId>
+	<artifactId>Breakpoint</artifactId>
+	<version>2.6.5</version>
+	
+	<build>
+	  <directory>/home/jindra/git/BP/Breakpoint/target</directory>
+	  
+	  <outputDirectory>/home/jindra/Plocha/BpServer/plugins</outputDirectory>
+	  
+	  <sourceDirectory>/home/jindra/git/BP/Breakpoint/src/</sourceDirectory>
+	  <resources>
+	    <resource>
+		  <directory>/home/jindra/git/BP/Breakpoint/resources/</directory>
+		</resource>
+	  </resources>
+	  
+	  <pluginManagement>
+	    <plugins>
+	       <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <version>2.4</version>
+             <configuration>
+                 <source>1.8</source>
+                 <target>1.8</target>
+             </configuration>
+	       </plugin>
+	     </plugins>
+	  </pluginManagement>
+	  
+	</build>
+	
+	<dependencies>
+	
+	  <dependency>
+	    <groupId>com.github.austinv11</groupId>
+	    <artifactId>Discord4j</artifactId>
+	    <version>2.6.0</version>
+	    <scope>provided</scope>
+	  </dependency>
+	  
+	  <dependency>
+	    <groupId>kryonet</groupId>
+	    <artifactId>kryonet</artifactId>
+	    <version>2.21</version>
+	    <scope>provided</scope>
+	  </dependency>
+	</dependencies>
+	
+	<repositories>
+	
+	  <repository>
+	    <id>clojars</id>
+	    <url>http://clojars.org/repo/</url>
+	  </repository>
+	
+	  <repository>
+	    <id>jcenter</id>
+	    <url>http://jcenter.bintray.com</url>
+	  </repository>
+	  
+	  <repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	  </repository>
+	  
+	</repositories>
+</project>

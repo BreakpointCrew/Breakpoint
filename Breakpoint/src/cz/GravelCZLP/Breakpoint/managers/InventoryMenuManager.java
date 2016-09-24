@@ -19,22 +19,20 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 
-public class InventoryMenuManager
-{
+public class InventoryMenuManager {
 	public static ItemStack[] ingameItems = new ItemStack[27];
 	public static ItemStack[] lobbyItems = new ItemStack[9];
 	public static ItemStack wikiBook = new ItemStack(Material.WRITTEN_BOOK);
 
-	public static void initialize()
-	{
+	public static void initialize() {
 		defineIngameDefaultItems();
 		wikiBook.setItemMeta(FileManager.loadWikiBook((BookMeta) wikiBook.getItemMeta()));
 	}
-	
-	public static void defineIngameDefaultItems()
-	{
+
+	public static void defineIngameDefaultItems() {
 		// Tlacitka
 		ingameItems[0] = new ItemStack(Material.WOOD_DOOR);
 		ItemMeta im0 = ingameItems[0].getItemMeta();
@@ -42,28 +40,28 @@ public class InventoryMenuManager
 		List<String> lore0 = MessageType.MENU_LOBBY_DESC.getTranslation().getValues();
 		im0.setLore(lore0);
 		ingameItems[0].setItemMeta(im0);
-		
+
 		ingameItems[1] = new ItemStack(Material.ITEM_FRAME);
 		ItemMeta im1 = ingameItems[1].getItemMeta();
 		im1.setDisplayName(MessageType.MENU_STORE_NAME.getTranslation().getValue());
 		List<String> lore1 = MessageType.MENU_STORE_DESC.getTranslation().getValues();
 		im1.setLore(lore1);
 		ingameItems[1].setItemMeta(im1);
-		
+
 		ingameItems[2] = new ItemStack(Material.SKULL_ITEM);
 		ItemMeta im2 = ingameItems[2].getItemMeta();
 		im2.setDisplayName(MessageType.MENU_SUICIDE_NAME.getTranslation().getValue());
 		List<String> lore2 = MessageType.MENU_SUICIDE_DESC.getTranslation().getValues();
 		im2.setLore(lore2);
 		ingameItems[2].setItemMeta(im2);
-		
+
 		ingameItems[7] = new ItemStack(Material.NETHER_STAR);
 		ItemMeta im7 = ingameItems[7].getItemMeta();
 		im7.setDisplayName(MessageType.MENU_VIPINFO_NAME.getTranslation().getValue());
 		List<String> lore7 = MessageType.MENU_VIPINFO_DESC.getTranslation().getValues();
 		im7.setLore(lore7);
 		ingameItems[7].setItemMeta(im7);
-		
+
 		// Vejce
 		ingameItems[18] = CharacterType.SWORDSMAN.getEgg();
 		ingameItems[19] = CharacterType.ARCHER.getEgg();
@@ -73,19 +71,20 @@ public class InventoryMenuManager
 		ingameItems[24] = CharacterType.PYRO.getEgg();
 		ingameItems[25] = CharacterType.HEAVY.getEgg();
 		ingameItems[26] = CharacterType.CULTIST.getEgg();
-		
+
 		// Drevo
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++) {
 			ingameItems[9 + i] = getBorder();
-		
+		}
+
 		ingameItems[13] = getSettingsButton();
-		
-		for (int i = 0; i < 4; i++)
+
+		for (int i = 0; i < 4; i++) {
 			ingameItems[14 + i] = getBorder();
+		}
 	}
 
-	public static ItemStack getBorder()
-	{
+	public static ItemStack getBorder() {
 		ItemStack is = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
 		ItemMeta imSign = is.getItemMeta();
 		imSign.setDisplayName(ChatColor.RESET + "");
@@ -93,28 +92,28 @@ public class InventoryMenuManager
 		return is;
 	}
 
-	public static void showIngameMenu(BPPlayer bpPlayer)
-	{
+	public static void showIngameMenu(BPPlayer bpPlayer) {
 		Player player = bpPlayer.getPlayer();
 		PlayerInventory pi = player.getInventory();
 		Game game = bpPlayer.getGame();
-		
-		for (int i = 0; i < 27; i++)
+
+		for (int i = 0; i < 27; i++) {
 			pi.setItem(9 + i, ingameItems[i]);
-		
+		}
+
 		pi.setItem(15, getScoreMap(bpPlayer));
 		pi.setItem(17, getMoneyEmerald(bpPlayer));
 		game.showInGameMenu(bpPlayer);
 		player.updateInventory();
 	}
 
-	public static void showLobbyMenu(BPPlayer bpPlayer)
-	{
+	public static void showLobbyMenu(BPPlayer bpPlayer) {
 		Breakpoint plugin = Breakpoint.getInstance();
-		
-		if(plugin.hasEvent())
+
+		if (plugin.hasEvent()) {
 			plugin.getEventManager().showLobbyMenu(bpPlayer);
-		
+		}
+
 		Player player = bpPlayer.getPlayer();
 		PlayerInventory pi = player.getInventory();
 		// Container
@@ -125,10 +124,11 @@ public class InventoryMenuManager
 		// Contents
 		displayContents(bpPlayer, pi);
 		// VIP Slots
-		
-		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
-		
-		if (canUse) {
+
+		ServerPosition pos = bpPlayer.getServerPosition();
+		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+
+		if (b) {
 			displayVIPContents(bpPlayer, pi);
 		} else {
 			for (int i = 0; i < 3; i++) {
@@ -137,20 +137,19 @@ public class InventoryMenuManager
 				}
 			}
 		}
-		
+
 		// Hotbar
 		pi.setItem(0, MapManager.getBreakpointMap(player));
 		pi.setItem(5, getWikiBook());
-		//pi.setItem(5, getPerkButton());
+		// pi.setItem(5, getPerkButton());
 		pi.setItem(6, getSettingsButton());
 		pi.setItem(7, getAchievementButton(bpPlayer));
 		pi.setItem(8, getMoneyEmerald(bpPlayer));
 		MapManager.updateLobbyMapsForPlayer(bpPlayer);
 		player.updateInventory();
 	}
-	
-	public static ItemStack getWikiBook()
-	{
+
+	public static ItemStack getWikiBook() {
 		ItemStack book = wikiBook.clone();
 		BookMeta im = (BookMeta) book.getItemMeta();
 		im.setDisplayName(MessageType.MENU_ENCYCLOPEDIA_NAME.getTranslation().getValue());
@@ -160,8 +159,7 @@ public class InventoryMenuManager
 		return book;
 	}
 
-	public static ItemStack getTrashbin()
-	{
+	public static ItemStack getTrashbin() {
 		ItemStack is = new ItemStack(Material.LAVA_BUCKET);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(MessageType.MENU_TRASH_NAME.getTranslation().getValue());
@@ -171,8 +169,7 @@ public class InventoryMenuManager
 		return is;
 	}
 
-	public static ItemStack getVipSlot()
-	{
+	public static ItemStack getVipSlot() {
 		ItemStack is = new ItemStack(Material.IRON_FENCE);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(MessageType.MENU_VIPSLOT_NAME.getTranslation().getValue());
@@ -182,8 +179,7 @@ public class InventoryMenuManager
 		return is;
 	}
 
-	public static ItemStack getScoreMap(BPPlayer bpPlayer)
-	{
+	public static ItemStack getScoreMap(BPPlayer bpPlayer) {
 		PlayerStatistics stats = bpPlayer.getStatistics();
 		int kills = stats.getKills();
 		int deaths = stats.getDeaths();
@@ -197,8 +193,7 @@ public class InventoryMenuManager
 		return map;
 	}
 
-	public static ItemStack getMoneyEmerald(BPPlayer bpPlayer)
-	{
+	public static ItemStack getMoneyEmerald(BPPlayer bpPlayer) {
 		int money = bpPlayer.getMoney();
 		ItemStack emerald = new ItemStack(Material.EMERALD);
 		ItemMeta im = emerald.getItemMeta();
@@ -209,36 +204,30 @@ public class InventoryMenuManager
 		return emerald;
 	}
 
-	public static String trimKdr(String kdr)
-	{
+	public static String trimKdr(String kdr) {
 		int j = 3;
 		boolean foundDot = false;
-		for (int i = 0; i < kdr.length(); i++)
-		{
+		for (int i = 0; i < kdr.length(); i++) {
 			char c = kdr.charAt(i);
-			if (c == '.')
+			if (c == '.') {
 				foundDot = true;
-			else
-				if (foundDot)
-				{
-					j--;
-					if (j <= 0)
-						return kdr.substring(0, i);
+			} else if (foundDot) {
+				j--;
+				if (j <= 0) {
+					return kdr.substring(0, i);
 				}
+			}
 		}
 		return kdr;
 	}
 
-	public static void displayContents(BPPlayer bpPlayer, PlayerInventory pi)
-	{
+	public static void displayContents(BPPlayer bpPlayer, PlayerInventory pi) {
 		BPEquipment[] contents = bpPlayer.getLobbyInventory().getContents();
 		ItemStack[] armor = new ItemStack[4];
-		
-		for (int i = 0; i < 4; i++)
-		{
+
+		for (int i = 0; i < 4; i++) {
 			BPEquipment bpEquipment = contents[i];
-			if (bpEquipment != null)
-			{
+			if (bpEquipment != null) {
 				armor[i] = bpEquipment.getItemStack();
 				continue;
 			}
@@ -246,13 +235,11 @@ public class InventoryMenuManager
 		}
 		pi.setArmorContents(armor);
 		int k = 0;
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 4; j++)
-			{
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 4; j++) {
 				int slotId = 9 + i * 9 + j;
 				BPEquipment bpEquipment = contents[k + 4];
-				if (bpEquipment != null)
-				{
+				if (bpEquipment != null) {
 					ItemStack is = bpEquipment.getItemStack();
 					pi.setItem(slotId, is);
 					k++;
@@ -261,20 +248,18 @@ public class InventoryMenuManager
 				pi.setItem(slotId, null);
 				k++;
 			}
+		}
 	}
 
-	public static void displayVIPContents(BPPlayer bpPlayer, PlayerInventory pi)
-	{
+	public static void displayVIPContents(BPPlayer bpPlayer, PlayerInventory pi) {
 		BPEquipment[] contents = bpPlayer.getLobbyInventory().getContents();
 		int k = 0;
-		
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 4; j++)
-			{
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 4; j++) {
 				int slotId = 14 + i * 9 + 3 - j;
 				BPEquipment bpEquipment = contents[k + 16];
-				if (bpEquipment != null)
-				{
+				if (bpEquipment != null) {
 					ItemStack is = bpEquipment.getItemStack();
 					pi.setItem(slotId, is);
 					k++;
@@ -283,23 +268,20 @@ public class InventoryMenuManager
 				pi.setItem(slotId, null);
 				k++;
 			}
+		}
 	}
 
-	public static void saveLobbyMenu(BPPlayer bpPlayer)
-	{
+	public static void saveLobbyMenu(BPPlayer bpPlayer) {
 		Player player = bpPlayer.getPlayer();
 		PlayerInventory pi = player.getInventory();
 		BPEquipment[] contents = new BPEquipment[28];
 		ItemStack[] armor = pi.getArmorContents();
-		
-		for (int i = 0; i < 4; i++)
-		{
+
+		for (int i = 0; i < 4; i++) {
 			ItemStack is = armor[i];
-			if (is != null)
-			{
+			if (is != null) {
 				BPEquipment bpEquipment = BPEquipment.parse(is);
-				if (bpEquipment != null)
-				{
+				if (bpEquipment != null) {
 					contents[i] = bpEquipment;
 					continue;
 				}
@@ -307,16 +289,13 @@ public class InventoryMenuManager
 			contents[i] = null;
 		}
 		int k = 0;
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 4; j++)
-			{
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 4; j++) {
 				int slotId = 9 + i * 9 + j;
 				ItemStack is = pi.getItem(slotId);
-				if (is != null)
-				{
+				if (is != null) {
 					BPEquipment bpEquipment = BPEquipment.parse(is);
-					if (bpEquipment != null)
-					{
+					if (bpEquipment != null) {
 						contents[4 + k] = bpEquipment;
 						k++;
 						continue;
@@ -324,20 +303,18 @@ public class InventoryMenuManager
 				}
 				k++;
 			}
-		boolean canUse = bpPlayer.isVIP() || bpPlayer.isStaff() || bpPlayer.isSponsor();
-		if (canUse)
-		{
+		}
+		ServerPosition pos = bpPlayer.getServerPosition();
+		boolean b = pos.isStaff() || pos.isSponsor() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		if (b) {
 			k = 0;
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 4; j++)
-				{
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 4; j++) {
 					int slotId = 14 + i * 9 + 3 - j;
 					ItemStack is = pi.getItem(slotId);
-					if (is != null)
-					{
+					if (is != null) {
 						BPEquipment bpEquipment = BPEquipment.parse(is);
-						if (bpEquipment != null)
-						{
+						if (bpEquipment != null) {
 							contents[16 + k] = bpEquipment;
 							k++;
 							continue;
@@ -345,54 +322,52 @@ public class InventoryMenuManager
 					}
 					k++;
 				}
+			}
 		}
-		
+
 		bpPlayer.getLobbyInventory().setContents(contents);
 	}
 
-	public static boolean isLobbyBorder(int slotId)
-	{
+	public static boolean isLobbyBorder(int slotId) {
 		return slotId == 13 || slotId == 31;
 	}
 
-	public static boolean isVipSlot(int slotId)
-	{
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 4; j++)
-				if (slotId == (14 + 9 * i + j))
+	public static boolean isVipSlot(int slotId) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (slotId == 14 + 9 * i + j) {
 					return true;
+				}
+			}
+		}
 		return false;
 	}
-	
-	public static ItemStack getToggleableButton(MessageType turnOn, MessageType turnOff, MessageType description, boolean enabled)
-	{
+
+	public static ItemStack getToggleableButton(MessageType turnOn, MessageType turnOff, MessageType description,
+			boolean enabled) {
 		short dur;
 		String name;
-		
-		if(enabled)
-		{
+
+		if (enabled) {
 			dur = 5;
 			name = turnOff.getTranslation().getValue();
-		}
-		else
-		{
+		} else {
 			dur = 14;
 			name = turnOn.getTranslation().getValue();
 		}
-		
+
 		ItemStack is = new ItemStack(Material.STAINED_GLASS_PANE, 1, dur);
 		ItemMeta im = is.getItemMeta();
 		List<String> lore = description.getTranslation().getValues();
-		
+
 		im.setDisplayName(name);
 		im.setLore(lore);
 		is.setItemMeta(im);
-		
+
 		return is;
 	}
 
-	public static ItemStack getAchievementButton(BPPlayer player)
-	{
+	public static ItemStack getAchievementButton(BPPlayer player) {
 		ItemStack button = new ItemStack(Material.NAME_TAG);
 		ItemMeta im = button.getItemMeta();
 		int got = Achievement.getUnlockedAchievementAmount(player);
@@ -404,8 +379,7 @@ public class InventoryMenuManager
 		return button;
 	}
 
-	public static ItemStack getSettingsButton()
-	{
+	public static ItemStack getSettingsButton() {
 		ItemStack button = new ItemStack(Material.REDSTONE_COMPARATOR);
 		ItemMeta im = button.getItemMeta();
 		im.setDisplayName(MessageType.MENU_SETTINGS_NAME.getTranslation().getValue());
@@ -415,8 +389,7 @@ public class InventoryMenuManager
 		return button;
 	}
 
-	public static ItemStack getPerkButton()
-	{
+	public static ItemStack getPerkButton() {
 		ItemStack button = new ItemStack(Material.EXP_BOTTLE);
 		ItemMeta im = button.getItemMeta();
 		im.setDisplayName(MessageType.MENU_PERKS_NAME.getTranslation().getValue());
@@ -425,20 +398,19 @@ public class InventoryMenuManager
 		button.setItemMeta(im);
 		return button;
 	}
-	
-	public static void updateInventoryDelayed(final Player player)
-	{
+
+	public static void updateInventoryDelayed(final Player player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Breakpoint.getInstance(), new Runnable() {
 
 			@Override
-			public void run()
-			{
-				if(player != null)
+			public void run() {
+				if (player != null) {
 					player.updateInventory();
-				
+				}
+
 				player.setItemOnCursor(player.getItemOnCursor());
 			}
-			
+
 		});
 	}
 }
