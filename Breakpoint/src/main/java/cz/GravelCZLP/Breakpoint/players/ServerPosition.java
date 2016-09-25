@@ -30,7 +30,6 @@ public class ServerPosition {
 		storage.put("position", position.name());
 	}
 
-	@SuppressWarnings("static-access")
 	public ServerPosition(ServerPositionEnum position) {
 		ServerPosition.position = position;
 	}

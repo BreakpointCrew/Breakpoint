@@ -9,51 +9,66 @@
 	<version>2.6.5</version>
 	
 	<build>
-	  <directory>/home/jindra/git/BP/Breakpoint/target</directory>
-	  
-	  <outputDirectory>/home/jindra/Plocha/BpServer/plugins</outputDirectory>
-	  
-	  <sourceDirectory>/home/jindra/git/BP/Breakpoint/src/</sourceDirectory>
-	  <resources>
-	    <resource>
-		  <directory>/home/jindra/git/BP/Breakpoint/resources/</directory>
-		</resource>
-	  </resources>
-	  
 	  <pluginManagement>
 	    <plugins>
-	       <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-compiler-plugin</artifactId>
-             <version>2.4</version>
-             <configuration>
-                 <source>1.8</source>
-                 <target>1.8</target>
-             </configuration>
-	       </plugin>
-	     </plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.5.1</version>
+	        <configuration>
+	          <source>1.8</source>
+	          <target>1.8</target>
+	        </configuration>
+	      </plugin>
+	    </plugins>
 	  </pluginManagement>
-	  
 	</build>
 	
 	<dependencies>
 	
 	  <dependency>
+	    <groupId>com.comphenix.protocol</groupId>
+	    <artifactId>ProtocolLib-API</artifactId>
+	    <version>4.1.0</version>
+	    <scope>provided</scope>
+	  </dependency>
+	
+	  <dependency>
 	    <groupId>com.github.austinv11</groupId>
 	    <artifactId>Discord4j</artifactId>
 	    <version>2.6.0</version>
-	    <scope>provided</scope>
+	    <scope>compile</scope>
 	  </dependency>
+	  
+  	  <dependency>
+           <groupId>org.spigotmc</groupId>
+           <artifactId>spigot-api</artifactId>
+           <version>1.10.2-R0.1-SNAPSHOT</version>
+           <scope>provided</scope>
+   	  </dependency>
+    
+      <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+      </dependency>
 	  
 	  <dependency>
 	    <groupId>kryonet</groupId>
 	    <artifactId>kryonet</artifactId>
 	    <version>2.21</version>
-	    <scope>provided</scope>
+	    <scope>compile</scope>
 	  </dependency>
+	  
 	</dependencies>
 	
 	<repositories>
+	
+	  <repository>
+	    <id>dmulloy2-repo</id>
+	    <url>http://repo.dmulloy2.net/content/groups/public/</url>
+	  </repository>
 	
 	  <repository>
 	    <id>clojars</id>
