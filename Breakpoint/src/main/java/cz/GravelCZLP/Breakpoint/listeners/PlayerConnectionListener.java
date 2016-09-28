@@ -28,9 +28,10 @@ import cz.GravelCZLP.PingAPI.PingAPI;
 import cz.GravelCZLP.PingAPI.PingEvent;
 import cz.GravelCZLP.PingAPI.PingListener;
 import cz.GravelCZLP.PingAPI.PingReply;
-import me.leoko.advancedban.manager.TimeManager;
+
+/*import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
-import me.leoko.advancedban.utils.PunishmentType;
+import me.leoko.advancedban.utils.PunishmentType;*/
 
 public class PlayerConnectionListener implements Listener {
 	Breakpoint plugin;
@@ -94,7 +95,7 @@ public class PlayerConnectionListener implements Listener {
 			game.onPlayerLeaveGame(bpPlayer);
 		}
 
-		if (bpPlayer.isBeingControled()) {
+		/*/if (bpPlayer.isBeingControled()) {
 
 			String name = bpPlayer.getPlayer().getName();
 			String uuid = bpPlayer.getPlayer().getUniqueId().toString();
@@ -105,7 +106,7 @@ public class PlayerConnectionListener implements Listener {
 			long end = TimeManager.getTime() + 86400000L * 2;
 
 			new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint", type, start, end, "", -1).create();
-		}
+		}*/
 
 		bpPlayer.trySave();
 		bpPlayer.reset();

@@ -216,6 +216,8 @@ public class PlayerInventoryListener implements Listener {
 
 			String entity = idTag.getString("id");
 
+			entity = entity.toUpperCase();
+			
 			if (entity.contains("LAVASLIME")) {
 				entity = "MAGMA_CUBE";
 			}
@@ -231,6 +233,8 @@ public class PlayerInventoryListener implements Listener {
 				ServerPosition pos = bpPlayer.getServerPosition();
 				boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
 
+				System.out.println(b);
+				
 				if (ct.requiresVIP() && !b) {
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
 					player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));

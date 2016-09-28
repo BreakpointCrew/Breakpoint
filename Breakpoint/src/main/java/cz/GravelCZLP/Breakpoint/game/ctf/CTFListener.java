@@ -236,6 +236,8 @@ public class CTFListener extends GameListener {
 							boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
 									|| pos.isYoutube();
 
+							System.out.println(b);
+							
 							if (charType.requiresVIP() && !b) {
 								player.sendMessage(ChatColor.DARK_GRAY + "---");
 								player.sendMessage(
