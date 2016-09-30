@@ -60,7 +60,8 @@ public class Settings {
 	}
 
 	public boolean areDefault() {
-		return this.deathMessages == true && this.extraSounds == true && this.showEnchantments == true && this.discordMessages == true;
+		return this.deathMessages == true && this.extraSounds == true && this.showEnchantments == true
+				&& this.discordMessages == true;
 	}
 
 	public boolean toggleExtraSounds() {

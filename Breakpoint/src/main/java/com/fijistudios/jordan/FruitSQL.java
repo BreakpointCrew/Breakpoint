@@ -40,8 +40,8 @@ public class FruitSQL {
 			start = System.currentTimeMillis();
 			System.out.println("Attempting to establish a connection the MySQL server!");
 			Class.forName("com.mysql.jdbc.Driver");
-			this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username,
-					password);
+			this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database,
+					username, password);
 			end = System.currentTimeMillis();
 			System.out.println("Connection to MySQL server established! (" + host + ":" + port + ")");
 			System.out.println("Connection took " + (end - start) + "ms!");
@@ -106,8 +106,8 @@ public class FruitSQL {
 			start = System.currentTimeMillis();
 			System.out.println("Attempting to establish a connection the MySQL server!");
 			Class.forName("com.mysql.jdbc.Driver");
-			this.connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.username,
-					this.password);
+			this.connection = DriverManager.getConnection(
+					"jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.username, this.password);
 			end = System.currentTimeMillis();
 			System.out.println("Connection to MySQL server established! (" + this.host + ":" + this.port + ")");
 			System.out.println("Connection took " + (end - start) + "ms!");
@@ -224,10 +224,8 @@ public class FruitSQL {
 			statement = this.connection.createStatement();
 			for (String query : statements) {
 				statement.addBatch(query);
-				if (batchSize != 0)
-				 {
-					if (count % batchSize == 0)
-					 {
+				if (batchSize != 0) {
+					if (count % batchSize == 0) {
 						statement.executeBatch(); // execute batch.
 					}
 				}

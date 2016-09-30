@@ -709,7 +709,8 @@ public class BPPlayer {
 
 	public boolean hasSpaceInLobbyInventory() {
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff() || this.pos.isYoutube();
+		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
+				|| this.pos.isYoutube();
 		int size = b ? 24 : 12;
 		for (int i = 0; i < size; i++) {
 			if (contents[4 + i] == null) {
@@ -721,7 +722,8 @@ public class BPPlayer {
 
 	public int getLobbyInventorySpaceSlot() {
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff() || this.pos.isYoutube();
+		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
+				|| this.pos.isYoutube();
 		int size = b ? 24 : 12;
 		for (int i = 0; i < size; i++) {
 			if (contents[4 + i] == null) {
@@ -862,7 +864,8 @@ public class BPPlayer {
 	}
 
 	public int getMaxEquippedPerks() {
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff() || this.pos.isYoutube();
+		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
+				|| this.pos.isYoutube();
 		return b ? 3 : 1;
 	}
 

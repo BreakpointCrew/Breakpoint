@@ -1,6 +1,7 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -10,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -20,6 +23,7 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.game.ctf.Team;
+import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
@@ -42,10 +46,24 @@ public class PlayerConnectionListener implements Listener {
 
 		setupPings();
 	}
-
+	
+	@EventHandler
+	public void onLogin(AsyncPlayerPreLoginEvent e) {
+		String ip = e.getAddress().toString();
+		Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
+		
+		for (Player p : players) {
+			String playerip = p.getAddress().getAddress().toString();
+			if (playerip.equals(ip)) {
+				e.setLoginResult(Result.KICK_OTHER);
+				e.disallow(Result.KICK_OTHER, MessageType.ONLY_ONE_IP.getTranslation().getValue());
+			}
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		event.setJoinMessage("§8[§r+§8] §8" + event.getPlayer().getName());
+		event.setJoinMessage("§8[§r+§8] §r" + event.getPlayer().getName());
 
 		Player player = event.getPlayer();
 		String playerName = player.getName();
@@ -95,18 +113,20 @@ public class PlayerConnectionListener implements Listener {
 			game.onPlayerLeaveGame(bpPlayer);
 		}
 
-		/*/if (bpPlayer.isBeingControled()) {
-
-			String name = bpPlayer.getPlayer().getName();
-			String uuid = bpPlayer.getPlayer().getUniqueId().toString();
-
-			PunishmentType type = PunishmentType.TEMP_BAN;
-
-			long start = TimeManager.getTime();
-			long end = TimeManager.getTime() + 86400000L * 2;
-
-			new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint", type, start, end, "", -1).create();
-		}*/
+		/*
+		 * /if (bpPlayer.isBeingControled()) {
+		 * 
+		 * String name = bpPlayer.getPlayer().getName(); String uuid =
+		 * bpPlayer.getPlayer().getUniqueId().toString();
+		 * 
+		 * PunishmentType type = PunishmentType.TEMP_BAN;
+		 * 
+		 * long start = TimeManager.getTime(); long end = TimeManager.getTime()
+		 * + 86400000L * 2;
+		 * 
+		 * new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint",
+		 * type, start, end, "", -1).create(); }
+		 */
 
 		bpPlayer.trySave();
 		bpPlayer.reset();
@@ -144,8 +164,8 @@ public class PlayerConnectionListener implements Listener {
 
 				List<String> news = new ArrayList<>();
 
-				news.add("   §d§lBreakpoint");
-				news.add("--------------");
+				news.add("§d§lBreakpoint");
+				news.add("----------");
 				news.add("§aKity Za Emeraldy.");
 				news.add("§4Nové Mapy.");
 				news.add("§4Odebrány Perky.");

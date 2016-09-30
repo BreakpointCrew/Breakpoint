@@ -163,8 +163,8 @@ public abstract class Game {
 		yml.set(this.name, null);
 
 		yml.set(this.name + ".type", this.type.name());
-		yml.set(this.name + ".signLoc", this.signLoc.getWorld().getName() + "," + this.signLoc.getBlockX() + "," + this.signLoc.getBlockY()
-				+ "," + this.signLoc.getBlockZ());
+		yml.set(this.name + ".signLoc", this.signLoc.getWorld().getName() + "," + this.signLoc.getBlockX() + ","
+				+ this.signLoc.getBlockY() + "," + this.signLoc.getBlockZ());
 
 		saveExtra(yml);
 
@@ -192,7 +192,8 @@ public abstract class Game {
 			return false;
 		}
 
-		return this.type != null && this.name != null && this.name.length() > 0 && this.signLoc != null && getPlayableMaps().size() > 0;
+		return this.type != null && this.name != null && this.name.length() > 0 && this.signLoc != null
+				&& getPlayableMaps().size() > 0;
 	}
 
 	public boolean isPlayable() {

@@ -167,9 +167,10 @@ public class DMGame extends Game {
 	@Override
 	protected void saveExtra(YamlConfiguration yml) {
 		yml.set(getName() + ".charSelLoc",
-				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX() + ","
-						+ this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ() + ","
-						+ this.characterSelectionLocation.getYaw() + "," + this.characterSelectionLocation.getPitch());
+				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX()
+						+ "," + this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ()
+						+ "," + this.characterSelectionLocation.getYaw() + ","
+						+ this.characterSelectionLocation.getPitch());
 	}
 
 	@Override

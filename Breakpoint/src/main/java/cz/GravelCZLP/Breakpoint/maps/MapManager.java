@@ -126,11 +126,10 @@ public class MapManager {
 	}
 
 	public static void updateMapForNotPlayingPlayers(short mapId) {
-		for (BPPlayer bpPlayer : BPPlayer.onlinePlayers)
-		 {
+		for (BPPlayer bpPlayer : BPPlayer.onlinePlayers) {
 			if (!bpPlayer.isPlaying() && bpPlayer.isOnline()) {
 			} // TODO: this
-		// bpPlayer.getPlayer().sendMap(Bukkit.getMap(mapId));
+			// bpPlayer.getPlayer().sendMap(Bukkit.getMap(mapId));
 		}
 	}
 

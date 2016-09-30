@@ -66,8 +66,8 @@ public abstract class BPMap {
 			return img;
 		} catch (FileNotFoundException fnfe) {
 			Breakpoint.warn("Error when loading an image for map '" + getName() + "' (" + this.gameType.name() + ").");
-			Breakpoint.warn(
-					"File 'plugins/Breakpoint/images/maps/" + this.gameType.name() + "/" + getName() + ".png' not found.");
+			Breakpoint.warn("File 'plugins/Breakpoint/images/maps/" + this.gameType.name() + "/" + getName()
+					+ ".png' not found.");
 			return null;
 		} catch (Throwable e) {
 			Breakpoint.warn("Error when loading an image for map '" + getName() + "' (" + this.gameType.name() + ").");

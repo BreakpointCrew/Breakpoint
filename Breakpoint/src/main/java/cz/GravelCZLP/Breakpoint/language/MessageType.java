@@ -432,7 +432,7 @@ public enum MessageType implements Translateable {
 					"Right click and enjoy!"), EVENT_ADVENT_EARN(
 							"&aYou've just earned todays gift."), EVENT_ADVENT_ALREADYEARNED(
 									"&cYou have already earned today's gift!"), EVENT_ADVENT_NOSPACE(
-											"&cYou don't have any space in your inventory for the gift!"),
+											"&cYou don't have any space in your inventory for the gift!"), ONLY_ONE_IP("&4There is already a player with the same IP."),
 	// }}ADVENT
 	// }}
 	// }}

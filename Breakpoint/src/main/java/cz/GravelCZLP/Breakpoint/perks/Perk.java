@@ -249,13 +249,13 @@ public class Perk {
 					equipMenu(bpPlayer, inv);
 				} else {
 					player.sendMessage(MessageType.MENU_PERKS_FULL_VIP.getTranslation().getValue(max));
-				/*
-				 * else if(player.hasPermission("Breakpoint.vip"))
-				 * player.sendMessage(MessageType.MENU_PERKS_FULL_VIP.
-				 * getTranslation().getValue(max)); else
-				 * player.sendMessage(MessageType.MENU_PERKS_FULL_NONVIP.
-				 * getTranslation().getValue(max));
-				 */
+					/*
+					 * else if(player.hasPermission("Breakpoint.vip"))
+					 * player.sendMessage(MessageType.MENU_PERKS_FULL_VIP.
+					 * getTranslation().getValue(max)); else
+					 * player.sendMessage(MessageType.MENU_PERKS_FULL_NONVIP.
+					 * getTranslation().getValue(max));
+					 */
 				}
 			}
 		}

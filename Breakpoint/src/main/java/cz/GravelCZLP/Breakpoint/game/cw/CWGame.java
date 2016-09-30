@@ -195,7 +195,8 @@ public class CWGame extends CTFGame {
 		}
 
 		if (!canJoinTeam(team)) {
-			throw new Exception(MessageType.LOBBY_GAME_CW_TEAMFULL.getTranslation().getValue(this.day.getMaximumPlayers()));
+			throw new Exception(
+					MessageType.LOBBY_GAME_CW_TEAMFULL.getTranslation().getValue(this.day.getMaximumPlayers()));
 		}
 
 		CWProperties props = new CWProperties(this, bpPlayer);
@@ -236,9 +237,10 @@ public class CWGame extends CTFGame {
 	@Override
 	protected void saveExtra(YamlConfiguration yml) {
 		yml.set(getName() + ".charSelLoc",
-				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX() + ","
-						+ this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ() + ","
-						+ this.characterSelectionLocation.getYaw() + "," + this.characterSelectionLocation.getPitch());
+				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX()
+						+ "," + this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ()
+						+ "," + this.characterSelectionLocation.getYaw() + ","
+						+ this.characterSelectionLocation.getPitch());
 
 		LinkedList<ClanChallenge> days = this.scheduler.getDays();
 		LinkedList<String> rawDays = new LinkedList<>();

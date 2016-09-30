@@ -7,8 +7,28 @@
 	<groupId>cz.GravelCZLP.Breakpoint</groupId>
 	<artifactId>Breakpoint</artifactId>
 	<version>2.6.5</version>
-
-
+	<name>Breakpoint</name>
+	<description>A Minecraft Plugin that have Pvp Minigames built in, and can be your only plugin on your server</description>
+	
+	<developers>
+		<developer>
+			<id>GravelCZLP</id>
+			<name>Jindřich veselý</name>
+			<roles>
+				 <role>Main Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Limeth</id>
+			<name>Jakub Hlusička</name>
+			<organization>ProjectSurvive</organization>
+			<organizationUrl>http://projectsurvive.cz/</organizationUrl>
+			<roles>
+				<role>Idea, Original Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	
 	<build>
 	  <resources>
 	    <resource>
@@ -32,21 +52,25 @@
 	        </configuration>
 	      </plugin>
 	      <plugin>
-	        <artifactId>maven-assembly-plugin</artifactId>
-	        <configuration>
-	          <descriptorRefs>
-	            <descriptorRef>jar-with-dependencies</descriptorRef>
-	          </descriptorRefs>
-	        </configuration>
-	        <executions>
-	         <execution>
-	           <id>make-assembly</id>
-	           <phase>package</phase>
-	           <goals>
-	             <goal>single</goal>
-	           </goals>
-	         </execution>
-	        </executions>
+	      	<groupId>org.apache.maven.plugins</groupId>
+	      	<artifactId>maven-shade-plugin</artifactId>
+	      	<version>2.4.3</version>
+	      	<executions>
+	      		<execution>
+	      			<phase>package</phase>
+	      			<goals>
+	      				<goal>shade</goal>
+	      			</goals>
+	      			<configuration>
+	      				<artifactSet>
+	      					<includes>
+	      						<include>com.github.austinv11:Discord4j</include>
+	      						<include>com.esotericsoftware:kryonet</include>
+	      					</includes>
+	      				</artifactSet>
+	      			</configuration>
+	      		</execution>
+	      	</executions>
 	      </plugin>
 	    </plugins>
 	  </pluginManagement>
@@ -99,7 +123,6 @@
 	    <groupId>com.esotericsoftware</groupId>
 	    <artifactId>kryonet</artifactId>
 	    <version>2.22.0-RC1</version>
-	    <scope>compile</scope>
 	  </dependency>
 	  
 	</dependencies>
@@ -132,4 +155,5 @@
 	  </repository>
 	  
 	</repositories>
+	
 </project>

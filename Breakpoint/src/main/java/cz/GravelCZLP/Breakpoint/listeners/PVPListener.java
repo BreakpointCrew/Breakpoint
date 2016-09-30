@@ -232,10 +232,9 @@ public class PVPListener implements Listener {
 		// }}ASSISTS
 
 		// {{PERKS
-		if (bpPlayer.isPlaying())
-		 {
+		if (bpPlayer.isPlaying()) {
 			bpPlayer.decreasePerkLives(true);
-		// }}
+			// }}
 		}
 
 		bpPlayer.clearAfkSecondsToKick();

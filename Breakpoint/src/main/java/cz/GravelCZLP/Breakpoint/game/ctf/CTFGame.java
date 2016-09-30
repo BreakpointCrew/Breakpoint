@@ -433,9 +433,10 @@ public class CTFGame extends Game {
 						+ this.teamSelectionLocation.getY() + "," + this.teamSelectionLocation.getZ() + ","
 						+ this.teamSelectionLocation.getYaw() + "," + this.teamSelectionLocation.getPitch());
 		yml.set(getName() + ".charSelLoc",
-				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX() + ","
-						+ this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ() + ","
-						+ this.characterSelectionLocation.getYaw() + "," + this.characterSelectionLocation.getPitch());
+				this.characterSelectionLocation.getWorld().getName() + "," + this.characterSelectionLocation.getX()
+						+ "," + this.characterSelectionLocation.getY() + "," + this.characterSelectionLocation.getZ()
+						+ "," + this.characterSelectionLocation.getYaw() + ","
+						+ this.characterSelectionLocation.getPitch());
 	}
 
 	@Override

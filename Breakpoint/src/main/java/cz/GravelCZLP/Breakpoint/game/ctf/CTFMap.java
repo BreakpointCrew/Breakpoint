@@ -80,8 +80,8 @@ public class CTFMap extends BPMap {
 				+ this.teamSpawn[1].getY() + "," + this.teamSpawn[1].getZ() + "," + this.teamSpawn[1].getYaw());
 		yml.set(mapPath + ".redFlag", this.teamFlags[0].getWorld().getName() + "," + this.teamFlags[0].getBlockX() + ","
 				+ this.teamFlags[0].getBlockY() + "," + this.teamFlags[0].getBlockZ());
-		yml.set(mapPath + ".blueFlag", this.teamFlags[1].getWorld().getName() + "," + this.teamFlags[1].getBlockX() + ","
-				+ this.teamFlags[1].getBlockY() + "," + this.teamFlags[1].getBlockZ());
+		yml.set(mapPath + ".blueFlag", this.teamFlags[1].getWorld().getName() + "," + this.teamFlags[1].getBlockX()
+				+ "," + this.teamFlags[1].getBlockY() + "," + this.teamFlags[1].getBlockZ());
 		yml.set(mapPath + ".melounBoosts", boostsToStringList());
 	}
 
