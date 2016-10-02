@@ -54,7 +54,7 @@ public class RandomShop {
 		Calendar cal = Calendar.getInstance(Locale.GERMANY);
 		int week = cal.get(Calendar.WEEK_OF_YEAR);
 		int year = cal.get(Calendar.YEAR);
-		int weeksInYear = 64; // 52, ale radi více.
+		int weeksInYear = 52;
 
 		return year * weeksInYear + week;
 	}

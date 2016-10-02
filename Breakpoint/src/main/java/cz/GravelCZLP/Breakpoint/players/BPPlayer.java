@@ -54,8 +54,10 @@ import me.limeth.storageAPI.Column;
 import me.limeth.storageAPI.Storage;
 import me.limeth.storageAPI.StorageType;
 import net.minecraft.server.v1_10_R1.EntityPlayer;
+import net.minecraft.server.v1_10_R1.EnumParticle;
 import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder;
 import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder.EnumWorldBorderAction;
+import net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles;
 import net.minecraft.server.v1_10_R1.WorldBorder;
 
 public class BPPlayer {
@@ -1309,5 +1311,29 @@ public class BPPlayer {
 		} else {
 			this.pos.setPosition(ServerPositionEnum.NORMAL);
 		}
+	}
+	
+	public void sendParticles() {
+		Runnable run = new Runnable() {
+			public void run() {
+				Player p = getPlayer();
+				
+				Location loc = p.getLocation();
+				int radius = 2;
+				
+				for (double y = 0; y < 1.85; y += 0.05) {
+					double x = radius * Math.cos(y);
+					double z = radius * Math.sin(y);
+					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.END_ROD, false, (float) (loc.getX() + x), (float) (loc.getY() + y), (float) (loc.getZ() + z), 0, 0, 0, 0, 1, 0);
+					for (Player p1 : Bukkit.getOnlinePlayers()) {
+						CraftPlayer cp = (CraftPlayer) p1;
+						EntityPlayer ep = cp.getHandle();
+						ep.playerConnection.sendPacket(packet);
+					}
+				}
+			}
+		};
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), run, 0L, 5L);
+		
 	}
 }

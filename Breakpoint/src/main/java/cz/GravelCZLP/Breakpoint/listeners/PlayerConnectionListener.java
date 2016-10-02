@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ import cz.GravelCZLP.PingAPI.PingAPI;
 import cz.GravelCZLP.PingAPI.PingEvent;
 import cz.GravelCZLP.PingAPI.PingListener;
 import cz.GravelCZLP.PingAPI.PingReply;
+import cz.GravelCZLP.Utils.Utils;
 
 /*import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
@@ -51,6 +53,21 @@ public class PlayerConnectionListener implements Listener {
 	public void onLogin(AsyncPlayerPreLoginEvent e) {
 		String ip = e.getAddress().toString();
 		Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
+		
+		try {
+			if (Utils.checkVPN(ip)) {
+				e.disallow(Result.KICK_OTHER, "§4VPN/Proxy není povoleno");
+				return;
+			}
+			
+			if (Utils.hasProxy(ip)) {
+				e.disallow(Result.KICK_OTHER, "§4VPN/Proxy není povoleno");
+				return;
+			}
+		} catch (IOException exc) {
+			exc.printStackTrace();
+			return;
+		}
 		
 		for (Player p : players) {
 			String playerip = p.getAddress().getAddress().toString();

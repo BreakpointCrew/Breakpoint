@@ -8,12 +8,12 @@
 	<artifactId>Breakpoint</artifactId>
 	<version>2.6.5</version>
 	<name>Breakpoint</name>
-	<description>A Minecraft Plugin that have Pvp Minigames built in, and can be your only plugin on your server</description>
+	<description>A Minecraft Plugin that have PvP Minigames built in, and can be your only plugin on your server</description>
 	
 	<developers>
 		<developer>
 			<id>GravelCZLP</id>
-			<name>Jindřich veselý</name>
+			<name>Jindřich Veselý</name>
 			<roles>
 				 <role>Main Developer</role>
 			</roles>
@@ -28,53 +28,6 @@
 			</roles>
 		</developer>
 	</developers>
-	
-	<build>
-	  <resources>
-	    <resource>
-	      <directory>src/main/resources</directory>
-	      <filtering>true</filtering>
-	      <includes>
-	        <include>plugin.yml</include>
-	      </includes>
-	    </resource>
-	  </resources>
-	  
-	  <pluginManagement>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-compiler-plugin</artifactId>
-	        <version>3.5</version>
-	        <configuration>
-	          <source>1.8</source>
-	          <target>1.8</target>
-	        </configuration>
-	      </plugin>
-	      <plugin>
-	      	<groupId>org.apache.maven.plugins</groupId>
-	      	<artifactId>maven-shade-plugin</artifactId>
-	      	<version>2.4.3</version>
-	      	<executions>
-	      		<execution>
-	      			<phase>package</phase>
-	      			<goals>
-	      				<goal>shade</goal>
-	      			</goals>
-	      			<configuration>
-	      				<artifactSet>
-	      					<includes>
-	      						<include>com.github.austinv11:Discord4j</include>
-	      						<include>com.esotericsoftware:kryonet</include>
-	      					</includes>
-	      				</artifactSet>
-	      			</configuration>
-	      		</execution>
-	      	</executions>
-	      </plugin>
-	    </plugins>
-	  </pluginManagement>
-	</build>
 	
 	<dependencies>
 	
@@ -117,43 +70,75 @@
 	    <groupId>cz.GravelCZLP</groupId>
 	    <artifactId>PingAPI</artifactId>
 	    <version>1.1</version>
+	    <scope>provided</scope>
 	  </dependency>
 	  
 	  <dependency>
 	    <groupId>com.esotericsoftware</groupId>
 	    <artifactId>kryonet</artifactId>
 	    <version>2.22.0-RC1</version>
+	    <scope>compile</scope>
 	  </dependency>
 	  
 	</dependencies>
 	
 	<repositories>
-	
 	  <repository>
 	    <id>bukkit-repo</id>
 	    <url>http://repo.bukkit.org/content/groups/public/</url>
 	  </repository>
-	
 	  <repository>
 	    <id>dmulloy2-repo</id>
 	    <url>http://repo.dmulloy2.net/content/groups/public/</url>
 	  </repository>
-	
 	  <repository>
 	    <id>clojars</id>
 	    <url>http://clojars.org/repo/</url>
 	  </repository>
-	
 	  <repository>
 	    <id>jcenter</id>
 	    <url>http://jcenter.bintray.com</url>
 	  </repository>
-	  
 	  <repository>
 	    <id>jitpack.io</id>
 	    <url>https://jitpack.io</url>
 	  </repository>
-	  
 	</repositories>
+	
+	<build>
+	  <resources>
+	    <resource>
+	      <directory>src/main/resources</directory>
+	      <filtering>true</filtering>
+	      <includes>
+	        <include>plugin.yml</include>
+	      </includes>
+	    </resource>
+	  </resources>
+	  
+	  <pluginManagement>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.5</version>
+	        <configuration>
+	          <source>1.8</source>
+	          <target>1.8</target>
+	        </configuration>
+	      </plugin>
+		  
+		  <plugin>
+		  	<groupId>org.apache.maven.plugins</groupId>
+		  	<artifactId>maven-eclipse-plugin</artifactId>
+		  	<version>2.9</version>
+		  	<configuration>
+		  		<downloadJavadocs>true</downloadJavadocs>
+		  		<downloadSources>true</downloadSources>
+		  	</configuration>
+		  </plugin>
+		</plugins>
+	  </pluginManagement>
+	</build>
 	
 </project>

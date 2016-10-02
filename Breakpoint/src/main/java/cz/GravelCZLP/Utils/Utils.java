@@ -43,12 +43,46 @@ public class Utils {
 		ProxyJson proxyJson = json.fromJson(ProxyJson.class, output);
 		if (proxyJson.proxy.equalsIgnoreCase("yes"))
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
+	@SuppressWarnings("static-access")
+	public static boolean checkVPN(String ip) throws IOException{
+		URL url = new URL("http://legacy.iphub.info/api.php?ip=" + ip + "&showtype=4");
+		
+		InputStreamReader input = new InputStreamReader(url.openStream());
+		
+		BufferedReader reader = new BufferedReader(input);
+		
+		StringBuffer buffer = new StringBuffer();
+		
+		char[] chars = new char[1024];
+		int read = 0;
+		
+		while ((read = reader.read(chars, 0, read)) != -1) {
+			buffer.append(chars, 0, read);
+		}
+		
+		String output = buffer.toString();
+		
+		if (reader != null) 
+			reader.close();
+		
+		Json json = new Json();
+		VPNJson vpn = json.fromJson(VPNJson.class, output);
+		if(vpn.proxy == 1) {
+			return true;
+		}	
+		return false;
+	}
+
 	public static class ProxyJson {
 		public static String ip = "";
 		public static String proxy = "";
+	}
+	
+	public static class VPNJson {
+		public static String hostname, countryCode, countryName, region, asn;
+		public static int proxy;
 	}
 }
