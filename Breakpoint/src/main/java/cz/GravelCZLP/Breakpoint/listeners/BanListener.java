@@ -29,7 +29,6 @@ import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -167,11 +166,6 @@ public class BanListener implements Listener {
 
 	@EventHandler
 	public void e(PlayerBedEnterEvent event) {
-		event.setCancelled(true);
-	}
-
-	@EventHandler
-	public void e(AsyncPlayerChatEvent event) {
 		event.setCancelled(true);
 	}
 

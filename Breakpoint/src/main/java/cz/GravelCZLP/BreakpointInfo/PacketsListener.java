@@ -23,7 +23,7 @@ public class PacketsListener extends Listener {
 			conn.close();
 		}
 	}
-
+	
 	@Override
 	public void received(Connection conn, Object o) {
 		if (o == null) {
@@ -33,9 +33,6 @@ public class PacketsListener extends Listener {
 		if (o instanceof DataRequestPacket) {
 			if (canRequest == true) {
 				DataResponcePacket responce = new DataResponcePacket(this.main.getBPInfo());
-				conn.sendTCP(responce);
-			} else {
-				DataResponcePacket responce = new DataResponcePacket(null);
 				conn.sendTCP(responce);
 			}
 		}

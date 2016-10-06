@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -41,6 +42,8 @@ public class DataListenerMain {
 	public HashMap<String, Integer> connectionsPerMinute; // max 20 conn. per
 	// minute
 
+	public HashMap<String, Integer> connectionsPerIP;
+	
 	public ArrayList<String> banList;
 
 	private Timer timer = null;
@@ -53,6 +56,7 @@ public class DataListenerMain {
 		this.banned = new ArrayList<>();
 		this.requestsPerMin = new HashMap<>();
 		this.connectionsPerMinute = new HashMap<>();
+		this.connectionsPerIP = new HashMap<>();
 		this.bp = bp;
 	}
 
@@ -71,6 +75,10 @@ public class DataListenerMain {
 
 		File banList = new File(bp.getDataFolder() + "/banlist.json");
 
+		if (!banList.exists()) {
+			banList.createNewFile();
+		}
+		
 		loadBans(banList);
 
 		initLogWriter();
@@ -85,7 +93,7 @@ public class DataListenerMain {
 			conn.close();
 		}
 		File banList = new File(bp.getDataFolder() + "/banlist.json");
-
+		
 		try {
 			saveBans(banList);
 			stopLogger();
@@ -121,7 +129,7 @@ public class DataListenerMain {
 		}
 		return false;
 	}
-
+	
 	public boolean canConnect(Connection conn) {
 		String ip = conn.getRemoteAddressTCP().getAddress().toString();
 		info("IP: " + ip + " is trying to connect");
@@ -132,13 +140,19 @@ public class DataListenerMain {
 		if (!this.connectionsPerMinute.containsKey(ip)) {
 			this.connectionsPerMinute.put(ip, 1);
 		}
+		
+		Calendar cal = Calendar.getInstance();
+		Date d = cal.getTime();
+		@SuppressWarnings("deprecation")
+		String datum = d.getYear() + "-" + d.getMonth() + "-" + d.getDay() + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+		
 		if (this.connectionsPerMinute.get(ip) > 20) {
 			warn("IP:" + ip + " was temporary banned for too many requests");
 			this.banned.add(ip);
 			return false;
 		}
 		if (this.connectionsPerMinute.get(ip) > 60) {
-			warn("IP:" + ip + " was permanently banned for too many requests");
+			warn("IP:" + ip + " was permanently banned for too many requests at: " + datum);
 			performBan(ip);
 		}
 		return true;
@@ -165,9 +179,9 @@ public class DataListenerMain {
 
 	public void initLogWriter() throws IOException {
 		Calendar c = Calendar.getInstance();
-		java.util.Date d = c.getTime();
+		Date d = c.getTime();
 		@SuppressWarnings("deprecation")
-		String datum = d.getYear() + "-" + d.getMonth() + "-" + d.getDay() + "-" + d.getHours() + "-" + d.getMinutes();
+		String datum = d.getYear() + "-" + d.getMonth() + "-" + d.getDay() + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
 
 		File file = new File(bp.getDataFolder() + "/BreakpointQuery/" + "log-" + datum);
 		file.createNewFile();
