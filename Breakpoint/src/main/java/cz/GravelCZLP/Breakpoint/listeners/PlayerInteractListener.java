@@ -32,6 +32,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -415,6 +416,20 @@ public class PlayerInteractListener implements Listener {
 			if (e.getChunk().getEntities()[i].getType() == EntityType.ENDER_CRYSTAL) {
 				e.setCancelled(true);
 				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onMove(PlayerMoveEvent e) {
+		BPPlayer bpPlayer = BPPlayer.get(e.getPlayer());
+		if (bpPlayer.isBeingControled()) {
+			double x = e.getFrom().getX();
+			double z = e.getFrom().getZ();
+			double tox = e.getTo().getX();
+			double toz = e.getTo().getZ();
+			if (x != tox || z != toz) {
+				e.setCancelled(true);
 			}
 		}
 	}

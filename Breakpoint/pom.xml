@@ -4,11 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>cz.GravelCZLP.Breakpoint</groupId>
 	<artifactId>Breakpoint</artifactId>
 	<version>2.6.5</version>
 	<name>Breakpoint</name>
 	<description>A Minecraft Plugin that have PvP Minigames built in, and can be your only plugin on your server</description>
+	<packaging>jar</packaging>
 	
 	<developers>
 		<developer>
@@ -31,13 +33,15 @@
 	
 	<dependencies>
 	
+	  <!--ProtocolLib 4.1.0-->
 	  <dependency>
 	    <groupId>com.comphenix.protocol</groupId>
 	    <artifactId>ProtocolLib-API</artifactId>
 	    <version>4.1.0</version>
 	    <scope>provided</scope>
 	  </dependency>
-	
+	  
+	  <!-- Discord4j -->
 	  <dependency>
 	    <groupId>com.github.austinv11</groupId>
 	    <artifactId>Discord4j</artifactId>
@@ -45,6 +49,7 @@
 	    <scope>compile</scope>
 	  </dependency>
 	  
+	  <!-- Spigot stuff -->
   	  <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>spigot</artifactId>
@@ -66,12 +71,15 @@
 	  		<scope>provided</scope>
 	  </dependency>
 	  
+	  <!-- PingAPI 1.1 -->
 	  <dependency>
 	    <groupId>cz.GravelCZLP</groupId>
 	    <artifactId>PingAPI</artifactId>
 	    <version>1.1</version>
 	    <scope>provided</scope>
 	  </dependency>
+	  
+	  <!-- KryoNet 2.22 -->
 	  
 	  <dependency>
 	    <groupId>com.esotericsoftware</groupId>
@@ -136,6 +144,27 @@
 		  		<downloadJavadocs>true</downloadJavadocs>
 		  		<downloadSources>true</downloadSources>
 		  	</configuration>
+		  </plugin>
+		  <plugin>
+		  	<groupId>org.apache.maven.plugins</groupId>
+		  	<artifactId>maven-shade-plugin</artifactId>
+		  	<version>2.4.3</version>
+		  	<executions>
+		  		<execution>
+		  			<phase>package</phase>
+		  			<goals>
+		  				<goal>shade</goal>
+		  			</goals>
+		  			<configuration>
+		  				<artifactSet>
+		  					<includes>
+		  						<include>com.github.austinv11:Discord4j</include>
+		  						<include>com.esotericsoftware:kryonet</include>
+		  					</includes>
+		  				</artifactSet>
+		  			</configuration>
+		  		</execution>
+		  	</executions>
 		  </plugin>
 		</plugins>
 	  </pluginManagement>

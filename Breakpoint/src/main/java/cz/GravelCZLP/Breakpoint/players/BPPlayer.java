@@ -1284,6 +1284,12 @@ public class BPPlayer {
 
 	public void setControled(boolean b) {
 		this.isBeingControlled = b;
+		if (b) {
+			Player p = getPlayer();
+			p.sendMessage("§4Byl jsi zmažen, prosím připoje se na discord do 15Min.");
+			p.sendMessage("§4Pokud se odpojíš nebo tak neuděláš budeš zabanován na 2 dny.");
+			FrozebanTimer.timers.put(p.getName(), (15 * 60));
+		}
 	}
 
 	public ServerPosition getServerPosition() {
