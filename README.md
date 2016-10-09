@@ -1,7 +1,7 @@
 ### Breakpoint ###
 
 Breakpoint is a Minecraft minigame officialy by Limeth, he abondened it and 
-i bring it back to life. Server with this minigame will be running in about 1 month, i i will not be lazy.
+We(GravelCrew) bring it back to life. Server with this minigame will be running in about 1 month, i @GravelCZLP will not be lazy.
 IP: None
 
 ### Dependencies ###
@@ -9,7 +9,7 @@ IP: None
 * Spigot 1.10.2
 * ProtocolLib (1.10)
 * AdvancedBans
-* PingAPI (Fork on my github)
+* PingAPI (Fork on @GravelCZLP´s github)
 
 ## License
 
