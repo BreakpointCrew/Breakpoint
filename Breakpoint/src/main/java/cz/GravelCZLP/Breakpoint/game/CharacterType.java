@@ -21,22 +21,22 @@ import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 public enum CharacterType {
-	SWORDSMAN(false, MessageType.CHARACTER_SWORDSMAN, EntityType.COW), KNIGHT(false, MessageType.CHARACTER_KNIGHT,
-			EntityType.BAT, new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 0, true)), ARCHER(false,
-					MessageType.CHARACTER_ARCHER, EntityType.VILLAGER), CHEMIST(false, MessageType.CHARACTER_CHEMIST,
-							EntityType.WITCH,
-							new PotionEffect(PotionEffectType.REGENERATION, 2147483647, 0, true)), CULTIST(true,
-									MessageType.CHARACTER_CULTIST, EntityType.MAGMA_CUBE, ChatColor.DARK_PURPLE,
-									new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 4, true)), PYRO(true,
-											MessageType.CHARACTER_PYRO, EntityType.BLAZE, ChatColor.GOLD), NINJA(true,
-													MessageType.CHARACTER_NINJA, EntityType.ENDERMAN,
-													ChatColor.LIGHT_PURPLE,
-													new PotionEffect(PotionEffectType.SPEED, 2147483647, 1,
-															true)), HEAVY(true, MessageType.CHARACTER_HEAVY,
-																	EntityType.SPIDER, ChatColor.DARK_RED,
-																	new PotionEffect(PotionEffectType.SLOW, 2147483647,
-																			0, true));
-
+	SWORDSMAN(false, MessageType.CHARACTER_SWORDSMAN, EntityType.COW),
+	
+	KNIGHT(false, MessageType.CHARACTER_KNIGHT,EntityType.BAT, new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 0, true)),
+	
+	ARCHER(false,MessageType.CHARACTER_ARCHER, EntityType.VILLAGER),
+	
+	CHEMIST(false, MessageType.CHARACTER_CHEMIST,EntityType.WITCH,new PotionEffect(PotionEffectType.REGENERATION, 2147483647, 0, true)),
+	
+	CULTIST(true,MessageType.CHARACTER_CULTIST, EntityType.MAGMA_CUBE, ChatColor.DARK_PURPLE,new PotionEffect(PotionEffectType.ABSORPTION, 2147483647, 4, true)),
+	
+	PYRO(true,MessageType.CHARACTER_PYRO, EntityType.BLAZE, ChatColor.GOLD),
+	
+	NINJA(true,MessageType.CHARACTER_NINJA, EntityType.ENDERMAN,ChatColor.LIGHT_PURPLE,new PotionEffect(PotionEffectType.SPEED, 2147483647, 1,true)),
+	
+	HEAVY(true, MessageType.CHARACTER_HEAVY,EntityType.SPIDER, ChatColor.DARK_RED,new PotionEffect(PotionEffectType.SLOW, 2147483647,0, true));
+	
 	private final PotionEffect[] effects;
 	private final boolean requiresVIP;
 	private final MessageType nameMessageType;

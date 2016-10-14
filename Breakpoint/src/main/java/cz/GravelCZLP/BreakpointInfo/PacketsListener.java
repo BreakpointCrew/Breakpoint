@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 import cz.GravelCZLP.BreakpointInfo.Packets.DataRequestPacket;
 import cz.GravelCZLP.BreakpointInfo.Packets.DataResponcePacket;
+import cz.GravelCZLP.BreakpointInfo.Packets.ExceptionPacket;
 
 public class PacketsListener extends Listener {
 
@@ -20,6 +21,8 @@ public class PacketsListener extends Listener {
 			int i = this.main.connectionsPerMinute.get(conn.getRemoteAddressTCP().getAddress().toString()).intValue();
 			this.main.connectionsPerMinute.put(conn.getRemoteAddressTCP().getAddress().toString(), i + 1);
 		} else {
+			ExceptionPacket packet = new ExceptionPacket("CannotConnectException,You have exceeded the connection limit");
+			conn.sendTCP(packet);
 			conn.close();
 		}
 	}
@@ -34,6 +37,9 @@ public class PacketsListener extends Listener {
 			if (canRequest == true) {
 				DataResponcePacket responce = new DataResponcePacket(this.main.getBPInfo());
 				conn.sendTCP(responce);
+			} else {
+				ExceptionPacket packet = new ExceptionPacket("CannotRequestException,You cannot request responce");
+				conn.sendTCP(packet);
 			}
 		}
 	}

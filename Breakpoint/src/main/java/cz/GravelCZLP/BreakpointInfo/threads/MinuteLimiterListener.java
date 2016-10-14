@@ -1,10 +1,8 @@
 package cz.GravelCZLP.BreakpointInfo.threads;
 
-import java.util.TimerTask;
-
 import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
 
-public class MinuteLimiterListener extends TimerTask {
+public class MinuteLimiterListener implements Runnable {
 
 	DataListenerMain main;
 

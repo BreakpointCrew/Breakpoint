@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,8 +28,11 @@ import cz.GravelCZLP.Breakpoint.game.ctf.Team;
 import cz.GravelCZLP.Breakpoint.game.dm.DMGame;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.BreakpointInfo.Packets.ActionPacket;
 import cz.GravelCZLP.BreakpointInfo.Packets.DataRequestPacket;
 import cz.GravelCZLP.BreakpointInfo.Packets.DataResponcePacket;
+import cz.GravelCZLP.BreakpointInfo.Packets.ExceptionPacket;
+import cz.GravelCZLP.BreakpointInfo.Util.EnumAction;
 import cz.GravelCZLP.BreakpointInfo.threads.MinuteLimiterListener;
 import cz.GravelCZLP.BreakpointInfo.threads.UnBanThread;
 
@@ -37,29 +41,30 @@ public class DataListenerMain {
 	Breakpoint bp;
 
 	public HashMap<String, Integer> requestsPerMin; // 5 per 1 minute
-	public List<String> banned; // if more then 20 per minute; unban every 10
-								// mins
+	public HashMap<String, Integer> banned;// if more then 20 per minute; unban every 10 mins
 	public HashMap<String, Integer> connectionsPerMinute; // max 20 conn. per
 	// minute
 
 	public HashMap<String, Integer> connectionsPerIP;
 	
 	public ArrayList<String> banList;
-
-	private Timer timer = null;
-
+	
 	private FileWriter logger = null;
 
+	private ScheduledExecutorService executor;
+	
 	private static Server server;
 
+	private static int TIME_BAN = (10 * 60);
+	
 	public DataListenerMain(Breakpoint bp) {
-		this.banned = new ArrayList<>();
+		this.banned = new HashMap<>();
 		this.requestsPerMin = new HashMap<>();
 		this.connectionsPerMinute = new HashMap<>();
 		this.connectionsPerIP = new HashMap<>();
 		this.bp = bp;
 	}
-
+	
 	public void start() throws IOException {
 		server = new Server();
 		server.start();
@@ -67,6 +72,9 @@ public class DataListenerMain {
 		Kryo kryo = server.getKryo();
 		kryo.register(DataRequestPacket.class);
 		kryo.register(DataResponcePacket.class);
+		kryo.register(ActionPacket.class);
+		kryo.register(ExceptionPacket.class);
+		kryo.register(EnumAction.class);
 		kryo.register(BPInfo.class);
 
 		server.bind(33698, 33697);
@@ -82,10 +90,11 @@ public class DataListenerMain {
 		loadBans(banList);
 
 		initLogWriter();
-
-		this.timer = new Timer();
-		this.timer.schedule(new UnBanThread(this), 1000 * 60 * 10);
-		this.timer.schedule(new MinuteLimiterListener(this), 1000 * 60);
+		
+		executor = Executors.newScheduledThreadPool(2);
+		executor.scheduleAtFixedRate(new UnBanThread(this), 0, 1, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(new MinuteLimiterListener(this), 0, 1, TimeUnit.SECONDS);
+		
 	}
 
 	public void stop() {
@@ -100,30 +109,38 @@ public class DataListenerMain {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		this.timer.cancel();
+		executor.shutdown();
 		server.stop();
 	}
 
 	public boolean canReqquest(Connection conn) {
 		String ip = conn.getRemoteAddressTCP().getAddress().toString();
 		info("IP:" + ip + " called a request!");
-		if (this.banned.contains(ip) || banList.contains(ip)) {
+		if (this.banned.containsKey(ip) || banList.contains(ip)) {
 			info("IP: " + ip + " is banned, it did not get responce");
 			return false;
 		}
 		if (!this.requestsPerMin.containsKey(ip)) {
 			this.requestsPerMin.put(ip, 1);
 		}
+		Calendar cal = Calendar.getInstance();
+		Date d = cal.getTime();
+		@SuppressWarnings("deprecation")
+		String datum = d.getYear() + "-" + d.getMonth() + "-" + d.getDay() + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+		
 		int i = this.requestsPerMin.get(conn.getRemoteAddressTCP().getAddress().toString());
 		if (i < 5) {
 			return true;
 		} else if (i > 20) {
 			warn("IP:" + ip + " was temporary banned for too mnny requests");
-			this.banned.add(ip);
+			ActionPacket packet = new ActionPacket(EnumAction.TEMP_BAN);
+			conn.sendTCP(packet);
+			this.banned.put(ip, TIME_BAN);
 			return false;
 		} else if (i > 60) {
-			warn("IP:" + ip + " was permanently banned for too many requests");
+			warn("IP:" + ip + " was permanently banned for too many requests at:" + datum);
+			ActionPacket packet = new ActionPacket(EnumAction.PERMA_BAN);
+			conn.sendTCP(packet);
 			performBan(ip);
 			return false;
 		}
@@ -133,7 +150,7 @@ public class DataListenerMain {
 	public boolean canConnect(Connection conn) {
 		String ip = conn.getRemoteAddressTCP().getAddress().toString();
 		info("IP: " + ip + " is trying to connect");
-		if (this.banned.contains(ip) || banList.contains(ip)) {
+		if (this.banned.containsKey(ip) || banList.contains(ip)) {
 			info("IP: " + ip + " is banned, it was not able to conect");
 			return false;
 		}
@@ -148,11 +165,15 @@ public class DataListenerMain {
 		
 		if (this.connectionsPerMinute.get(ip) > 20) {
 			warn("IP:" + ip + " was temporary banned for too many requests");
-			this.banned.add(ip);
+			ActionPacket packet = new ActionPacket(EnumAction.TEMP_BAN);
+			conn.sendTCP(packet);
+			this.banned.put(ip, TIME_BAN);
 			return false;
 		}
 		if (this.connectionsPerMinute.get(ip) > 60) {
 			warn("IP:" + ip + " was permanently banned for too many requests at: " + datum);
+			ActionPacket packet = new ActionPacket(EnumAction.PERMA_BAN);
+			conn.sendTCP(packet);
 			performBan(ip);
 		}
 		return true;

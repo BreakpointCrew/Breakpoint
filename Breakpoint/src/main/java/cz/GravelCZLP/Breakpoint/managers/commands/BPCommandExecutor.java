@@ -66,7 +66,6 @@ public class BPCommandExecutor implements CommandExecutor {
 		}
 
 		if (args.length <= 0) {
-			sender.sendMessage("/bp setVIPType [Player] [Type]");
 			sender.sendMessage("/bp lobbyLoc");
 			sender.sendMessage("/bp shopLoc");
 			sender.sendMessage("/bp vipInfoLoc");
@@ -714,6 +713,18 @@ public class BPCommandExecutor implements CommandExecutor {
 			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
+		} else if (args[0].equalsIgnoreCase("froze")) {
+			if (args.length != 1) {
+				sender.sendMessage("Nespráné Argumenty");
+				return false;
+			}
+			BPPlayer bpPlayer = BPPlayer.get(args[1]);
+			if (bpPlayer.isBeingControled()) {
+				sender.sendMessage("Odmrazil jsi hráče " + args[1]);
+			} else {
+				sender.sendMessage("Zmrazil jsi hráče " + args[1]);
+			}
+			bpPlayer.setControled(!bpPlayer.isBeingControled());
 		}
 		return true;
 	}

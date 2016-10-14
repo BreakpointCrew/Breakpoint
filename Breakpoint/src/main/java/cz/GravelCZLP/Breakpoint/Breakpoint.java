@@ -128,7 +128,6 @@ public class Breakpoint extends JavaPlugin {
 			world.setStorm(false);
 			world.setThundering(false);
 			world.setWeatherDuration(1000000000);
-			this.successfullyEnabled = true;
 
 			this.data = new DataListenerMain(this);
 
@@ -145,7 +144,7 @@ public class Breakpoint extends JavaPlugin {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
+			
 			for (World w : Bukkit.getWorlds()) {
 				List<Entity> entites = w.getEntities();
 				for (Entity e : entites) {
@@ -157,7 +156,8 @@ public class Breakpoint extends JavaPlugin {
 					}
 				}
 			}
-
+			this.successfullyEnabled = true;
+			
 			return;
 		} else {
 			this.successfullyEnabled = false;

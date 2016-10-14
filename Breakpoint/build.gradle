@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+repositories {
+	mavenCentral()
+	jcenter() //This prevents issues with transitive dependencies
+    maven {
+       url  "https://jitpack.io"
+    }
+}
+
+dependencies {
+	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+	compile "com.github.austinv11:Discord4j:2.6.1:shared"
+}

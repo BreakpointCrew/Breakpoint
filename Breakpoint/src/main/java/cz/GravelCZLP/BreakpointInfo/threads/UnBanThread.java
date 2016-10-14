@@ -1,10 +1,10 @@
 package cz.GravelCZLP.BreakpointInfo.threads;
 
-import java.util.TimerTask;
+import java.util.Map.Entry;
 
 import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
 
-public class UnBanThread extends TimerTask {
+public class UnBanThread implements Runnable {
 
 	DataListenerMain main;
 
@@ -14,7 +14,15 @@ public class UnBanThread extends TimerTask {
 
 	@Override
 	public void run() {
-		this.main.banned.clear();
+		for (Entry<String, Integer> entry : main.banned.entrySet()) {
+			String ip = entry.getKey();
+			int remaing = entry.getValue();
+			entry.setValue(remaing--);
+			remaing = entry.getValue();
+			if (remaing == 0) {
+				main.banned.remove(ip);
+			}
+		}
 	}
 
 }
