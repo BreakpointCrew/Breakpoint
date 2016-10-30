@@ -1,37 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-	
-	<groupId>cz.GravelCZLP.Breakpoint</groupId>
-	<artifactId>Breakpoint</artifactId>
-	<version>2.6.5</version>
-	<name>Breakpoint</name>
-	<description>A Minecraft Plugin that have PvP Minigames built in, and can be your only plugin on your server</description>
-	<packaging>jar</packaging>
-	
-	<developers>
-		<developer>
-			<id>GravelCZLP</id>
-			<name>Jindřich Veselý</name>
-			<roles>
-				 <role>Main Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>Limeth</id>
-			<name>Jakub Hlusička</name>
-			<organization>ProjectSurvive</organization>
-			<organizationUrl>http://projectsurvive.cz/</organizationUrl>
-			<roles>
-				<role>Idea, Original Developer</role>
-			</roles>
-		</developer>
-	</developers>
-	
-	<dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cz.GravelCZLP</groupId>
+  <artifactId>Breakpoint</artifactId>
+  <version>2.6.6</version>
+  <name>Breakpoint</name>
+  
+  <developers>
+  	<developer>
+  		<id>GravelCZLP</id>
+  		<name>Jindřich Veselý</name>
+  		<roles>
+  			<role>Main Developer</role>
+  		</roles>
+  	</developer>
+  	<developer>
+  		<id>Limeth</id>
+  		<name>Jakub Hlusička</name>
+  		<organization>ProjectSurvive</organization>
+  		<organizationUrl>http://projectsurvive.cz</organizationUrl>
+  		<roles>
+  			<role>Idea, original Developer</role>
+  		</roles>
+  	</developer>
+  </developers>
+  
+  	<dependencies>
 	
 	  <!--ProtocolLib 4.1.0-->
 	  <dependency>
@@ -88,6 +81,8 @@
 	    <scope>compile</scope>
 	  </dependency>
 	  
+	  <!-- Local AdvancedBan Plugin, there is no maven thinggy for it -->
+	  
 	  <dependency>
 	  	<groupId>me.leoko.advancedban</groupId>
 	  	<artifactId>AdvancedBan</artifactId>
@@ -95,10 +90,26 @@
 	  	<scope>system</scope>
 	  	<systemPath>${project.basedir}/lib/AdvancedBan.jar</systemPath>
 	  </dependency>
+	  
+	  <!-- teamSpeak 3 server query -->
+	  <dependency>
+	  	<groupId>com.github.theholywaffle</groupId>
+	  	<artifactId>teamspeak3-api</artifactId>
+	  	<version>[1.0.0,2.0.0)</version>
+	  </dependency>
+	  
 	</dependencies>
-	
-	<repositories>
-	  <repository>
+  
+  <repositories>
+      <repository>
+            <id>TeamSpeak-3-Java-API-mvn-repo</id>
+            <url>https://raw.githubusercontent.com/TheHolyWaffle/TeamSpeak-3-Java-API/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+      </repository>
+  	  <repository>
 	    <id>bukkit-repo</id>
 	    <url>http://repo.bukkit.org/content/groups/public/</url>
 	  </repository>
@@ -118,63 +129,18 @@
 	    <id>jitpack.io</id>
 	    <url>https://jitpack.io</url>
 	  </repository>
-	</repositories>
-	
-	<build>
-	  <resources>
-	    <resource>
-	      <directory>src/main/resources</directory>
-	      <filtering>true</filtering>
-	      <includes>
-	        <include>plugin.yml</include>
-	      </includes>
-	    </resource>
-	  </resources>
-	  
-	  <pluginManagement>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-compiler-plugin</artifactId>
-	        <version>3.5</version>
-	        <configuration>
-	          <source>1.8</source>
-	          <target>1.8</target>
-	        </configuration>
-	      </plugin>
-		  
-		  <plugin>
-		  	<groupId>org.apache.maven.plugins</groupId>
-		  	<artifactId>maven-eclipse-plugin</artifactId>
-		  	<version>2.9</version>
-		  	<configuration>
-		  		<downloadJavadocs>true</downloadJavadocs>
-		  		<downloadSources>true</downloadSources>
-		  	</configuration>
-		  </plugin>
-		  <plugin>
-		  	<groupId>org.apache.maven.plugins</groupId>
-		  	<artifactId>maven-shade-plugin</artifactId>
-		  	<version>2.4.3</version>
-		  	<executions>
-		  		<execution>
-		  			<phase>package</phase>
-		  			<goals>
-		  				<goal>shade</goal>
-		  			</goals>
-		  			<configuration>
-		  				<artifactSet>
-		  					<includes>
-		  						<include>com.github.austinv11:Discord4j</include>
-		  						<include>com.esotericsoftware:kryonet</include>
-		  					</includes>
-		  				</artifactSet>
-		  			</configuration>
-		  		</execution>
-		  	</executions>
-		  </plugin>
-		</plugins>
-	  </pluginManagement>
-	</build>
-	
+  </repositories>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -1,7 +1,6 @@
 package cz.GravelCZLP.Breakpoint;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +30,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.fijistudios.jordan.FruitSQL;
 
+import cz.GravelCZLP.Breakpoint.Runnables.SpawnEffect;
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.listeners.ChatListener;
@@ -157,6 +157,8 @@ public class Breakpoint extends JavaPlugin {
 				}
 			}
 			this.successfullyEnabled = true;
+			
+			Bukkit.getScheduler().runTaskTimer(this, new SpawnEffect(), 1L, 5L);
 			
 			return;
 		} else {

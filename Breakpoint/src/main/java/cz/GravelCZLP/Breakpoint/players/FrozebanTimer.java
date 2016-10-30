@@ -53,7 +53,7 @@ public class FrozebanTimer implements Runnable {
 		long start = TimeManager.getTime(); 
 		long end = TimeManager.getTime() + 86400000L * 2;
 	 
-		new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint",type, start, end, "", -1).create();
+		new Punishment(name, uuid, "Nedostavení v čase na Discord nebo TS3", "Breakpoint",type, start, end, "", -1).create();
 	}
 	
 	public void startLoops() {

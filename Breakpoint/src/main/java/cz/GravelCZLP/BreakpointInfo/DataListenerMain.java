@@ -204,6 +204,11 @@ public class DataListenerMain {
 		@SuppressWarnings("deprecation")
 		String datum = d.getYear() + "-" + d.getMonth() + "-" + d.getDay() + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
 
+		File s = new File(bp.getDataFolder() + "/BreakpointQuery/");
+		if (!s.exists()) {
+			s.mkdir();
+		}
+		
 		File file = new File(bp.getDataFolder() + "/BreakpointQuery/" + "log-" + datum);
 		file.createNewFile();
 		logger = new FileWriter(file);
@@ -227,7 +232,6 @@ public class DataListenerMain {
 	}
 
 	public void stopLogger() throws IOException {
-		logger.flush();
 		logger.close();
 	}
 

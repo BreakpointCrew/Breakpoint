@@ -1,6 +1,5 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
@@ -24,7 +23,6 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.PingAPI.PingAPI;
-import cz.GravelCZLP.Utils.Utils;
 import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.Punishment;
 import me.leoko.advancedban.utils.PunishmentType;
@@ -43,21 +41,6 @@ public class PlayerConnectionListener implements Listener {
 	public void onLogin(AsyncPlayerPreLoginEvent e) {
 		String ip = e.getAddress().toString();
 		Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
-		
-		try {
-			if (Utils.checkVPN(ip)) {
-				e.disallow(Result.KICK_OTHER, "§4VPN/Proxy není povoleno");
-				return;
-			}
-			
-			if (Utils.hasProxy(ip)) {
-				e.disallow(Result.KICK_OTHER, "§4VPN/Proxy není povoleno");
-				return;
-			}
-		} catch (IOException exc) {
-			exc.printStackTrace();
-			return;
-		}
 		
 		for (Player p : players) {
 			String playerip = p.getAddress().getAddress().toString();
@@ -132,7 +115,7 @@ public class PlayerConnectionListener implements Listener {
 		 
 			 new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint",type, start, end, "", -1).create(); 
 		 }
-		 
+		
 
 		bpPlayer.trySave();
 		bpPlayer.reset();

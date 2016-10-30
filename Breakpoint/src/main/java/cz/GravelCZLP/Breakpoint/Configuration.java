@@ -18,20 +18,19 @@ public class Configuration {
 	private StorageType storageType;
 	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName,
 			cwChallengeGame, token;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, NPCTopKillLoc, TopKillSignLoc,
-			staffListLocation;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, staffListLocation;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
-
+	private TS3Things ts3;
+	
 	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase,
 			String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName,
 			String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation,
 			Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit,
-			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location TopPlayerSignLoc,
-			Location topKillsSign, Location staffListLocation, long BoostMelounTime, String token) {
+			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, String token, TS3Things ts3) {
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
 		this.mySQLPort = mySQLPort;
@@ -90,9 +89,6 @@ public class Configuration {
 		Location staffListLocation = deserializeLocation(
 				yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
 
-		Location topNPCLoc = deserializeLocation(yamlConfig.getString("locations.topkills.npc", "world,0,64,8,0,0"));
-		Location topSignLoc = deserializeLocation(yamlConfig.getString("locations.topkills.sign", "world,0,64,8,0,0"));
-
 		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 18);
 		int cwEndHour = yamlConfig.getInt("cwEndHour", 21);
 		int cwWinLimit = yamlConfig.getInt("cwWinLimit", 3);
@@ -116,6 +112,15 @@ public class Configuration {
 			vipFeatures = list.toArray(new String[size]);
 		}
 
+		int ts3port = yamlConfig.getInt("tokens.ts3.port", 10011);
+		String ts3address = yamlConfig.getString("tokens.ts3.ip", "192.168.1.100");
+		int ts3sid = yamlConfig.getInt("tokens.ts3.sid", 1);
+		
+		String ts3name = yamlConfig.getString("tokens.ts3.name", "null");
+		String ts3pass = yamlConfig.getString("tokens.ts3.password", "null");
+		
+		TS3Things ts3 = new TS3Things(ts3address, ts3port, ts3name, ts3pass, ts3sid);
+		
 		RandomShop randomShop = null;
 		String[] rawRSLoc = ((String) yamlConfig.get("randomshoploc", "world,0,0,0,0,0")).split(",");
 		Location rsLoc = new Location(Bukkit.getWorld(rawRSLoc[0]), Integer.parseInt(rawRSLoc[1]),
@@ -126,7 +131,7 @@ public class Configuration {
 		return new Configuration(storageType, mySQLHost, mySQLPort, mySQLDatabase, mySQLUsername, mySQLPassword,
 				mySQLTablePlayers, languageFileName, challengeGameName, lobbyLocation, shopLocation, vipInfoLocation,
 				moneyInfoLocation, randomShop, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin, lobbyMessages,
-				vipFeatures, topNPCLoc, topSignLoc, staffListLocation, BoostMelounTime, token);
+				vipFeatures, staffListLocation, BoostMelounTime, token, ts3);
 	}
 
 	public void save() throws IOException {
@@ -157,15 +162,17 @@ public class Configuration {
 		yamlConfig.set("cwWinLimit", this.cwWinLimit);
 		yamlConfig.set("cwEmeraldsForTotalWin", this.cwEmeraldsForTotalWin);
 
-		/*
-		 * yamlConfig.set("locations.topkills.npc", serialize(NPCTopKillLoc));
-		 * yamlConfig.set("locations.topkills.sign", serialize(TopKillSignLoc));
-		 */
-
 		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
 
-		yamlConfig.set("tokens.discord", "NULL");
+		yamlConfig.set("tokens.discord", "Token goes here Here :)");
 
+		yamlConfig.set("tokens.ts3.name", ts3.queryUserName);
+		yamlConfig.set("tokens.ts3.password", ts3.queryPassword);
+		
+		yamlConfig.set("tokens.ts3.ip", ts3.queryPassword);
+		yamlConfig.set("tokens.ts3.port", ts3.port);
+		yamlConfig.set("tokens.ts3.sid", ts3.ts3id);
+		
 		Location rsLoc = this.randomShop.getLocation();
 		int rsDir = this.randomShop.getDirection();
 
@@ -180,7 +187,7 @@ public class Configuration {
 
 	private static String serialize(Location loc) {
 		if (loc == null) {
-			return "";
+			return "null";
 		}
 		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw()
 				+ "," + loc.getPitch();
@@ -357,22 +364,6 @@ public class Configuration {
 		this.mySQLTablePlayers = mySQLTablePlayers;
 	}
 
-	public void setTopSignLocation(Location loc) {
-		this.TopKillSignLoc = loc;
-	}
-
-	public void setTopNPCLocation(Location loc) {
-		this.NPCTopKillLoc = loc;
-	}
-
-	public Location getTopSignLocation() {
-		return this.TopKillSignLoc;
-	}
-
-	public Location getTopNPCLocation() {
-		return this.NPCTopKillLoc;
-	}
-
 	public Location getStaffListLocation() {
 		return this.staffListLocation;
 	}
@@ -384,4 +375,23 @@ public class Configuration {
 	public String getBotToken() {
 		return this.token;
 	}
+	
+	public TS3Things getTS3Things() {
+		return ts3;
+	}
+	
+	public static class TS3Things {
+		
+		public String address, queryUserName, queryPassword;
+		public int port, ts3id;
+		
+		public TS3Things(String address, int port, String queryUsername, String querypassword, int id) {
+			this.address       = address;
+			this.queryUserName = queryUsername;
+			this.queryPassword = querypassword;
+			this.port          = port;
+			ts3id = id;
+		}
+	}
+	
 }
