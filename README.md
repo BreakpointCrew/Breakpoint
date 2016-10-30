@@ -10,6 +10,8 @@ IP: None
 * ProtocolLib (1.10)
 * AdvancedBans
 * PingAPI (Fork on @GravelCZLP´s github)
+* Kryonet (API) (can be disabled)
+* Discord4j (Minecraft Chat to Discord and the over way around)
 
 ## License
 
