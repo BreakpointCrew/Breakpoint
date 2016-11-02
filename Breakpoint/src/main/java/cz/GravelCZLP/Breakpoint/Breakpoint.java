@@ -65,7 +65,7 @@ import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
-import cz.GravelCZLP.BreakpointInfo.DataListenerMain;
+import cz.GravelCZLP.BreakpointInfo.Main;
 import cz.GravelCZLP.DiscordChatBot.MainMCChat;
 import me.limeth.storageAPI.StorageType;
 import sx.blah.discord.util.DiscordException;
@@ -85,7 +85,7 @@ public class Breakpoint extends JavaPlugin {
 	public EventManager evtm;
 	public boolean successfullyEnabled;
 
-	private DataListenerMain data = null;
+	private Main data = null;
 	private MainMCChat discord = null;
 
 	@Override
@@ -129,7 +129,7 @@ public class Breakpoint extends JavaPlugin {
 			world.setThundering(false);
 			world.setWeatherDuration(1000000000);
 
-			this.data = new DataListenerMain(this);
+			this.data = new Main(this);
 
 			this.discord = new MainMCChat(this);
 
