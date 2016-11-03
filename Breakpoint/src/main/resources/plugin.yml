@@ -1,5 +1,5 @@
 name: Breakpoint
-version: 2.3.0
+version: 3.0.3
 main: cz.GravelCZLP.Breakpoint.Breakpoint
 depend: [ProtocolLib]
 authors: [Limeth, GravelCZLP]

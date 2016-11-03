@@ -30,7 +30,7 @@ public class ListenersMinecraft implements Listener {
 
 		GameType game = null;
 
-		Clan c = null;
+		Clan c = bpPlayer.getClan();
 
 		String pozice = bpPlayer.getChatName();
 
@@ -39,14 +39,27 @@ public class ListenersMinecraft implements Listener {
 		if (isInGame) {
 			game = bpPlayer.getGame().getType();
 		}
-		if (bpPlayer.getClan() != null) {
-			c = bpPlayer.getClan();
-		}
 
-		String formatedMessage = (isInGame ? WordUtils.capitalize(game.name()) : "") + pozice + " " + c.getName() + " "
+		@SuppressWarnings("null")
+		String formatedMessage = (isInGame ? WordUtils.capitalize(game.name()) : "Lobby ") + pozice + " " + (c == null ? c.getName() : "") + " "
 				+ author + ": " + msg;
-		formatedMessage = formatedMessage.replaceAll("§", "");
-
+		char[] chars = formatedMessage.toCharArray();
+		StringBuilder builder = new StringBuilder();
+		int lastchar = 0;
+		for (int i = 0; i < chars.length; i++) {
+			char ca = chars[i];
+			if (ca == '§') {
+				lastchar = i;
+				continue;
+			}
+			if ((i - lastchar) == 1) {
+				continue;
+			}
+			builder.append(ca);
+		}
+		
+		formatedMessage = builder.toString();
+		
 		for (IChannel channel : MainMCChat.getDiscordClient().getChannels(false)) {
 			if (channel.getName().equalsIgnoreCase("minecraftchat")) {
 				try {

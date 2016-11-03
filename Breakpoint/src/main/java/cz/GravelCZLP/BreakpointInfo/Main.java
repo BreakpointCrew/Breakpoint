@@ -50,8 +50,20 @@ public class Main {
 		FileHandler dateLog;
 		FileHandler latestLog;
 		
+		File dataFolder = new File(pl.getDataFolder() + "/BreakpointData");
+		if (!dataFolder.exists()) {
+			dataFolder.mkdir();
+		}
+		
+		File logFolder = new File(dataFolder + "/logs");
+		if (!logFolder.exists()) {
+			logFolder.mkdir();
+		}
+		
 		try {
-			SimpleDateFormat format = new SimpleDateFormat("mm:HH_dd:MM:yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm dd_MM_yyyy");
+			File f1 = new File(pl.getDataFolder() + "/BreakpointData/logs/log_" + format.format(Calendar.getInstance().getTime()) + ".log");
+			f1.createNewFile();
 			dateLog = new FileHandler(pl.getDataFolder() + "/BreakpointData/logs/log_" + format.format(Calendar.getInstance().getTime()) + ".log");
 			logger.addHandler(dateLog);
 			dateLog.setFormatter(new LogFormat());
@@ -168,6 +180,7 @@ public class Main {
 		int amoutOfConnections = lastConnections.get(ip).intValue();
 		if (isDisabled) {
 			logger.warning("API is disabled, IP: " + ip + " was disconnected.");
+			conn.close();
 			return false;
 		}
 		if (amoutOfConnections >= 20) {

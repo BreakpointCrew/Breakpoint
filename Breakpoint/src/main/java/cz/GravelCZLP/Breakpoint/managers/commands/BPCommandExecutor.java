@@ -409,25 +409,35 @@ public class BPCommandExecutor implements CommandExecutor {
 				} else {
 					player.sendMessage(ChatColor.RED + "Nespravne argumenty!");
 					player.sendMessage(
-							ChatColor.GRAY + "/bp buildShop type [side] [#RGB] [cost,cost...] [time,time...] [name]");
+							ChatColor.GRAY + "/bp buildShop [type (armor, skull)] [side] [#RGB] [cost,cost...] [time,time...] [name]");
 					// cmd 0 1 2 3 4 5 6 7 8
 				}
 			} else if (args[1].equalsIgnoreCase("skull")) {
 				if (args.length >= 4) {
+					if (args[3].equalsIgnoreCase("list")) {
+						for (SkullType s : SkullType.values()) {
+							String name = s.name() + ", Formatted name: " + s.getFormattedName();
+							String alias = s.getAlias();
+							int cost = s.getCost();
+							boolean vip = s.isVip();
+							sender.sendMessage(name + " " + alias + " " + cost + " "+ vip);
+							return true;
+						}
+					}
 					Location loc = null;
-					int faceing = 0;
+					int facing = 0;
 					String name = "";
 					SkullType type = null;
 
 					try {
 						loc = player.getLocation();
-						faceing = Integer.parseInt(args[2]);
+						facing = Integer.parseInt(args[2]);
 						for (int i = 4; i < args.length; i++) {
 							name += args[i] + " ";
 						}
 						name = ChatColor.translateAlternateColorCodes('&', name);
 						type = SkullType.valueOf(args[3].toUpperCase());
-						ShopManager.buildSkullShop(loc, faceing, name, type,
+						ShopManager.buildSkullShop(loc, facing, name, type,
 								player.getLocation().getBlock().getFace(player.getLocation().getBlock()));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -435,10 +445,10 @@ public class BPCommandExecutor implements CommandExecutor {
 
 				} else {
 					player.sendMessage(ChatColor.RED + "Nespravne Argumenty");
-					player.sendMessage(ChatColor.GRAY + "/bp buildShop type [side] [type] [name]");
+					player.sendMessage(ChatColor.GRAY + "/bp buildShop [type (skull, armor] [side] [skulltype (list for list of values)] [name]");
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "/bp buildShop [type (skull, armor)]");
+				sender.sendMessage(ChatColor.RED + "/bp buildShop [type (skull, armor)] args....");
 			}
 		} else if (args[0].equalsIgnoreCase("updateStatistics") || args[0].equalsIgnoreCase("updateStats")) {
 			if (StatisticsManager.isUpdating()) {
@@ -629,7 +639,7 @@ public class BPCommandExecutor implements CommandExecutor {
 			game.setDay();
 
 			sender.sendMessage("Done");
-		} else if (args[0].equalsIgnoreCase("deleteDefarg0ault")) {
+		} else if (args[0].equalsIgnoreCase("deleteDefalts")) {
 			File folder = BPPlayer.getFolder();
 			File[] files = folder.listFiles();
 
@@ -713,12 +723,24 @@ public class BPCommandExecutor implements CommandExecutor {
 			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("froze")) {
+		} else if (args[0].equalsIgnoreCase("freeze")) {
 			if (args.length != 1) {
 				sender.sendMessage("Nespráné Argumenty");
 				return false;
 			}
-			BPPlayer bpPlayer = BPPlayer.get(args[1]);
+			Player p = Bukkit.getPlayer(args[1]);
+			if (p == null || !p.isOnline()) {
+				sender.sendMessage("§4Nemůžeš zmrazit tohoto hráče");
+				return false;
+			}
+			if (sender instanceof Player) {
+				Player p2 = (Player) sender;
+				if (p2.getName() == p.getName()) {
+					p2.sendMessage("§4Nemůžeš zmrazit sám sebe!");
+					return false;
+				}
+			}
+			BPPlayer bpPlayer = BPPlayer.get(p);
 			if (bpPlayer.isBeingControled()) {
 				sender.sendMessage("Odmrazil jsi hráče " + args[1]);
 			} else {

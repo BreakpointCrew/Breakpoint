@@ -24,13 +24,13 @@ public class Configuration {
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
-	private TS3Things ts3;
+	private TS3Config ts3;
 	
 	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase,
 			String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName,
 			String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation,
 			Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit,
-			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, String token, TS3Things ts3) {
+			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, String token, TS3Config ts3) {
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
 		this.mySQLPort = mySQLPort;
@@ -58,6 +58,13 @@ public class Configuration {
 
 	public static Configuration load() {
 		File file = getFile();
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
 
 		String rawStorageType = yamlConfig.getString("storageType", "YAML");
@@ -79,7 +86,7 @@ public class Configuration {
 		String languageFileName = yamlConfig.getString("lang", "en");
 		String challengeGameName = yamlConfig.getString("cwChallengeGame", "CW");
 
-		String token = yamlConfig.getString("tokens.discord", "NULL");
+		String token = yamlConfig.getString("tokens.discord", "token here m8");
 
 		Location lobbyLocation = deserializeLocation(yamlConfig.getString("locations.lobby", "world,0,64,0,0,0"));
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
@@ -116,10 +123,10 @@ public class Configuration {
 		String ts3address = yamlConfig.getString("tokens.ts3.ip", "192.168.1.100");
 		int ts3sid = yamlConfig.getInt("tokens.ts3.sid", 1);
 		
-		String ts3name = yamlConfig.getString("tokens.ts3.name", "null");
-		String ts3pass = yamlConfig.getString("tokens.ts3.password", "null");
+		String ts3name = yamlConfig.getString("tokens.ts3.name", "admin");
+		String ts3pass = yamlConfig.getString("tokens.ts3.password", "pass");
 		
-		TS3Things ts3 = new TS3Things(ts3address, ts3port, ts3name, ts3pass, ts3sid);
+		TS3Config ts3 = new TS3Config(ts3address, ts3port, ts3name, ts3pass, ts3sid);
 		
 		RandomShop randomShop = null;
 		String[] rawRSLoc = ((String) yamlConfig.get("randomshoploc", "world,0,0,0,0,0")).split(",");
@@ -136,6 +143,13 @@ public class Configuration {
 
 	public void save() throws IOException {
 		File file = getFile();
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
 
 		yamlConfig.set("storageType", this.storageType.name());
@@ -164,14 +178,14 @@ public class Configuration {
 
 		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
 
-		yamlConfig.set("tokens.discord", "Token goes here Here :)");
-
-		yamlConfig.set("tokens.ts3.name", ts3.queryUserName);
-		yamlConfig.set("tokens.ts3.password", ts3.queryPassword);
+		yamlConfig.set("tokens.discord", "token");
 		
-		yamlConfig.set("tokens.ts3.ip", ts3.queryPassword);
-		yamlConfig.set("tokens.ts3.port", ts3.port);
-		yamlConfig.set("tokens.ts3.sid", ts3.ts3id);
+		yamlConfig.set("tokens.ts3.name", String.valueOf(ts3.queryUserName));
+		yamlConfig.set("tokens.ts3.password", String.valueOf(ts3.queryPassword));
+		
+		yamlConfig.set("tokens.ts3.ip", String.valueOf(ts3.address));
+		yamlConfig.set("tokens.ts3.port", String.valueOf(ts3.port));
+		yamlConfig.set("tokens.ts3.sid", String.valueOf(ts3.ts3id));
 		
 		Location rsLoc = this.randomShop.getLocation();
 		int rsDir = this.randomShop.getDirection();
@@ -194,6 +208,9 @@ public class Configuration {
 	}
 
 	public static Location deserializeLocation(String raw) {
+		if (raw == "null" || raw == "" || raw == null) {
+			return null;
+		}
 		String[] rawSplit = raw.split(",");
 		return new Location(Bukkit.getServer().getWorld(rawSplit[0]), Double.parseDouble(rawSplit[1]),
 				Double.parseDouble(rawSplit[2]), Double.parseDouble(rawSplit[3]), Float.parseFloat(rawSplit[4]),
@@ -376,16 +393,16 @@ public class Configuration {
 		return this.token;
 	}
 	
-	public TS3Things getTS3Things() {
+	public TS3Config getTS3Things() {
 		return ts3;
 	}
 	
-	public static class TS3Things {
+	public static class TS3Config {
 		
 		public String address, queryUserName, queryPassword;
 		public int port, ts3id;
 		
-		public TS3Things(String address, int port, String queryUsername, String querypassword, int id) {
+		public TS3Config(String address, int port, String queryUsername, String querypassword, int id) {
 			this.address       = address;
 			this.queryUserName = queryUsername;
 			this.queryPassword = querypassword;

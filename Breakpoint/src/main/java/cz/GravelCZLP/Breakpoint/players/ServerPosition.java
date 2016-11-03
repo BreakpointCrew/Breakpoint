@@ -19,9 +19,9 @@ public class ServerPosition {
 		return Arrays.asList(new Column("position", ColumnType.ENUM, position.name()));
 	}
 
-	public static final ServerPosition load(Storage s) throws Exception {
+	public static final ServerPosition load(Storage storage) throws Exception {
 
-		ServerPositionEnum pos = (ServerPositionEnum) s.get(Enum.class, "position", ServerPositionEnum.NORMAL);
+		ServerPositionEnum pos = ServerPositionEnum.valueOf(storage.get(String.class, "position", "NORMAL"));
 
 		return new ServerPosition(pos);
 	}
