@@ -55,7 +55,8 @@ public class Settings {
 
 	public static List<Column> getRequiredMySQLColumns() {
 		return Arrays.asList(new Column("deathMessages", ColumnType.BOOLEAN),
-				new Column("extraSounds", ColumnType.BOOLEAN), new Column("showEnchantments", ColumnType.BOOLEAN),
+				new Column("extraSounds", ColumnType.BOOLEAN),
+				new Column("showEnchantments", ColumnType.BOOLEAN),
 				new Column("discordMessages", ColumnType.BOOLEAN));
 	}
 

@@ -58,13 +58,6 @@ public class Configuration {
 
 	public static Configuration load() {
 		File file = getFile();
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
 
 		String rawStorageType = yamlConfig.getString("storageType", "YAML");
@@ -194,7 +187,7 @@ public class Configuration {
 				+ "," + rsLoc.getBlockZ() + "," + rsDir);
 		yamlConfig.save(file);
 	}
-
+	
 	public FruitSQL connectToMySQL() {
 		return new FruitSQL(this.mySQLHost, this.mySQLPort, this.mySQLDatabase, this.mySQLUsername, this.mySQLPassword);
 	}

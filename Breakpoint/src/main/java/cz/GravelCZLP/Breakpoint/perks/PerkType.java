@@ -18,13 +18,17 @@ import com.comphenix.example.Attributes.Attribute;
 import com.comphenix.example.Attributes.AttributeType;
 import com.comphenix.example.Attributes.Operation;
 
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
 public enum PerkType {
 	// {{STATIC
 	@SuppressWarnings("deprecation")
-	AGILITY(MessageType.PERK_AGILITY_NAME, MessageType.PERK_AGILITY_DESC, new MaterialData(Material.POTION, (byte) 8194), new Attribute[] { getAttribute(AttributeType.GENERIC_MOVEMENT_SPEED, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STABILITY(MessageType.PERK_STABILITY_NAME, MessageType.PERK_STABILITY_DESC, new MaterialData(Material.CHAINMAIL_CHESTPLATE), new Attribute[] { getAttribute(AttributeType.GENERIC_KNOCKBACK_RESISTANCE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STRENGTH(MessageType.PERK_STRENGTH_NAME, MessageType.PERK_STRENGTH_DESC, new MaterialData(Material.IRON_SWORD), new Attribute[] { getAttribute(AttributeType.GENERIC_ATTACK_DAMAGE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), @Deprecated
+	AGILITY(MessageType.PERK_AGILITY_NAME, MessageType.PERK_AGILITY_DESC,
+			new MaterialData(Material.POTION, (byte) 8194), new Attribute[] { 
+					getAttribute(AttributeType.GENERIC_MOVEMENT_SPEED, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STABILITY(MessageType.PERK_STABILITY_NAME, MessageType.PERK_STABILITY_DESC, new MaterialData(Material.CHAINMAIL_CHESTPLATE), new Attribute[] { getAttribute(AttributeType.GENERIC_KNOCKBACK_RESISTANCE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STRENGTH(MessageType.PERK_STRENGTH_NAME, MessageType.PERK_STRENGTH_DESC, new MaterialData(Material.IRON_SWORD), new Attribute[] { getAttribute(AttributeType.GENERIC_ATTACK_DAMAGE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), 
+	@Deprecated
 	VITALITY(MessageType.PERK_VITALITY_NAME, MessageType.PERK_VITALITY_DESC, new MaterialData(Material.BOW), new Attribute[] { getAttribute(AttributeType.GENERIC_MAX_HEALTH, Operation.ADD_NUMBER, 20) }), POWER(MessageType.PERK_POWER_NAME, MessageType.PERK_POWER_DESC, new MaterialData(Material.BOW)) {
 		public final double MULTIPLIER = 1.1;
 
@@ -42,7 +46,38 @@ public enum PerkType {
 			Random rnd = new Random();
 
 			if (rnd.nextDouble() < this.CHANCE) {
-				event.getEntity().setFireTicks((int) (20 * this.DURATION));
+				if (event.getEntity() instanceof Player) {
+					Player damager = (Player) event.getEntity();
+					List<Entity> nearbyEntites = damager.getNearbyEntities(10, 10, 10);
+					for (int i = 0; i < nearbyEntites.size(); i++) {
+						if (!(nearbyEntites.get(i) instanceof Player)) {
+							nearbyEntites.remove(i);
+						}
+					}
+					
+					for (int i = 0; i < nearbyEntites.size(); i++) {
+						BPPlayer bpPlayer = BPPlayer.get((Player)nearbyEntites.get(i));
+						if (!bpPlayer.isInGame()) {
+							nearbyEntites.remove(i);
+						}
+					}
+					
+					BPPlayer bpPlayer = BPPlayer.get(damager);
+					switch (bpPlayer.getGameProperties().getGameType()) {
+					case CTF:
+						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
+						
+						break;
+					case CW:
+						break;
+					case DM:
+						break;
+					default:
+						break;
+					
+					}
+				}
+				
 			}
 		}
 	},
@@ -75,6 +110,7 @@ public enum PerkType {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 0, true), true);
 		}
 	},
+	@Deprecated
 	SUICIDE(MessageType.PERK_SUICIDE_NAME, MessageType.PERK_SUICIDE_DESC, new MaterialData(Material.SKULL_ITEM)) {
 		public final double MULTIPLIER = 1.25;
 

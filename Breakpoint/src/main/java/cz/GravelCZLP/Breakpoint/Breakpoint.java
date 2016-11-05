@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -30,7 +31,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.fijistudios.jordan.FruitSQL;
 
-import cz.GravelCZLP.Breakpoint.Runnables.SpawnEffect;
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.listeners.ChatListener;
@@ -66,7 +66,7 @@ import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.BreakpointInfo.Main;
-import cz.GravelCZLP.DiscordChatBot.MainMCChat;
+import cz.GravelCZLP.DiscordChatBot.DiscordChat;
 import me.limeth.storageAPI.StorageType;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -86,23 +86,42 @@ public class Breakpoint extends JavaPlugin {
 	public boolean successfullyEnabled;
 
 	private Main data = null;
-	private MainMCChat discord = null;
+	private DiscordChat discord = null;
 
+	private boolean canEnable = false;
+	
+	@Override
+	public void onLoad() {
+		canEnable = Licence.isAllowed();
+		if (Configuration.getFile().exists()) {
+			config = Configuration.load();
+		} else {
+			File f = Configuration.getFile();
+			if (f.isDirectory()) {
+				f.delete();
+			}
+			if (!f.exists()) {
+				try {
+					f.createNewFile();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			config = Configuration.load();
+		}
+	}
+	
 	@Override
 	public void onEnable() {
-		if (Licence.isAllowed()) {
+		if (canEnable) {
 			instance = this;
 			this.prm = ProtocolLibrary.getProtocolManager();
 			MapManager.setup();
 			Clan.loadClans();
-			config = Configuration.load();
 
 			if (config.getStorageType() == StorageType.MYSQL) {
 				mySQL = config.connectToMySQL();
-			}
-
-			if (getConfig() != null) {
-				saveDefaultConfig();
 			}
 
 			BPPlayer.updateTable(mySQL);
@@ -131,7 +150,7 @@ public class Breakpoint extends JavaPlugin {
 
 			this.data = new Main(this);
 
-			this.discord = new MainMCChat(this);
+			this.discord = new DiscordChat(this);
 
 			try {
 				this.discord.start();
@@ -157,8 +176,6 @@ public class Breakpoint extends JavaPlugin {
 				}
 			}
 			this.successfullyEnabled = true;
-			
-			Bukkit.getScheduler().runTaskTimer(this, new SpawnEffect(), 1L, 5L);
 			
 			return;
 		} else {

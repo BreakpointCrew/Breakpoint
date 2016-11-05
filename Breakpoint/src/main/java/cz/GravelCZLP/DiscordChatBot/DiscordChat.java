@@ -8,13 +8,13 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
-public class MainMCChat {
+public class DiscordChat {
 
 	Breakpoint bp;
 
 	private static IDiscordClient client;
 
-	public MainMCChat(Breakpoint bp) {
+	public DiscordChat(Breakpoint bp) {
 		this.bp = bp;
 	}
 

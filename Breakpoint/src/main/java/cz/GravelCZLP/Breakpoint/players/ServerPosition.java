@@ -1,6 +1,6 @@
 package cz.GravelCZLP.Breakpoint.players;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.limeth.storageAPI.Column;
@@ -10,24 +10,47 @@ import me.limeth.storageAPI.Storage;
 public class ServerPosition {
 
 	public static enum ServerPositionEnum {
-		ADMIN, DEVELOPER, MODERATOR, HELPER, YOUTUBE, SPONSOR, VIPPLUS, VIP, NORMAL;
+		ADMIN(8), DEVELOPER(7), MODERATOR(6), HELPER(5), YOUTUBE(4), SPONSOR(3), VIPPLUS(2), VIP(1), NORMAL(0);
+		
+		private int id;
+		
+		private ServerPositionEnum(int id) {
+			this.id = id;
+		}
+		
+		public static ServerPositionEnum fromId(int id) {
+			for (ServerPositionEnum e : values()) {
+				if (e.getId() == id) {
+					return e;
+				}
+			}
+			return NORMAL;
+		}
+		
+		public int getId() {
+			return id;
+		}
 	}
 
 	private static ServerPositionEnum position;
 
 	public static List<Column> getRequiredMySQLColumns() {
-		return Arrays.asList(new Column("position", ColumnType.ENUM, position.name()));
+		List<Column> col = new ArrayList<>();
+		
+		col.add(new Column("position", ColumnType.INT));
+		
+		return col;
 	}
 
 	public static final ServerPosition load(Storage storage) throws Exception {
 
-		ServerPositionEnum pos = ServerPositionEnum.valueOf(storage.get(String.class, "position", "NORMAL"));
+		ServerPositionEnum pos = ServerPositionEnum.fromId(storage.get(int.class, "position", 0));
 
 		return new ServerPosition(pos);
 	}
 
 	public void save(Storage storage) {
-		storage.put("position", position.name());
+		storage.put("position", position.getId());
 	}
 
 	public ServerPosition(ServerPositionEnum position) {

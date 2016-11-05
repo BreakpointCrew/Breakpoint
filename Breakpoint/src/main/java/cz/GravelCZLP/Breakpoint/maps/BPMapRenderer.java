@@ -323,6 +323,9 @@ public abstract class BPMapRenderer extends MapRenderer {
 	public static BufferedImage getImage(String path) {
 		try {
 			File file = new File(path);
+			if (!file.exists()) {
+				return null;
+			}
 			BufferedImage img = ImageIO.read(file);
 			return img;
 		} catch (Throwable e) {
