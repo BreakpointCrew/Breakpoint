@@ -20,14 +20,16 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.Button;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
-import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
@@ -96,6 +98,8 @@ public class CTFListener extends GameListener {
 				Player shooter = bpShooter.getPlayer();
 				shooter.sendMessage(MessageType.PVP_SPAWNKILLING.getTranslation().getValue());
 				event.setIntensity(target, 0);
+				target.setFireTicks(0);
+				target.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 5, 1, false), false);
 			}
 		} else {
 			event.setIntensity(target, 0);
@@ -173,12 +177,13 @@ public class CTFListener extends GameListener {
 			if (flm.isHoldingFlag(bpPlayer)) {
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);
+				PlayerInventory inv = player.getInventory();
+				inv.setItem(inv.getHeldItemSlot(), new ItemStack(Material.ENDER_PEARL));
 				player.sendMessage(MessageType.OTHER_WARNPEARL.getTranslation().getValue());
 			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onPlayerRightClickItem(PlayerInteractEvent event, BPPlayer bpPlayer, ItemStack item) {
 		Material type = item.getType();
@@ -190,7 +195,6 @@ public class CTFListener extends GameListener {
 			if (flm.isHoldingFlag(bpPlayer)) {
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);
-				player.setItemInHand(PlayerManager.decreaseItem(item));
 				player.sendMessage(MessageType.OTHER_WARNPEARL.getTranslation().getValue());
 			}
 		}
@@ -235,8 +239,6 @@ public class CTFListener extends GameListener {
 							ServerPosition pos = bpPlayer.getServerPosition();
 							boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
 									|| pos.isYoutube();
-
-							System.out.println(b);
 
 							if (charType.requiresVIP() && !b) {
 								player.sendMessage(ChatColor.DARK_GRAY + "---");

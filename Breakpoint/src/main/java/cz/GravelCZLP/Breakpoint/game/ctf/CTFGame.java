@@ -12,12 +12,14 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.map.MapView;
@@ -131,6 +133,12 @@ public class CTFGame extends Game {
 		bpPlayer.setGameProperties(new CTFProperties(this, bpPlayer));
 		super.join(bpPlayer);
 		bpPlayer.spawn();
+		
+		updateTeamSizeRenderers();
+		
+		if (players.size() >= 2) {
+			flm.spawnFlags();
+		}
 	}
 
 	public void superJoin(BPPlayer bpPlayer) throws Exception {
@@ -140,7 +148,7 @@ public class CTFGame extends Game {
 	@Override
 	public void onCommand(CommandSender sender, String[] args) {
 		if (args.length <= 0) {
-			sender.sendMessage("info, start, map, teamSelLoc, charSelLoc, spawnFlags, removeFlags");
+			sender.sendMessage("info, start, map, teamSelLoc, charSelLoc, spawnFlags, removeFlags, giveNeededMaps");
 		} else if (args[0].equalsIgnoreCase("info")) {
 			sender.sendMessage("Name: " + getName());
 			sender.sendMessage("Active: " + isActive());
@@ -343,6 +351,21 @@ public class CTFGame extends Game {
 				Player p = (Player) sender;
 				ctfMap.addMelounBoostLocation(p.getLocation());
 				sender.sendMessage(ChatColor.GREEN + "Location succesfully added !");
+			} else if (args[1].equalsIgnoreCase("giveNeededMaps")) {
+				if (!(sender instanceof Player)) {
+					sender.sendMessage("Only for Players");
+					return;
+				}
+				List<Short> maps = new ArrayList<Short>();
+				for (int i = 0; i < 2; i++) {
+					maps.add((short) (teamSizeRenderersMapId + i));
+				}
+				maps.add(playerAmountRendererMapId);
+				maps.add(currentMapMapId);
+				for (int i = 0; i < maps.size(); i++) {
+					ItemStack map = new ItemStack(Material.MAP, maps.get(i));
+					((Player) sender).getInventory().addItem(map);
+				}
 			}
 		}
 	}
@@ -351,12 +374,11 @@ public class CTFGame extends Game {
 	public void updateLobbyMaps(BPPlayer bpPlayer) {
 		super.updateLobbyMaps(bpPlayer);
 
-		// Player player = bpPlayer.getPlayer();
+		Player player = bpPlayer.getPlayer();
 
 		for (int i = 0; i < 2; i++) {
-
+			player.sendMap(Bukkit.getMap((short) (teamSizeRenderersMapId + i)));
 		}
-		// player.sendMap(Bukkit.getMap((short) (teamSizeRenderersMapId + i)));
 	}
 
 	@Override
@@ -545,12 +567,11 @@ public class CTFGame extends Game {
 		int[] teamSizes = getTeamSizes();
 		for (int i = 0; i < 2; i++) {
 			this.teamSizeRenderers[i].setSize(teamSizes[i]);
-			// MapView map = Bukkit.getMap((short) (teamSizeRenderersMapId +
-			// i));
+			MapView map = Bukkit.getMap((short) (teamSizeRenderersMapId + i));
 			for (BPPlayer bpPlayer : BPPlayer.onlinePlayers) {
-				// Player player = bpPlayer.getPlayer();
+				Player player = bpPlayer.getPlayer();
 				if (bpPlayer.isInLobby()) {
-					// TODO: player.sendMap(map);
+					player.sendMap(map);
 				}
 			}
 		}

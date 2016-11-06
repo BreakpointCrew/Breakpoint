@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
@@ -256,7 +257,14 @@ public class MapPoll {
 					maps.add(bpMap);
 				}
 			}
-			this.game.changeMap(this.game.getRandomMapWithCapacity(2));
+			BPMap toChange = maps.get(new Random().nextInt(maps.size()));
+			this.game.changeMap(this.game.getMaps().indexOf(this.game.getMapByName(toChange.getName())));
+			this.game.setMapPoll(null);
+			if (game.getType() == GameType.CTF) {
+				CTFGame ctfGame = (CTFGame) game;
+				ctfGame.getFlagManager().removeFlags();
+				ctfGame.getFlagManager().removeHolders();
+			}
 			return;
 		}
 		this.game.changeMap(this.result);

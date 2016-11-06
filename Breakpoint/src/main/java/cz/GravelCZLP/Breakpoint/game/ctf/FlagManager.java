@@ -231,7 +231,7 @@ public class FlagManager {
 			spawnFlagAtDefaultLocation(team);
 		}
 	}
-
+	
 	public EnderCrystal spawnFlag(Location loc, Team team) {
 		if (loc.getY() <= 0) {
 			spawnFlagAtDefaultLocation(team);

@@ -1,6 +1,7 @@
 name: Breakpoint
 version: 3.0.3
 main: cz.GravelCZLP.Breakpoint.Breakpoint
+loadBefore: [ProtocolLib]
 depend: [ProtocolLib]
 authors: [Limeth, GravelCZLP]
 commands:

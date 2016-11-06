@@ -33,6 +33,7 @@ import com.fijistudios.jordan.FruitSQL;
 
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
+import cz.GravelCZLP.Breakpoint.listeners.BanListener;
 import cz.GravelCZLP.Breakpoint.listeners.ChatListener;
 import cz.GravelCZLP.Breakpoint.listeners.PVPListener;
 import cz.GravelCZLP.Breakpoint.listeners.PlayerConnectionListener;
@@ -93,22 +94,27 @@ public class Breakpoint extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		canEnable = Licence.isAllowed();
-		if (Configuration.getFile().exists()) {
-			config = Configuration.load();
-		} else {
-			File f = Configuration.getFile();
-			if (f.isDirectory()) {
-				f.delete();
-			}
-			if (!f.exists()) {
-				try {
-					f.createNewFile();
+		if (canEnable) {
+			if (Configuration.getFile().exists()) {
+				config = Configuration.load();
+			} else {
+				File f = Configuration.getFile();
+				if (f.isDirectory()) {
+					f.delete();
 				}
-				catch (IOException e) {
-					e.printStackTrace();
+				if (!f.exists()) {
+					try {
+						f.createNewFile();
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+				config = Configuration.load();
 			}
-			config = Configuration.load();
+			if (config.getStorageType() == StorageType.MYSQL) {
+				mySQL = config.connectToMySQL();
+			}
 		}
 	}
 	
@@ -119,10 +125,6 @@ public class Breakpoint extends JavaPlugin {
 			this.prm = ProtocolLibrary.getProtocolManager();
 			MapManager.setup();
 			Clan.loadClans();
-
-			if (config.getStorageType() == StorageType.MYSQL) {
-				mySQL = config.connectToMySQL();
-			}
 
 			BPPlayer.updateTable(mySQL);
 			Language.loadLanguage(PLUGIN_NAME, config.getLanguageFileName());
@@ -183,9 +185,8 @@ public class Breakpoint extends JavaPlugin {
 			System.out.println("  #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 			System.out.println(" # Není licence na spuštění Breakpointu #");
 			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			getServer().getPluginManager().registerEvents(new BanListener(), this);
 		}
-		// TODO: getServer().getPluginManager().registerEvents(new
-		// BanListener(), this);
 	}
 	
 	@Override

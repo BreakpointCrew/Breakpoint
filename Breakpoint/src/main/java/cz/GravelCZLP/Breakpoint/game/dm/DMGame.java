@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint.game.dm;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,10 +9,12 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 
@@ -180,7 +183,7 @@ public class DMGame extends Game {
 	@Override
 	public void onCommand(CommandSender sender, String[] args) {
 		if (args.length <= 0) {
-			sender.sendMessage("info, start, map, teamSelLoc, charSelLoc, spawnFlags, removeFlags");
+			sender.sendMessage("info, start, map, teamSelLoc, charSelLoc, spawnFlags, removeFlags, giveNeededMaps");
 		} else if (args[0].equalsIgnoreCase("info")) {
 			sender.sendMessage("Name: " + getName());
 			sender.sendMessage("Active: " + isActive());
@@ -394,6 +397,18 @@ public class DMGame extends Game {
 				player.teleport(spawn);
 
 				sender.sendMessage(ChatColor.GREEN + "Teleported to spawn #" + index + "!");
+			}
+		}  else if (args[1].equalsIgnoreCase("giveNeededMaps")) {
+			if (!(sender instanceof Player)) {
+				sender.sendMessage("Only for Players");
+				return;
+			}
+			List<Short> maps = new ArrayList<Short>();
+			maps.add(playerAmountRendererMapId);
+			maps.add(currentMapMapId);
+			for (int i = 0; i < maps.size(); i++) {
+				ItemStack map = new ItemStack(Material.MAP, maps.get(i));
+				((Player) sender).getInventory().addItem(map);
 			}
 		}
 	}

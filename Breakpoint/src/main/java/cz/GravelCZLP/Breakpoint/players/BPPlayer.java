@@ -755,6 +755,7 @@ public class BPPlayer {
 		if (!chunk.isLoaded()) {
 			chunk.load();
 		}
+		
 		player.teleport(loc);
 		if (updatePos) {
 			Breakpoint.getInstance().prm.updateEntity(player, (List<Player>) Bukkit.getOnlinePlayers());

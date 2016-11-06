@@ -233,8 +233,6 @@ public class PlayerInventoryListener implements Listener {
 				ServerPosition pos = bpPlayer.getServerPosition();
 				boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
 
-				System.out.println(b);
-
 				if (ct.requiresVIP() && !b) {
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
 					player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));

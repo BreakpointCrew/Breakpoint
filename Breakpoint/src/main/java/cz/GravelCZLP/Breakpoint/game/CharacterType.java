@@ -191,7 +191,7 @@ public enum CharacterType {
 		}
 
 		MessageType.MENU_EGG_DESC.getTranslation().addValuesToList(lore);
-		;
+		
 		im.setLore(lore);
 		egg.setItemMeta(im);
 
