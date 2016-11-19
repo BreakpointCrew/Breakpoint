@@ -27,7 +27,8 @@ public class StatisticsManager {
 	public static List<PlayerStatistics> playersRankedByKills;
 	private static List<Clan> clansRankedByPoints;
 	private static boolean updating = false;
-
+	private static long lastUpdate;
+	
 	public static void startLoop() {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), new Runnable() {
 
@@ -48,10 +49,11 @@ public class StatisticsManager {
 			@Override
 			public void run() {
 				update();
+				lastUpdate = System.currentTimeMillis();
 			}
 		}, "Async Rank Update");
 
-		t.setPriority(Thread.MAX_PRIORITY);
+		t.setPriority(Thread.NORM_PRIORITY);
 		t.start();
 	}
 
@@ -60,11 +62,18 @@ public class StatisticsManager {
 		updatePlayerRanksByKills();
 		updateClanRanksByPoints();
 		updateStatistics();
+		updateNPCStatistics();
 		updating = false;
-
-		Breakpoint.warn("Statistics have been updated!");
+		
+		long currentTime = System.currentTimeMillis();
+		
+		Breakpoint.warn("Statistics have been updated! it took: " + (lastUpdate - currentTime) + "ms!");
 	}
 
+	public static void updateNPCStatistics() {
+		
+	}
+	
 	public static void updateStatistics() {
 		TotalPlayerStatistics stats = new TotalPlayerStatistics();
 

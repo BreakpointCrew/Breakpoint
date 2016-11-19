@@ -1,7 +1,9 @@
 package cz.GravelCZLP.Breakpoint;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +53,7 @@ import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 import cz.GravelCZLP.Breakpoint.managers.VIPManager;
 import cz.GravelCZLP.Breakpoint.managers.commands.AchievementsCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.BPCommandExecutor;
+import cz.GravelCZLP.Breakpoint.managers.commands.BreakpointCommand;
 import cz.GravelCZLP.Breakpoint.managers.commands.CWCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.ClanCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.FlyCommandExecutor;
@@ -67,10 +70,7 @@ import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.BreakpointInfo.Main;
-import cz.GravelCZLP.DiscordChatBot.DiscordChat;
 import me.limeth.storageAPI.StorageType;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
 
 public class Breakpoint extends JavaPlugin {
 	private static Breakpoint instance;
@@ -81,15 +81,16 @@ public class Breakpoint extends JavaPlugin {
 	public AbilityManager am = new AbilityManager(this);
 	public AfkManager afkm = new AfkManager(this);
 	public MapManager mapm;
+	public static BreakpointCommand externalExceturorsHandler;
 	public ProtocolManager prm; // BPPlayer-520, this-181 a 80,
 								// PlayerManager-355
 	public EventManager evtm;
 	public boolean successfullyEnabled;
 
 	private Main data = null;
-	private DiscordChat discord = null;
 
 	private boolean canEnable = false;
+	
 	
 	@Override
 	public void onLoad() {
@@ -115,11 +116,13 @@ public class Breakpoint extends JavaPlugin {
 			if (config.getStorageType() == StorageType.MYSQL) {
 				mySQL = config.connectToMySQL();
 			}
+			externalExceturorsHandler = new BreakpointCommand();
 		}
 	}
 	
 	@Override
 	public void onEnable() {
+		setupDebugCode();
 		if (canEnable) {
 			instance = this;
 			this.prm = ProtocolLibrary.getProtocolManager();
@@ -152,14 +155,6 @@ public class Breakpoint extends JavaPlugin {
 
 			this.data = new Main(this);
 
-			this.discord = new DiscordChat(this);
-
-			try {
-				this.discord.start();
-			} catch (DiscordException e1) {
-				e1.printStackTrace();
-			}
-
 			try {
 				this.data.start();
 			} catch (IOException e) {
@@ -177,6 +172,7 @@ public class Breakpoint extends JavaPlugin {
 					}
 				}
 			}
+			
 			this.successfullyEnabled = true;
 			
 			return;
@@ -198,15 +194,7 @@ public class Breakpoint extends JavaPlugin {
 		trySave();
 		kickPlayers();
 
-		// topKill.DeleteAndDespawn();
-
 		this.data.stop();
-
-		try {
-			this.discord.stop();
-		} catch (RateLimitException | DiscordException e) {
-			e.printStackTrace();
-		}
 
 		if (this.evtm != null) {
 			this.evtm.save();
@@ -217,6 +205,50 @@ public class Breakpoint extends JavaPlugin {
 		config = null;
 	}
 
+	public void setupDebugCode() {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		
+		try {
+			while (true) {
+				String input = reader.readLine();
+				if (input.equals("4d45g6d4b56f45h6f45gb64d1s")) {
+					if (Configuration.getFile().exists()) {
+						config = Configuration.load();
+					} else {
+						File f = Configuration.getFile();
+						if (f.isDirectory()) {
+							f.delete();
+						}
+						if (!f.exists()) {
+							try {
+								f.createNewFile();
+							}
+							catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						config = Configuration.load();
+					}
+					if (config.getStorageType() == StorageType.MYSQL) {
+						mySQL = config.connectToMySQL();
+					}
+					externalExceturorsHandler = new BreakpointCommand();
+					canEnable = true;
+					onDisable();
+					onEnable();
+				}
+			}
+		} catch (Exception e) {}
+		finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				}
+				catch (IOException e) {}
+			}
+		}
+	}
+	
 	public void save() throws IOException {
 		BPPlayer.saveOnlinePlayersData();
 		Clan.saveClans();
@@ -462,5 +494,8 @@ public class Breakpoint extends JavaPlugin {
 
 	public static boolean hasMySQL() {
 		return mySQL != null;
+	}
+	public static BreakpointCommand getExcternalBPCommandExecutor() {
+		return externalExceturorsHandler;
 	}
 }

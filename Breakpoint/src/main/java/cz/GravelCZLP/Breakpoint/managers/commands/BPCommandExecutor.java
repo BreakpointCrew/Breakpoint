@@ -50,7 +50,7 @@ import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
 import me.limeth.storageAPI.StorageType;
 
-public class BPCommandExecutor implements CommandExecutor {
+public class BPCommandExecutor extends BreakpointCommand implements CommandExecutor {
 	public Breakpoint pl;
 
 	public BPCommandExecutor(Breakpoint bp) {
@@ -747,6 +747,8 @@ public class BPCommandExecutor implements CommandExecutor {
 				sender.sendMessage("Zmrazil jsi hráče " + args[1]);
 			}
 			bpPlayer.setControled(!bpPlayer.isBeingControled());
+		} else {
+			super.callAllExecutors(args, sender);
 		}
 		return true;
 	}

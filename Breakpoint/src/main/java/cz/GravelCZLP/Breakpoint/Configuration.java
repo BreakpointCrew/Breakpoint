@@ -6,31 +6,31 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.limeth.storageAPI.StorageType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.fijistudios.jordan.FruitSQL;
 
+import me.limeth.storageAPI.StorageType;
+
 public class Configuration {
 	private StorageType storageType;
 	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName,
-			cwChallengeGame, token;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, staffListLocation;
+			cwChallengeGame;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, staffListLocation, NPCLocation, NPCSign;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
 	private List<String> lobbyMessages;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
-	private TS3Config ts3;
 	
 	public Configuration(StorageType storageType, String mySQLHost, int mySQLPort, String mySQLDatabase,
 			String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName,
 			String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation,
 			Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit,
-			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, String token, TS3Config ts3) {
+			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, Location npcLoc, Location npcSign) {
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
 		this.mySQLPort = mySQLPort;
@@ -53,7 +53,8 @@ public class Configuration {
 		this.vipFeatures = vipFeatures;
 		this.BoostMelounTime = BoostMelounTime;
 		this.staffListLocation = staffListLocation;
-		this.token = token;
+		this.NPCLocation = npcLoc;
+		this.NPCSign = npcSign;
 	}
 
 	public static Configuration load() {
@@ -79,20 +80,19 @@ public class Configuration {
 		String languageFileName = yamlConfig.getString("lang", "en");
 		String challengeGameName = yamlConfig.getString("cwChallengeGame", "CW");
 
-		String token = yamlConfig.getString("tokens.discord", "token here m8");
-
 		Location lobbyLocation = deserializeLocation(yamlConfig.getString("locations.lobby", "world,0,64,0,0,0"));
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
-		Location moneyInfoLocation = deserializeLocation(
-				yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
-		Location staffListLocation = deserializeLocation(
-				yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
+		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
+		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
 
-		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 18);
-		int cwEndHour = yamlConfig.getInt("cwEndHour", 21);
+		Location NPCSignLoc = deserializeLocation(yamlConfig.getString("npcs.top.sign", "world,0,64,8,0,0"));
+		Location NPCLoc = deserializeLocation(yamlConfig.getString("npcs.top.loc", "world,0,64,8,0,0"));
+		
+		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 16);
+		int cwEndHour = yamlConfig.getInt("cwEndHour", 23);
 		int cwWinLimit = yamlConfig.getInt("cwWinLimit", 3);
-		int cwEmeraldsForTotalWin = yamlConfig.getInt("cwEmeraldsForTotalWin", 25);
+		int cwEmeraldsForTotalWin = yamlConfig.getInt("cwEmeraldsForTotalWin", 250);
 
 		long BoostMelounTime = yamlConfig.getLong("TimeForBoostMelounToSpawn", 10000L);
 
@@ -111,27 +111,17 @@ public class Configuration {
 		} else {
 			vipFeatures = list.toArray(new String[size]);
 		}
-
-		int ts3port = yamlConfig.getInt("tokens.ts3.port", 10011);
-		String ts3address = yamlConfig.getString("tokens.ts3.ip", "192.168.1.100");
-		int ts3sid = yamlConfig.getInt("tokens.ts3.sid", 1);
-		
-		String ts3name = yamlConfig.getString("tokens.ts3.name", "admin");
-		String ts3pass = yamlConfig.getString("tokens.ts3.password", "pass");
-		
-		TS3Config ts3 = new TS3Config(ts3address, ts3port, ts3name, ts3pass, ts3sid);
 		
 		RandomShop randomShop = null;
-		String[] rawRSLoc = ((String) yamlConfig.get("randomshoploc", "world,0,0,0,0,0")).split(",");
-		Location rsLoc = new Location(Bukkit.getWorld(rawRSLoc[0]), Integer.parseInt(rawRSLoc[1]),
-				Integer.parseInt(rawRSLoc[2]), Integer.parseInt(rawRSLoc[3]));
+		String[] rawRSLoc = ((String) yamlConfig.get("randomshoploc", "world,0,0,0,0")).split(",");
+		Location rsLoc = deserializeRandomShopLocation(rawRSLoc);
 		int rsDir = Integer.parseInt(rawRSLoc[4]);
 		randomShop = new RandomShop(rsLoc, rsDir);
 
 		return new Configuration(storageType, mySQLHost, mySQLPort, mySQLDatabase, mySQLUsername, mySQLPassword,
 				mySQLTablePlayers, languageFileName, challengeGameName, lobbyLocation, shopLocation, vipInfoLocation,
 				moneyInfoLocation, randomShop, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin, lobbyMessages,
-				vipFeatures, staffListLocation, BoostMelounTime, token, ts3);
+				vipFeatures, staffListLocation, BoostMelounTime, NPCLoc, NPCSignLoc);
 	}
 
 	public void save() throws IOException {
@@ -159,6 +149,9 @@ public class Configuration {
 		yamlConfig.set("locations.vipInfo", serialize(this.vipInfoLocation));
 		yamlConfig.set("locations.moneyInfo", serialize(this.moneyInfoLocation));
 		yamlConfig.set("locations.stafflist", serialize(this.staffListLocation));
+		yamlConfig.set("npcs.top.sign", NPCSign);
+		yamlConfig.set("npcs.top.loc", NPCLocation);
+		
 		yamlConfig.set("lobbyMessages", this.lobbyMessages);
 		yamlConfig.set("lang", this.languageFileName);
 		yamlConfig.set("vipFeatures", this.vipFeatures != null ? Arrays.asList(this.vipFeatures) : null);
@@ -170,21 +163,11 @@ public class Configuration {
 		yamlConfig.set("cwEmeraldsForTotalWin", this.cwEmeraldsForTotalWin);
 
 		yamlConfig.set("TimeForBoostMelounToSpawn", 200L);
-
-		yamlConfig.set("tokens.discord", "token");
-		
-		yamlConfig.set("tokens.ts3.name", String.valueOf(ts3.queryUserName));
-		yamlConfig.set("tokens.ts3.password", String.valueOf(ts3.queryPassword));
-		
-		yamlConfig.set("tokens.ts3.ip", String.valueOf(ts3.address));
-		yamlConfig.set("tokens.ts3.port", String.valueOf(ts3.port));
-		yamlConfig.set("tokens.ts3.sid", String.valueOf(ts3.ts3id));
 		
 		Location rsLoc = this.randomShop.getLocation();
 		int rsDir = this.randomShop.getDirection();
 
-		yamlConfig.set("randomshoploc", rsLoc.getWorld().getName() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY()
-				+ "," + rsLoc.getBlockZ() + "," + rsDir);
+		yamlConfig.set("randomshoploc", serializeRandomShopLoc(rsLoc, rsDir));
 		yamlConfig.save(file);
 	}
 	
@@ -192,9 +175,27 @@ public class Configuration {
 		return new FruitSQL(this.mySQLHost, this.mySQLPort, this.mySQLDatabase, this.mySQLUsername, this.mySQLPassword);
 	}
 
+	private static String serializeRandomShopLoc(Location rsLoc, int dir) {
+		if (rsLoc == null) {
+			return "world,100,50,100,0";
+		}
+		return rsLoc.getWorld() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY() + "," + rsLoc.getBlockZ() + "," + dir; 
+	}
+	
+	public static Location deserializeRandomShopLocation(String[] input) {
+		if (input.length == 0 || input == null) {
+			return new Location(Bukkit.getWorld("world"), 100, 50, 100);
+		}
+		World w = Bukkit.getWorld(input[0]);
+		int x = Integer.parseInt(input[1]);
+		int y = Integer.parseInt(input[2]);
+		int z = Integer.parseInt(input[3]);
+		return new Location(w, x, y, z);
+	}
+	
 	private static String serialize(Location loc) {
 		if (loc == null) {
-			return "null";
+			return "world,100,50,100,0";
 		}
 		return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw()
 				+ "," + loc.getPitch();
@@ -202,7 +203,7 @@ public class Configuration {
 
 	public static Location deserializeLocation(String raw) {
 		if (raw == "null" || raw == "" || raw == null) {
-			return null;
+			return new Location(Bukkit.getWorld("world"), 100, 50, 100);
 		}
 		String[] rawSplit = raw.split(",");
 		return new Location(Bukkit.getServer().getWorld(rawSplit[0]), Double.parseDouble(rawSplit[1]),
@@ -382,26 +383,20 @@ public class Configuration {
 		return this.BoostMelounTime;
 	}
 
-	public String getBotToken() {
-		return this.token;
+	public Location getTopPlayerSignLocation() {
+		return NPCSign;
 	}
-	
-	public TS3Config getTS3Things() {
-		return ts3;
+
+	public Location getTopPlayerNPCLocation() {
+		return NPCLocation;
 	}
-	
-	public static class TS3Config {
-		
-		public String address, queryUserName, queryPassword;
-		public int port, ts3id;
-		
-		public TS3Config(String address, int port, String queryUsername, String querypassword, int id) {
-			this.address       = address;
-			this.queryUserName = queryUsername;
-			this.queryPassword = querypassword;
-			this.port          = port;
-			ts3id = id;
-		}
+
+	public void setNPCLocation(Location nPCLocation) {
+		NPCLocation = nPCLocation;
+	}
+
+	public void setNPCSign(Location nPCSign) {
+		NPCSign = nPCSign;
 	}
 	
 }

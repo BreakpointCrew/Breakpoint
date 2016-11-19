@@ -383,6 +383,21 @@ public class BPPlayer {
 		return this.settings.areDefault() && this.lobbyInventory.isEmpty() && this.statistics.areDefault();
 	}
 
+	public void setDefaultData() {
+		statistics.setDefault();
+		for (int i = 0; i < perks.size(); i++) {
+			perks.remove(i);
+		}
+		settings.setDeathMessages(true);
+		settings.setDiscordMessages(true);
+		settings.setExtraSounds(true);
+		settings.setShowEnchantments(true);
+		for (int i = 0; i < achievements.size(); i++) {
+			achievements.remove(i);
+		}
+		
+	}
+	
 	public void leaveGame() {
 		this.game.onPlayerLeaveGame(this);
 

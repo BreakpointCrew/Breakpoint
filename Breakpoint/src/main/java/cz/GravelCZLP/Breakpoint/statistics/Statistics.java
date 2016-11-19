@@ -1,5 +1,7 @@
 package cz.GravelCZLP.Breakpoint.statistics;
 
+import java.lang.reflect.Field;
+
 public class Statistics {
 	private String name;
 	private int kills, assists, deaths, money, bought, flagTakes, flagCaptures;
@@ -139,5 +141,20 @@ public class Statistics {
 
 	public void setAssists(int assists) {
 		this.assists = assists;
+	}
+	public void setDefault() {
+		for (Field f : getClass().getFields()) {
+			if (!f.isAccessible()) {
+				f.setAccessible(true);
+			}
+			if (f.getType() == int.class) {
+				try {
+					f.setInt(f, 0);
+				}
+				catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

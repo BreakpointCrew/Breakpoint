@@ -23,18 +23,13 @@ import cz.GravelCZLP.BreakpointInfo.Utils.LogFormat;
 import cz.GravelCZLP.BreakpointInfo.Utils.Network;
 
 public class Main {
-	
-	public Breakpoint pl = null;;
-	
-	public Logger logger = null;;
-	
-	public Server server = null;;
-	
+	public Breakpoint pl = null;
+	public Logger logger = null;
+	public Server server = null;
 	public boolean isDisabled = false;
-	
 	public int port;
-	
 	private static Main instance;
+	
 	
 	public static Main getInstance() {
 		return instance;
@@ -153,7 +148,8 @@ public class Main {
 		String ip = connection.getRemoteAddressTCP().getAddress().getHostAddress();
 		int amoutOfRequests = lastRequests.get(ip).intValue();
 		if (isDisabled) {
-			logger.warning("API is disabled, IP: " + ip + " did not get responce.");
+			logger.warning("API is disabled, IP: " + ip + " did not get responce, and was disconnected.");
+			connection.close();
 			return false;
 		}
 		if (amoutOfRequests >= 100) {

@@ -34,14 +34,6 @@
 	    <scope>provided</scope>
 	  </dependency>
 	  
-	  <!-- Discord4j -->
-	  <dependency>
-	    <groupId>com.github.austinv11</groupId>
-	    <artifactId>Discord4j</artifactId>
-	    <version>2.6.0</version>
-	    <scope>compile</scope>
-	  </dependency>
-	  
 	  <!-- Spigot stuff -->
   	  <dependency>
            <groupId>org.spigotmc</groupId>
@@ -91,43 +83,16 @@
 	  	<systemPath>${project.basedir}/lib/AdvancedBan.jar</systemPath>
 	  </dependency>
 	  
-	  <!-- teamSpeak 3 server query -->
-	  <dependency>
-	  	<groupId>com.github.theholywaffle</groupId>
-	  	<artifactId>teamspeak3-api</artifactId>
-	  	<version>[1.0.0,2.0.0)</version>
-	  </dependency>
-	  
 	</dependencies>
   
   <repositories>
-      <repository>
-            <id>TeamSpeak-3-Java-API-mvn-repo</id>
-            <url>https://raw.githubusercontent.com/TheHolyWaffle/TeamSpeak-3-Java-API/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-      </repository>
   	  <repository>
 	    <id>bukkit-repo</id>
 	    <url>http://repo.bukkit.org/content/groups/public/</url>
 	  </repository>
 	  <repository>
-	    <id>dmulloy2-repo</id>
-	    <url>http://repo.dmulloy2.net/content/groups/public/</url>
-	  </repository>
-	  <repository>
-	    <id>clojars</id>
-	    <url>http://clojars.org/repo/</url>
-	  </repository>
-	  <repository>
-	    <id>jcenter</id>
-	    <url>http://jcenter.bintray.com</url>
-	  </repository>
-	  <repository>
-	    <id>jitpack.io</id>
-	    <url>https://jitpack.io</url>
+        <id>dmulloy2-repo</id>
+        <url>http://repo.dmulloy2.net/content/repositories/releases/</url>
 	  </repository>
   </repositories>
   

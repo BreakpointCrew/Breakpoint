@@ -363,7 +363,7 @@ public class CTFGame extends Game {
 				maps.add(playerAmountRendererMapId);
 				maps.add(currentMapMapId);
 				for (int i = 0; i < maps.size(); i++) {
-					ItemStack map = new ItemStack(Material.MAP, maps.get(i));
+					ItemStack map = new ItemStack(Material.MAP, 1, maps.get(i));
 					((Player) sender).getInventory().addItem(map);
 				}
 			}
@@ -376,7 +376,7 @@ public class CTFGame extends Game {
 
 		Player player = bpPlayer.getPlayer();
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			player.sendMap(Bukkit.getMap((short) (teamSizeRenderersMapId + i)));
 		}
 	}

@@ -439,8 +439,10 @@ public class FlagManager {
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_RETURN_RED.getTranslation().getValue(playerName));
+			game.broadcastTitle("", "§aTvá vlajka byla navrácena", oppositeTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_RETURN_BLUE.getTranslation().getValue(playerName));
+			game.broadcastTitle("", "§aTvá vlajka byla navrácena", oppositeTeam);
 		}
 	}
 
@@ -468,8 +470,10 @@ public class FlagManager {
 
 		if (oppositeTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_CAPTURE_RED.getTranslation().getValue(holderName));
+			game.broadcastTitle("§4Vlajka Ukradena !!", "§4Tvá vlajka byla ukradnuta", oppositeTeam);
 		} else if (oppositeTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_CAPTURE_BLUE.getTranslation().getValue(holderName));
+			game.broadcastTitle("§4Vlajka Ukradena !!", "§4Tvá vlajka byla ukradnuta", oppositeTeam);
 		}
 	}
 
@@ -483,8 +487,10 @@ public class FlagManager {
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_SHATTER_RED.getTranslation().getValue());
+			game.broadcastTitle("", "§aTvá vlajka se rozpadla", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_SHATTER_BLUE.getTranslation().getValue());
+			game.broadcastTitle("", "§aTvá vlajka se rozpadla", flagTeam);
 		}
 	}
 

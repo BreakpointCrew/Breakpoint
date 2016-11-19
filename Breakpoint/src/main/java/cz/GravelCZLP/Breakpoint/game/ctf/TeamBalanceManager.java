@@ -67,7 +67,7 @@ public class TeamBalanceManager {
 			public void run() {
 				checkTeams();
 			}
-		}, 20L * 60, 20L * 60);
+		}, 0L, 20L * 30);
 	}
 
 	public CTFGame getGame() {
