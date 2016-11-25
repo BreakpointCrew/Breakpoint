@@ -723,30 +723,6 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else if (args[0].equalsIgnoreCase("freeze")) {
-			if (args.length != 1) {
-				sender.sendMessage("Nespráné Argumenty");
-				return false;
-			}
-			Player p = Bukkit.getPlayer(args[1]);
-			if (p == null || !p.isOnline()) {
-				sender.sendMessage("§4Nemůžeš zmrazit tohoto hráče");
-				return false;
-			}
-			if (sender instanceof Player) {
-				Player p2 = (Player) sender;
-				if (p2.getName() == p.getName()) {
-					p2.sendMessage("§4Nemůžeš zmrazit sám sebe!");
-					return false;
-				}
-			}
-			BPPlayer bpPlayer = BPPlayer.get(p);
-			if (bpPlayer.isBeingControled()) {
-				sender.sendMessage("Odmrazil jsi hráče " + args[1]);
-			} else {
-				sender.sendMessage("Zmrazil jsi hráče " + args[1]);
-			}
-			bpPlayer.setControled(!bpPlayer.isBeingControled());
 		} else {
 			super.callAllExecutors(args, sender);
 		}

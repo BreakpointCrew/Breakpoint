@@ -397,6 +397,5 @@ public class Configuration {
 
 	public void setNPCSign(Location nPCSign) {
 		NPCSign = nPCSign;
-	}
-	
+	}	
 }

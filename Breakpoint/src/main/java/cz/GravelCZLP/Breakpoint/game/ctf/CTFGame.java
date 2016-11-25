@@ -48,8 +48,8 @@ import cz.GravelCZLP.Breakpoint.sound.BPSound;
 public class CTFGame extends Game {
 	private final FlagManager flm;
 	private final TeamBalanceManager tbm;
-	public static final int emeraldsForWin = 5;
-	public static final int emeraldsForCapture = 2;
+	public static final int emeraldsForWin = 50;
+	public static final int emeraldsForCapture = 10;
 	public static int spawnProtectionSeconds = 10;
 	public Location teamSelectionLocation, characterSelectionLocation;
 	public final SizeRenderer[] teamSizeRenderers = new SizeRenderer[2];

@@ -13,14 +13,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
+import com.comphenix.packetwrapper.WrapperPlayServerNamedEntitySpawn;
 import com.comphenix.protocol.reflect.accessors.Accessors;
 import com.comphenix.protocol.reflect.accessors.FieldAccessor;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 
 import cz.GravelCZLP.Breakpoint.Configuration;
-import cz.GravelCZLP.PacketWrapper.v1_10.WrapperPlayServerEntityDestroy;
-import cz.GravelCZLP.PacketWrapper.v1_10.WrapperPlayServerNamedEntitySpawn;
 
 public class TopKillsManager {
 

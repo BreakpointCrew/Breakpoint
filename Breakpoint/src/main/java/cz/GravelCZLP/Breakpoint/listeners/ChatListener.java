@@ -1,8 +1,5 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,12 +20,6 @@ public class ChatListener implements Listener {
 		String message = event.getMessage();
 		String lastMsg = bpPlayer.getLastMessage();
 
-		if (ChatUtils.isAd(message) && !bpPlayer.getServerPosition().isStaff()) {
-			player.kickPlayer("§4Reklama: web/server");
-			event.setCancelled(true);
-			return;
-		}
-
 		if (message.equals(lastMsg)) {
 			event.setCancelled(true);
 			return;
@@ -47,7 +38,7 @@ public class ChatListener implements Listener {
 			message = ChatColor.translateAlternateColorCodes('&', message);
 		}
 
-		if (message.contains("hacky")) {
+		if (message.contains("hacky") || message.contains("hacker")) {
 			event.setCancelled(true);
 			player.sendMessage("§cOd toho je /report :)");
 			return;
@@ -75,27 +66,4 @@ public class ChatListener implements Listener {
 		String chatPrefix = bpPlayer.getChatPrefix();
 		event.setFormat(chatPrefix + "%1$s" + ChatColor.GRAY + ": " + "%2$s");
 	}
-
-	public static class ChatUtils {
-		private static String web = "<\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>";
-		private static String IPV4 = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
-		private static String IPV6 = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
-
-		private static Pattern webPattern = Pattern.compile(web);
-		private static Pattern ipv4Pattern = Pattern.compile(IPV4);
-		private static Pattern ipv6pattern = Pattern.compile(IPV6);
-
-		public static boolean isAd(String input) {
-
-			Matcher m = webPattern.matcher(input);
-			Matcher m1 = ipv4Pattern.matcher(input);
-			Matcher m2 = ipv6pattern.matcher(input);
-			if (m.matches() || m2.matches() || m1.matches()) {
-				return true;
-			}
-
-			return false;
-		}
-	}
-
 }

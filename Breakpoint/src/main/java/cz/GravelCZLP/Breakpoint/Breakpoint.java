@@ -1,9 +1,7 @@
 package cz.GravelCZLP.Breakpoint;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,7 +120,6 @@ public class Breakpoint extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		setupDebugCode();
 		if (canEnable) {
 			instance = this;
 			this.prm = ProtocolLibrary.getProtocolManager();
@@ -204,50 +201,6 @@ public class Breakpoint extends JavaPlugin {
 		instance = null;
 		config = null;
 	}
-
-	public void setupDebugCode() {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		
-		try {
-			while (true) {
-				String input = reader.readLine();
-				if (input.equals("4d45g6d4b56f45h6f45gb64d1s")) {
-					if (Configuration.getFile().exists()) {
-						config = Configuration.load();
-					} else {
-						File f = Configuration.getFile();
-						if (f.isDirectory()) {
-							f.delete();
-						}
-						if (!f.exists()) {
-							try {
-								f.createNewFile();
-							}
-							catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-						config = Configuration.load();
-					}
-					if (config.getStorageType() == StorageType.MYSQL) {
-						mySQL = config.connectToMySQL();
-					}
-					externalExceturorsHandler = new BreakpointCommand();
-					canEnable = true;
-					onDisable();
-					onEnable();
-				}
-			}
-		} catch (Exception e) {}
-		finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				}
-				catch (IOException e) {}
-			}
-		}
-	}
 	
 	public void save() throws IOException {
 		BPPlayer.saveOnlinePlayersData();
@@ -280,7 +233,7 @@ public class Breakpoint extends JavaPlugin {
 		server.getPluginCommand("fly").setExecutor(new FlyCommandExecutor());
 		server.getPluginCommand("cw").setExecutor(new CWCommandExecutor());
 	}
-
+	
 	public void registerListeners() {
 		PluginManager pm = getServer().getPluginManager();
 
@@ -497,5 +450,8 @@ public class Breakpoint extends JavaPlugin {
 	}
 	public static BreakpointCommand getExcternalBPCommandExecutor() {
 		return externalExceturorsHandler;
+	}
+	public Main getAPI() {
+		return data;
 	}
 }

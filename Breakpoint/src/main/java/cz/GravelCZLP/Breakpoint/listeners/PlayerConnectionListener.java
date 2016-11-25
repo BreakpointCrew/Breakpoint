@@ -23,9 +23,6 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.PingAPI.PingAPI;
-import me.leoko.advancedban.manager.TimeManager;
-import me.leoko.advancedban.utils.Punishment;
-import me.leoko.advancedban.utils.PunishmentType;
 
 public class PlayerConnectionListener implements Listener {
 	Breakpoint plugin;
@@ -102,19 +99,6 @@ public class PlayerConnectionListener implements Listener {
 			bpPlayer.updateArmorMinutesLeft();
 			game.onPlayerLeaveGame(bpPlayer);
 		}
-
-		 if (bpPlayer.isBeingControled()) {
-		 
-			 String name = bpPlayer.getPlayer().getName(); 
-			 String uuid = bpPlayer.getPlayer().getUniqueId().toString();
-		 
-			 PunishmentType type = PunishmentType.TEMP_BAN;
-		 
-			 long start = TimeManager.getTime(); 
-			 long end = TimeManager.getTime() + 86400000L * 2;
-		 
-			 new Punishment(name, uuid, "Odpojení při prohledávání", "Breakpoint",type, start, end, "", -1).create(); 
-		 }
 		
 
 		bpPlayer.trySave();

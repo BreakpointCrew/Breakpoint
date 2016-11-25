@@ -463,6 +463,10 @@ public class FlagManager {
 		bpHolder.colorArmor();
 		giveCompass(holder);
 		holder.updateInventory();
+		
+		CTFProperties props = (CTFProperties) bpHolder.getGameProperties();
+		props.colorChestplate();
+		
 		bpHolder.setPlayerListName();
 		bpHolder.addMoney(CTFGame.emeraldsForCapture, true, true);
 

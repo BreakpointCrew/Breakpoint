@@ -302,7 +302,6 @@ public class BPPlayer {
 	private BPPlayer achievementViewTarget = null, lastTimeKilledBy = null;
 	private Location afkPastLocation = null, shopItemLocation = null, singleTeleportLocation = null;
 	private CharacterType queueCharacter = null;
-	private boolean isBeingControlled = false;
 
 	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics,
 			List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined, ServerPosition pos) {
@@ -314,7 +313,6 @@ public class BPPlayer {
 		this.perks = perks;
 		this.bpClan = bpClan;
 		this.timeJoined = timeJoined;
-		this.isBeingControlled = false;
 		this.pos = pos;
 
 		setupPermissions();
@@ -1292,20 +1290,6 @@ public class BPPlayer {
 
 	public void setPerks(List<Perk> perks) {
 		this.perks = perks;
-	}
-
-	public boolean isBeingControled() {
-		return this.isBeingControlled;
-	}
-
-	public void setControled(boolean b) {
-		this.isBeingControlled = b;
-		if (b) {
-			Player p = getPlayer();
-			p.sendMessage("§4Byl jsi zmažen, prosím připoje se na discord do 15Min.");
-			p.sendMessage("§4Pokud se odpojíš nebo tak neuděláš budeš zabanován na 2 dny.");
-			FrozebanTimer.timers.put(p.getName(), (15 * 60));
-		}
 	}
 
 	public ServerPosition getServerPosition() {

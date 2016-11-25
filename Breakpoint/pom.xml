@@ -83,6 +83,14 @@
 	  	<systemPath>${project.basedir}/lib/AdvancedBan.jar</systemPath>
 	  </dependency>
 	  
+	  <!--  packet Wrapper -->
+	  <dependency>
+	  	<groupId>idk</groupId>
+	  	 <artifactId>PacketWrapper</artifactId>
+	  	 <version>1.10</version>
+	  	 <scope>system</scope>
+	  	 <systemPath>${project.basedir}/lib/PacketWrapper.jar</systemPath>
+	  </dependency>
 	</dependencies>
   
   <repositories>

@@ -67,20 +67,38 @@ public class BPSkull extends BPEquipment {
 
 	public static enum SkullType {
 		// {{Non-VIP Skulls
-		WITHER(1, 145), GHAST("MHF_Ghast", 140), LAVA_SLIME("MHF_LavaSlime", 135, "MAGMA CUBE"), BLAZE("MHF_Blaze",
-				130), ENDERMAN("MHF_Enderman", 125), MUSHROOM_COW("MHF_MushroomCow", 120, "MOOSHROOM"), GOLEM(
-						"MHF_Golem", 115), ZOMBIE_PIGMAN("MHF_PigZombie", 110, "PIGMAN"), SLIME("MHF_Slime",
-								105), CAVE_SPIDER("MHF_CaveSpider", 100, "CAVE SPIDER"), SPIDER("MHF_Spider",
-										95), CREEPER(4, 90), SKELETON(0, 85), ZOMBIE(2, 80), VILLAGER("MHF_Villager",
-												75), OCELOT("MHF_Ocelot", 70), SQUID("MHF_Squid",
-														65), SHEEP("MHF_Sheep", 60), COW("MHF_Cow",
-																55), PIG("MHF_Pig", 50), CHICKEN("MHF_Chicken", 45),
+		WITHER(1, 145), 
+		GHAST("MHF_Ghast", 140), 
+		LAVA_SLIME("MHF_LavaSlime", 135, "MAGMA CUBE"), 
+		BLAZE("MHF_Blaze",130), 
+		ENDERMAN("MHF_Enderman", 125), 
+		MUSHROOM_COW("MHF_MushroomCow", 120, "MOOSHROOM"), 
+		GOLEM("MHF_Golem", 115), 
+		ZOMBIE_PIGMAN("MHF_PigZombie", 110, "PIGMAN"), 
+		SLIME("MHF_Slime",105), 
+		CAVE_SPIDER("MHF_CaveSpider", 100, "CAVE SPIDER"), 
+		SPIDER("MHF_Spider",95), 
+		CREEPER(4, 90), 
+		SKELETON(0, 85), 
+		ZOMBIE(2, 80), 
+		VILLAGER("MHF_Villager",75), 
+		OCELOT("MHF_Ocelot", 70), 
+		SQUID("MHF_Squid",65), 
+		SHEEP("MHF_Sheep", 60),
+		COW("MHF_Cow",55), 
+		PIG("MHF_Pig", 50), 
+		CHICKEN("MHF_Chicken", 45),
 		// }}
 
 		// {{VIP Skulls
-		CAKE("MHF_Cake", 250, true), CACTUS("MHF_Cactus", 80, true), MELON("MHF_Melon", 100, true), PUMPKIN(
-				"MHF_Pumpkin", 100, true), OAK_LOG("MHF_OakLog", 60, "OAK LOG",
-						true), TNT("MHF_TNT", 200, true), TNT2("MHF_TNT2", 200, true), CHEST("MHF_Chest", 120, true),
+		CAKE("MHF_Cake", 250, true), 
+		CACTUS("MHF_Cactus", 80, true), 
+		MELON("MHF_Melon", 100, true), 
+		PUMPKIN("MHF_Pumpkin", 100, true), 
+		OAK_LOG("MHF_OakLog", 60, "OAK LOG",true), 
+		TNT("MHF_TNT", 200, true), 
+		TNT2("MHF_TNT2", 200, true), 
+		CHEST("MHF_Chest", 120, true),
 
 		GRAVELCZLP("GravelCZLP", 500, "GREJVL", true);
 		// }}
