@@ -65,7 +65,8 @@ public class PlayerConnectionListener implements Listener {
 
 		bpPlayer.clearAfkSecondsToKick();
 		bpPlayer.reset();
-
+		bpPlayer.setScoreboardManager(new SBManager(bpPlayer));
+		
 		if (player.isDead()) {
 			return;
 		}

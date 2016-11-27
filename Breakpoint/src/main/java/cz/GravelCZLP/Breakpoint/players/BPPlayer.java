@@ -284,7 +284,7 @@ public class BPPlayer {
 	private Clan bpClan;
 	private Game game;
 	private GameProperties gameProperties;
-	private final SBManager scoreboardManager;
+	private SBManager scoreboardManager;
 
 	private ServerPosition pos;
 
@@ -1168,6 +1168,10 @@ public class BPPlayer {
 		this.shopItemLocation = shopItemLocation;
 	}
 
+	public void setScoreboardManager(SBManager scoreboardManager) {
+		this.scoreboardManager = scoreboardManager;
+	}
+	
 	public long getSpawnTime() {
 		return this.spawnTime;
 	}
