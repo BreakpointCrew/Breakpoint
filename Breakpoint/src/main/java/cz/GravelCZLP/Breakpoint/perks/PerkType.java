@@ -109,20 +109,6 @@ public enum PerkType {
 
 			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 0, true), true);
 		}
-	},
-	@Deprecated
-	SUICIDE(MessageType.PERK_SUICIDE_NAME, MessageType.PERK_SUICIDE_DESC, new MaterialData(Material.SKULL_ITEM)) {
-		public final double MULTIPLIER = 1.25;
-
-		@Override
-		public void onDamageDealtByPlayer(EntityDamageByEntityEvent event) {
-			event.setDamage(event.getDamage() * this.MULTIPLIER);
-		}
-
-		@Override
-		public void onDamageTakenFromPlayer(EntityDamageByEntityEvent event) {
-			event.setDamage(event.getDamage() * this.MULTIPLIER);
-		}
 	};
 
 	private static Attribute getAttribute(AttributeType type, Operation operation, double amount) {
