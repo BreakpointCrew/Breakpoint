@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint.game.ctf;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -26,11 +28,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
+import cz.GravelCZLP.Breakpoint.Utils;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
+import cz.GravelCZLP.Breakpoint.players.CooldownType;
 import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class CTFListener extends GameListener {
@@ -198,6 +202,11 @@ public class CTFListener extends GameListener {
 				player.sendMessage(MessageType.OTHER_WARNPEARL.getTranslation().getValue());
 			}
 		}
+		if (type == Material.STONE_AXE && bpPlayer.getGameProperties().getCharacterType() == CharacterType.PYRO) {
+			int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), Utils.Runnables.getPyroSpetialEffect(bpPlayer), 1L, 10L);
+			
+			bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, true);
+		}
 	}
 
 	@Override
@@ -350,5 +359,12 @@ public class CTFListener extends GameListener {
 	@Override
 	public CTFGame getGame() {
 		return (CTFGame) super.getGame();
+	}
+	
+	@Override
+	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
+		if (bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, false)) {
+			
+		}
 	}
 }

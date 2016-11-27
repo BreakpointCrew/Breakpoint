@@ -89,11 +89,15 @@ public class Breakpoint extends JavaPlugin {
 
 	private boolean canEnable = false;
 	
-	
 	@Override
-	public void onLoad() {
+	public void onEnable() {
 		canEnable = Licence.isAllowed();
 		if (canEnable) {
+			instance = this;
+			this.prm = ProtocolLibrary.getProtocolManager();
+			MapManager.setup();
+			Clan.loadClans();
+
 			if (Configuration.getFile().exists()) {
 				config = Configuration.load();
 			} else {
@@ -104,8 +108,7 @@ public class Breakpoint extends JavaPlugin {
 				if (!f.exists()) {
 					try {
 						f.createNewFile();
-					}
-					catch (IOException e) {
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
@@ -115,17 +118,7 @@ public class Breakpoint extends JavaPlugin {
 				mySQL = config.connectToMySQL();
 			}
 			externalExceturorsHandler = new BreakpointCommand();
-		}
-	}
-	
-	@Override
-	public void onEnable() {
-		if (canEnable) {
-			instance = this;
-			this.prm = ProtocolLibrary.getProtocolManager();
-			MapManager.setup();
-			Clan.loadClans();
-
+			
 			BPPlayer.updateTable(mySQL);
 			Language.loadLanguage(PLUGIN_NAME, config.getLanguageFileName());
 			config.getRandomShop().build();
@@ -144,11 +137,6 @@ public class Breakpoint extends JavaPlugin {
 			DoubleMoneyManager.startBoostLoop();
 			StatisticsManager.updateStatistics();
 
-			getServer().clearRecipes();
-			World world = config.getLobbyLocation().getWorld();
-			world.setStorm(false);
-			world.setThundering(false);
-			world.setWeatherDuration(1000000000);
 
 			this.data = new Main(this);
 
@@ -169,6 +157,12 @@ public class Breakpoint extends JavaPlugin {
 					}
 				}
 			}
+			
+			getServer().clearRecipes();
+			World world = config.getLobbyLocation().getWorld();
+			world.setStorm(false);
+			world.setThundering(false);
+			world.setWeatherDuration(1000000000);
 			
 			this.successfullyEnabled = true;
 			

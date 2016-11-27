@@ -84,7 +84,7 @@ public class Configuration {
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
 		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
-		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.stafflist", "world,0,64,8,0,0"));
+		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.staffList", "world,0,64,8,0,0"));
 
 		Location NPCSignLoc = deserializeLocation(yamlConfig.getString("npcs.top.sign", "world,0,64,8,0,0"));
 		Location NPCLoc = deserializeLocation(yamlConfig.getString("npcs.top.loc", "world,0,64,8,0,0"));
@@ -126,13 +126,6 @@ public class Configuration {
 
 	public void save() throws IOException {
 		File file = getFile();
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(file);
 
 		yamlConfig.set("storageType", this.storageType.name());
@@ -149,8 +142,8 @@ public class Configuration {
 		yamlConfig.set("locations.vipInfo", serialize(this.vipInfoLocation));
 		yamlConfig.set("locations.moneyInfo", serialize(this.moneyInfoLocation));
 		yamlConfig.set("locations.stafflist", serialize(this.staffListLocation));
-		yamlConfig.set("npcs.top.sign", NPCSign);
-		yamlConfig.set("npcs.top.loc", NPCLocation);
+		yamlConfig.set("npcs.top.sign", serialize(NPCSign));
+		yamlConfig.set("npcs.top.loc", serialize(NPCLocation));
 		
 		yamlConfig.set("lobbyMessages", this.lobbyMessages);
 		yamlConfig.set("lang", this.languageFileName);
@@ -179,7 +172,7 @@ public class Configuration {
 		if (rsLoc == null) {
 			return "world,100,50,100,0";
 		}
-		return rsLoc.getWorld() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY() + "," + rsLoc.getBlockZ() + "," + dir; 
+		return rsLoc.getWorld().getName() + "," + rsLoc.getBlockX() + "," + rsLoc.getBlockY() + "," + rsLoc.getBlockZ() + "," + dir; 
 	}
 	
 	public static Location deserializeRandomShopLocation(String[] input) {
@@ -397,5 +390,9 @@ public class Configuration {
 
 	public void setNPCSign(Location nPCSign) {
 		NPCSign = nPCSign;
+	}
+
+	public void setStaffLocation(Location location) {
+		this.staffListLocation = location;
 	}	
 }

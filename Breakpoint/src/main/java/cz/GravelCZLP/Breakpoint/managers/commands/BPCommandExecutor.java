@@ -1,6 +1,7 @@
 package cz.GravelCZLP.Breakpoint.managers.commands;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -70,6 +71,8 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			sender.sendMessage("/bp shopLoc");
 			sender.sendMessage("/bp vipInfoLoc");
 			sender.sendMessage("/bp moneyInfoLoc");
+			sender.sendMessage("/bp staffLoc");
+			sender.sendMessage("/bp save");
 			sender.sendMessage("/bp setSignLine [i] [text]");
 			sender.sendMessage("/bp getArmour [#color]");
 			sender.sendMessage("/bp money [set/add] [Player] [Amount]");
@@ -89,6 +92,7 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			sender.sendMessage("/bp lobbyMessages");
 			sender.sendMessage("/bp setMatch +days challenging challenged");
 			sender.sendMessage("/bp removeMatch +days");
+			sender.sendMessage("/bp updatePerms [Player]");
 			sender.sendMessage("Games:");
 			sender.sendMessage("/bp game create [GameType] [Name]");
 			sender.sendMessage("/bp game remove [Game]");
@@ -639,7 +643,7 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			game.setDay();
 
 			sender.sendMessage("Done");
-		} else if (args[0].equalsIgnoreCase("deleteDefalts")) {
+		} else if (args[0].equalsIgnoreCase("deleteDefAlts")) {
 			File folder = BPPlayer.getFolder();
 			File[] files = folder.listFiles();
 
@@ -723,7 +727,41 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
 			}
-		} else {
+		} else if (args[0].equalsIgnoreCase("staffLoc")) {
+			if (!(sender instanceof Player)) {
+				sender.sendMessage(ChatColor.RED + " Only for Players!");
+				return false;
+			}
+			Configuration cfg = Breakpoint.getBreakpointConfig();
+			cfg.setStaffLocation(((Player) sender).getLocation());
+			sender.sendMessage("§aStaff Location was set");
+	    } else if (args[0].equalsIgnoreCase("save")) {
+	    	Configuration cfg = Breakpoint.getBreakpointConfig();
+	    	try {
+				cfg.save();
+				sender.sendMessage("Config was saved!");
+			}
+			catch (IOException e) {
+				sender.sendMessage("Saving config failed: " + e.getMessage());
+			}
+	    } else if (args[0].equalsIgnoreCase("updatePerms")) {
+	    	if (args.length < 1) {
+	    		sender.sendMessage("/bp updatePerms [Player]");
+	    		return false;
+	    	}
+	    	Player p = Bukkit.getPlayer(args[1]);
+	    	if (p == null) {
+	    		sender.sendMessage("Hráč neexistuje");
+	    		return false;
+	    	}
+	    	if (!p.isOnline()) {
+	    		sender.sendMessage("Hráč je offline");
+	    		return false;
+	    	}
+	    	BPPlayer bpPlayer = BPPlayer.get(p);
+	    	bpPlayer.setupPermissions();
+	    	sender.sendMessage("§aDone...");
+	    } else {
 			super.callAllExecutors(args, sender);
 		}
 		return true;

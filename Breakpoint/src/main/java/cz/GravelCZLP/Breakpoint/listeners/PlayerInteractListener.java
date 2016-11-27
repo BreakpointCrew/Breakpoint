@@ -32,6 +32,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -416,6 +417,16 @@ public class PlayerInteractListener implements Listener {
 				e.setCancelled(true);
 				return;
 			}
+		}
+	}
+	@EventHandler
+	public void onMove(PlayerMoveEvent e) {
+		BPPlayer bpPlayer = BPPlayer.get(e.getPlayer());
+		
+		Game game = bpPlayer.getGame();
+		
+		if (game != null) {
+			game.getListener().onPlayerMove(bpPlayer, e.getFrom(), e.getTo(), e);
 		}
 	}
 }

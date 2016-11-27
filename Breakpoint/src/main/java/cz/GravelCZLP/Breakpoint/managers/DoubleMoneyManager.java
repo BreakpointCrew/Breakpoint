@@ -11,6 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
+import cz.GravelCZLP.Breakpoint.game.Game;
+import cz.GravelCZLP.Breakpoint.game.GameType;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFMap;
 
 public class DoubleMoneyManager {
@@ -39,10 +42,16 @@ public class DoubleMoneyManager {
 			@Override
 			public void run() {
 
-				CTFMap map = (CTFMap) GameManager.getGame("ctf").getCurrentMap();
+				CTFMap map = null;
+				for (Game g : GameManager.getGames()) {
+					if (g.getType() == GameType.CTF) {
+						CTFGame ctfGame = (CTFGame) g;
+						map = ctfGame.getCurrentMap();
+					}
+				}
 
 				for (Location loc : map.getMelounBoostsLocations()) {
-					for (Entity ent : loc.getWorld().getNearbyEntities(loc, 1, 1, 1)) {
+					for (Entity ent : loc.getWorld().getNearbyEntities(loc, 2, 2, 2)) {
 						if (ent instanceof Item) {
 							ent.remove();
 						}

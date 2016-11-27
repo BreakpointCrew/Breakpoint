@@ -1,5 +1,6 @@
 package cz.GravelCZLP.Breakpoint.game;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -7,6 +8,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -51,4 +53,6 @@ public abstract class GameListener {
 	public Game getGame() {
 		return this.game;
 	}
+
+	public abstract void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e);
 }
