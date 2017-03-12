@@ -19,7 +19,7 @@ import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 public class SBManager {
 	private final BPPlayer bpPlayer;
 	private final Scoreboard sb;
-	protected Objective lobbyObj, voteObj, progressObj;
+	public Objective lobbyObj, voteObj, progressObj;
 
 	public SBManager(BPPlayer bpPlayer) {
 		this.bpPlayer = bpPlayer;
@@ -33,6 +33,7 @@ public class SBManager {
 	private void init() {
 		initLobbyObj();
 		initVoteObj();
+		initProgressObj();
 	}
 
 	private void initLobbyObj() {

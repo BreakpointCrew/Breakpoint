@@ -357,7 +357,7 @@ public class CTFGame extends Game {
 					return;
 				}
 				List<Short> maps = new ArrayList<Short>();
-				for (int i = 0; i < 2; i++) {
+				for (int i = 0; i < 1; i++) {
 					maps.add((short) (teamSizeRenderersMapId + i));
 				}
 				maps.add(playerAmountRendererMapId);

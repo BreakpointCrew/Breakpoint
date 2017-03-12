@@ -116,7 +116,7 @@ public class PlayerConnectionListener implements Listener {
 	}
 
 	public void setupPings() {
-		PingAPI.registerListener(new PingListener());
+		PingAPI.registerListener(new MotdListener());
 	}
 
 	public int getWidth(String string) {

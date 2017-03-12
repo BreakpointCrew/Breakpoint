@@ -6,19 +6,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
+
+import net.md_5.bungee.api.ChatColor;
+
 public class Licence {
 
 	public static boolean isAllowed() {
 		String b = "false";
-
 		try {
 			b = getResponce();
-			System.out.println("Responce: " + getResponce());
-		} catch (IOException e) {
+			ConsoleCommandSender console = Bukkit.getConsoleSender();
+			console.sendMessage(ChatColor.GOLD + "[Breakpoint Loader] Responce: " + getResponce());
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
+			ConsoleCommandSender console = Bukkit.getConsoleSender();
+			console.sendMessage(ChatColor.RED + "Failed to check Licence, Breakpoint will not enable!");
 			return false;
 		}
-
 		return Boolean.valueOf(b);
 	}
 
@@ -39,7 +46,6 @@ public class Licence {
 		con.disconnect();
 
 		String msg = buffer.toString();
-
 		return msg;
 	}
 }

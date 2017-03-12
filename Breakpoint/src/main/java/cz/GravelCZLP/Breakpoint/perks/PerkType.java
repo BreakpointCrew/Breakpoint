@@ -19,6 +19,8 @@ import com.comphenix.example.Attributes.AttributeType;
 import com.comphenix.example.Attributes.Operation;
 
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
+import cz.GravelCZLP.Breakpoint.game.ctf.Team;
+import cz.GravelCZLP.Breakpoint.game.cw.CWProperties;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
@@ -39,15 +41,15 @@ public enum PerkType {
 	},
 	FIRESPREADER(MessageType.PERK_FIRESPREADER_NAME, MessageType.PERK_FIRESPREADER_DESC,
 			new MaterialData(Material.BLAZE_POWDER)) {
-		public final double CHANCE = 0.1, DURATION = 5;
+		public final int CHANCE = 3, DURATION = 5;
 
 		@Override
 		public void onDamageDealtByEntity(EntityDamageByEntityEvent event) {
 			Random rnd = new Random();
 
-			if (rnd.nextDouble() < this.CHANCE) {
+			if (rnd.nextInt(10) <= this.CHANCE) {
 				if (event.getEntity() instanceof Player) {
-					Player damager = (Player) event.getEntity();
+					Player damager = (Player) event.getDamager();
 					List<Entity> nearbyEntites = damager.getNearbyEntities(10, 10, 10);
 					for (int i = 0; i < nearbyEntites.size(); i++) {
 						if (!(nearbyEntites.get(i) instanceof Player)) {
@@ -65,12 +67,32 @@ public enum PerkType {
 					BPPlayer bpPlayer = BPPlayer.get(damager);
 					switch (bpPlayer.getGameProperties().getGameType()) {
 					case CTF:
-						CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
-						
+						for (Entity e : nearbyEntites) {
+							Player p = (Player) e;
+							BPPlayer bpPlayerDamaged = BPPlayer.get(p);
+							Team teamDamaged = ((CTFProperties) bpPlayerDamaged.getGameProperties()).getTeam();
+							Team teamDamager = ((CTFProperties) bpPlayer.getGameProperties()).getTeam();
+							if (teamDamaged != teamDamager) {
+								p.setFireTicks(DURATION * 20);
+							}
+						}
 						break;
 					case CW:
+						for (Entity e : nearbyEntites) {
+							Player p = (Player) e;
+							p.setFireTicks(DURATION * 20);
+						}
 						break;
 					case DM:
+						for (Entity e : nearbyEntites) {
+							Player p = (Player) e;
+							BPPlayer bpPlayerDamaged = BPPlayer.get(p);
+							Team teamDamaged = ((CWProperties) bpPlayerDamaged.getGameProperties()).getTeam();
+							Team teamDamager = ((CWProperties) bpPlayer.getGameProperties()).getTeam();
+							if (teamDamaged != teamDamager) {
+								p.setFireTicks(DURATION * 20);
+							}
+						}
 						break;
 					default:
 						break;
@@ -115,7 +137,7 @@ public enum PerkType {
 		return Attribute.newBuilder().type(type).operation(operation).amount(amount).name("Breakpoint Perk Attribute")
 				.build();
 	}
-
+	
 	public static PerkType parse(String translatedName, boolean ignoreCase) {
 		if (translatedName == null) {
 			return null;

@@ -10,7 +10,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -26,10 +26,10 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.sound.BPSound;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.PacketPlayInClientCommand;
-import net.minecraft.server.v1_10_R1.PacketPlayInClientCommand.EnumClientCommand;
-import net.minecraft.server.v1_10_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.PacketPlayInClientCommand;
+import net.minecraft.server.v1_11_R1.PacketPlayInClientCommand.EnumClientCommand;
+import net.minecraft.server.v1_11_R1.PacketPlayOutEntityTeleport;
 
 public class PlayerManager {
 	public static void clearInventory(PlayerInventory pi) {

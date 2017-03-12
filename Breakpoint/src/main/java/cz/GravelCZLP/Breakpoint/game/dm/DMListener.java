@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -172,5 +173,11 @@ public class DMListener extends GameListener {
 	@Override
 	public DMGame getGame() {
 		return (DMGame) super.getGame();
+	}
+
+	@Override
+	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
+		// TODO the same as in CTF
+		
 	}
 }

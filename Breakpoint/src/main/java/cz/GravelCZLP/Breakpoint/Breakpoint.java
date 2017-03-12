@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -169,9 +170,10 @@ public class Breakpoint extends JavaPlugin {
 			return;
 		} else {
 			this.successfullyEnabled = false;
-			System.out.println("  #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
-			System.out.println(" # Není licence na spuštění Breakpointu #");
-			System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			ConsoleCommandSender sender = Bukkit.getConsoleSender(); 
+			sender.sendMessage(ChatColor.RED + "  #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
+			sender.sendMessage(ChatColor.RED + " # Není licence na spuštění Breakpointu #");
+			sender.sendMessage(ChatColor.RED + "#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 			getServer().getPluginManager().registerEvents(new BanListener(), this);
 		}
 	}

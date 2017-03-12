@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
 
 public enum CharacterType {
 	SWORDSMAN(false, MessageType.CHARACTER_SWORDSMAN, EntityType.COW),
@@ -195,7 +195,7 @@ public enum CharacterType {
 		im.setLore(lore);
 		egg.setItemMeta(im);
 
-		net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(egg);
+		net.minecraft.server.v1_11_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(egg);
 
 		NBTTagCompound idTag = new NBTTagCompound();
 

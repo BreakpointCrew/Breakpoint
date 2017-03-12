@@ -3,7 +3,7 @@ package cz.GravelCZLP.Breakpoint.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +30,7 @@ import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.players.Settings;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
 
 public class PlayerInventoryListener implements Listener {
 	Breakpoint plugin;
@@ -206,7 +206,7 @@ public class PlayerInventoryListener implements Listener {
 		} else if (mat == Material.MONSTER_EGG) {
 			CharacterType ct = null;
 
-			net.minecraft.server.v1_10_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(item);
+			net.minecraft.server.v1_11_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(item);
 
 			NBTTagCompound tag = nmsIs.getTag();
 

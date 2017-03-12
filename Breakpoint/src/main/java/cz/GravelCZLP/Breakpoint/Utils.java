@@ -67,6 +67,7 @@ public class Utils {
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 5);
 					}
 				}
+				
 			};
 			return r;
 		}

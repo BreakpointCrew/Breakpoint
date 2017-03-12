@@ -204,7 +204,12 @@ public class CTFListener extends GameListener {
 		}
 		if (type == Material.STONE_AXE && bpPlayer.getGameProperties().getCharacterType() == CharacterType.PYRO) {
 			int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), Utils.Runnables.getPyroSpetialEffect(bpPlayer), 1L, 10L);
-			
+			long now = System.currentTimeMillis();
+			boolean cancelled = false;
+			while (now > (System.currentTimeMillis() + (60 * 1000)) && !cancelled) {
+				Bukkit.getScheduler().cancelTask(taskId);
+				cancelled = true;
+			}
 			bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, true);
 		}
 	}
@@ -364,7 +369,13 @@ public class CTFListener extends GameListener {
 	@Override
 	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
 		if (bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, false)) {
-			
+			int fromX = from.getBlockX();
+			int fromZ = from.getBlockZ();
+			int toX = to.getBlockX();
+			int toZ = to.getBlockZ();
+			if (fromX != toX || fromZ != toZ) {
+				e.setTo(from);
+			}
 		}
 	}
 }

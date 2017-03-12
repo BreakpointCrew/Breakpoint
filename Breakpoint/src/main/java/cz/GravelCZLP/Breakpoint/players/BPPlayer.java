@@ -17,7 +17,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,12 +53,12 @@ import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import me.limeth.storageAPI.Column;
 import me.limeth.storageAPI.Storage;
 import me.limeth.storageAPI.StorageType;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.EnumParticle;
-import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_10_R1.PacketPlayOutWorldBorder.EnumWorldBorderAction;
-import net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_10_R1.WorldBorder;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.EnumParticle;
+import net.minecraft.server.v1_11_R1.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_11_R1.PacketPlayOutWorldBorder.EnumWorldBorderAction;
+import net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_11_R1.WorldBorder;
 
 public class BPPlayer {
 	// {{STATIC
@@ -748,6 +748,7 @@ public class BPPlayer {
 		return -1;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void purify() {
 		Player player = getPlayer();
 
