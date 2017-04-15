@@ -127,8 +127,13 @@ public class MapManager {
 
 	public static void updateMapForNotPlayingPlayers(short mapId) {
 		for (BPPlayer bpPlayer : BPPlayer.onlinePlayers) {
-			if (!bpPlayer.isPlaying()) 
-				bpPlayer.getPlayer().sendMap(Bukkit.getMap(mapId));
+			if (!bpPlayer.isPlaying() && bpPlayer.isOnline()) {
+				MapView v = Bukkit.getMap(mapId);
+				if (v == null) {
+					return;
+				}
+				bpPlayer.getPlayer().sendMap(v);
+			}
 		}
 	}
 

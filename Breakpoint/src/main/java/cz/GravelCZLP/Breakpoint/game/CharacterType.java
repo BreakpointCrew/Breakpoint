@@ -91,9 +91,9 @@ public enum CharacterType {
 		case CHEMIST: {
 			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_FIRE, 2 },
 					new Object[] { Enchantment.OXYGEN, 1 });
-			ItemStack harm = new ItemStack(373, 1, (short) 16396);
-			ItemStack poison = new ItemStack(373, 1, (short) 16388);
-			ItemStack blindness = new ItemStack(373, 1, (short) 16443);
+			ItemStack harm = new ItemStack(Material.POTION, 1, (short) 16396);
+			ItemStack poison = new ItemStack(Material.POTION, 1, (short) 16388);
+			ItemStack blindness = new ItemStack(Material.POTION, 1, (short) 16443);
 			int sekundyPoison = 15;
 			PotionMeta poisonPM = (PotionMeta) poison.getItemMeta();
 			poisonPM.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 20 * sekundyPoison, 0), false);

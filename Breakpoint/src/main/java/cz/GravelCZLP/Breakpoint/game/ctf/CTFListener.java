@@ -1,6 +1,5 @@
 package cz.GravelCZLP.Breakpoint.game.ctf;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +20,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.Button;
@@ -28,13 +28,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
-import cz.GravelCZLP.Breakpoint.Utils;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameListener;
+import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.CooldownType;
 import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class CTFListener extends GameListener {
@@ -202,7 +201,7 @@ public class CTFListener extends GameListener {
 				player.sendMessage(MessageType.OTHER_WARNPEARL.getTranslation().getValue());
 			}
 		}
-		if (type == Material.STONE_AXE && bpPlayer.getGameProperties().getCharacterType() == CharacterType.PYRO) {
+		/*if (type == Material.STONE_AXE && bpPlayer.getGameProperties().getCharacterType() == CharacterType.PYRO) {
 			int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Breakpoint.getInstance(), Utils.Runnables.getPyroSpetialEffect(bpPlayer), 1L, 10L);
 			long now = System.currentTimeMillis();
 			boolean cancelled = false;
@@ -211,7 +210,7 @@ public class CTFListener extends GameListener {
 				cancelled = true;
 			}
 			bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, true);
-		}
+		}*/
 	}
 
 	@Override
@@ -368,13 +367,29 @@ public class CTFListener extends GameListener {
 	
 	@Override
 	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
-		if (bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, false)) {
+		/*if (bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, false)) {
 			int fromX = from.getBlockX();
 			int fromZ = from.getBlockZ();
 			int toX = to.getBlockX();
 			int toZ = to.getBlockZ();
 			if (fromX != toX || fromZ != toZ) {
 				e.setTo(from);
+			}
+		}*/
+	}
+
+	@Override
+	public void onPlayerToggleSprint(BPPlayer bpPlayer, PlayerToggleSprintEvent e) {
+		if (e.isSprinting()) {
+			if (bpPlayer.getServerPosition().getPosition() == ServerPosition.ServerPositionEnum.NORMAL) {
+				if (bpPlayer.isInGame()) {
+					if (bpPlayer.getGame().getType() == GameType.CTF) {
+						FlagManager flm = ((CTFGame) bpPlayer.getGame()).getFlagManager();
+						if (flm.isHoldingFlag(bpPlayer)) {
+							bpPlayer.getPlayer().setSprinting(false);
+						}
+					}
+				}
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 name: Breakpoint
 version: 4.0.0
 main: cz.GravelCZLP.Breakpoint.Breakpoint
-loadBefore: [ProtocolLib]
+loadBefore: [ProtocolLib, PingAPI]
 depend: [ProtocolLib]
 authors: [Limeth, GravelCZLP]
 commands:

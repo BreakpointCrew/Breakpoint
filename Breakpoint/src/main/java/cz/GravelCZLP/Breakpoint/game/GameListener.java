@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
@@ -55,4 +56,8 @@ public abstract class GameListener {
 	}
 
 	public abstract void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e);
+
+	public abstract void onPlayerToggleSprint(BPPlayer bpPlayer, PlayerToggleSprintEvent e);
+	
+	
 }

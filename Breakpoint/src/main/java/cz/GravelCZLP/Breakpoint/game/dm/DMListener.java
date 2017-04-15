@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
@@ -177,7 +178,12 @@ public class DMListener extends GameListener {
 
 	@Override
 	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
-		// TODO the same as in CTF
+		
+		
+	}
+
+	@Override
+	public void onPlayerToggleSprint(BPPlayer bpPlayer, PlayerToggleSprintEvent e) {
 		
 	}
 }

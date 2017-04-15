@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -74,6 +75,7 @@ public class PlayerInteractListener implements Listener {
 			Player player = event.getPlayer();
 			BPPlayer bpPlayer = BPPlayer.get(player);
 			ItemStack item = player.getItemInHand();
+			ItemStack itemClone = item.clone();
 			Material mat = item.getType();
 			short durability = item.getDurability();
 
@@ -103,8 +105,7 @@ public class PlayerInteractListener implements Listener {
 					}
 				} else if (mat == Material.POTION && durability >= 16000) {
 					if (!bpPlayer.hasCooldown(CooldownType.POTION_RAW.getPath() + durability, 1, true)) {
-						item.setAmount(1);
-						player.setItemInHand(item);
+						player.setItemInHand(itemClone);
 					} else {
 						event.setCancelled(true);
 						player.updateInventory();
@@ -427,6 +428,16 @@ public class PlayerInteractListener implements Listener {
 		
 		if (game != null) {
 			game.getListener().onPlayerMove(bpPlayer, e.getFrom(), e.getTo(), e);
+		}
+	}
+	
+	@EventHandler
+	public void onSprint(PlayerToggleSprintEvent e) {
+		BPPlayer bpPlayer = BPPlayer.get(e.getPlayer());
+		Game game = bpPlayer.getGame();
+		
+		if (game != null) {
+			game.getListener().onPlayerToggleSprint(bpPlayer, e);
 		}
 	}
 }

@@ -42,7 +42,7 @@
            <scope>provided</scope>
    	  </dependency>
 	  
-	  <!-- PingAPI 1.1 -->
+	  <!-- PingAPI 2.3 -->
 	  <dependency>
 	    <groupId>cz.GravelCZLP</groupId>
 	    <artifactId>PingAPI</artifactId>
@@ -74,7 +74,7 @@
         	<groupId>com.comphenix.packetwrapper</groupId>
         	<artifactId>PacketWrapper</artifactId>
         	<version>1.11-R0.1-SNAPSHOT</version>
-        	<scope>compile</scope>
+        	<scope>provided</scope>
         </dependency>
 	</dependencies>
   

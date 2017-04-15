@@ -377,7 +377,11 @@ public class CTFGame extends Game {
 		Player player = bpPlayer.getPlayer();
 
 		for (int i = 0; i < 1; i++) {
-			player.sendMap(Bukkit.getMap((short) (teamSizeRenderersMapId + i)));
+			MapView v = Bukkit.getMap((short) (teamSizeRenderersMapId + i));
+			if (v == null) {
+				return;
+			}
+			player.sendMap(v);
 		}
 	}
 

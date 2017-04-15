@@ -221,7 +221,9 @@ public class PlayerInventoryListener implements Listener {
 			if (entity.contains("LAVASLIME")) {
 				entity = "MAGMA_CUBE";
 			}
-
+			
+			entity = entity.replaceAll("MINECRAFT:", "");
+			
 			entity = entity.toUpperCase();
 
 			e = EntityType.valueOf(entity);

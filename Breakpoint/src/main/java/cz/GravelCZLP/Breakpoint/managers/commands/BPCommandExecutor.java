@@ -87,7 +87,7 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			sender.sendMessage("/bp setArmorByHand [armorSlotId]");
 			sender.sendMessage("/bp reloadLanguage");
 			sender.sendMessage("/bp setRandomShopLoc [Dir]");
-			sender.sendMessage("/bp deleteDefault");
+			sender.sendMessage("/bp deleteDefAlts");
 			sender.sendMessage("/bp exportPlayers [StorageType From] [StorageType To]");
 			sender.sendMessage("/bp lobbyMessages");
 			sender.sendMessage("/bp setMatch +days challenging challenged");
