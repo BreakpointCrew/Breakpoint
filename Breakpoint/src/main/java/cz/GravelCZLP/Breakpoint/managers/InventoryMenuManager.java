@@ -19,7 +19,6 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 
 public class InventoryMenuManager {
@@ -125,8 +124,7 @@ public class InventoryMenuManager {
 		displayContents(bpPlayer, pi);
 		// VIP Slots
 
-		ServerPosition pos = bpPlayer.getServerPosition();
-		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		boolean b = player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vip") || player.hasPermission("Breakpoint.vipplus");
 
 		if (b) {
 			displayVIPContents(bpPlayer, pi);
@@ -304,8 +302,7 @@ public class InventoryMenuManager {
 				k++;
 			}
 		}
-		ServerPosition pos = bpPlayer.getServerPosition();
-		boolean b = pos.isStaff() || pos.isSponsor() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		boolean b = player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vip") || player.hasPermission("Breakpoint.vipplus");
 		if (b) {
 			k = 0;
 			for (int i = 0; i < 3; i++) {

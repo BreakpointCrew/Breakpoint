@@ -80,7 +80,11 @@ public class CTFGame extends Game {
 		this.teamSizeRenderers[1] = new SizeRenderer(BPMapPalette.getColor(BPMapPalette.DARK_BLUE, 2),
 				BPMapPalette.getColor(BPMapPalette.DARK_BLUE, 0), getPlayersInTeam(Team.BLUE).size());
 		MapView btsmv = Bukkit.getMap((short) (this.teamSizeRenderersMapId + 1));
+		System.out.print(teamSizeRenderersMapId);
 		this.teamSizeRenderers[1].set(btsmv);
+		if (players.size() < 2) {
+			flm.removeFlags();
+		}
 	}
 
 	public CTFGame(String name, Location signLoc, Location teamSelectionLocation, Location characterSelectionLocation,
@@ -123,7 +127,9 @@ public class CTFGame extends Game {
 		if (this.flm.isHoldingFlag(bpPlayer)) {
 			this.flm.dropFlag(bpPlayer);
 		}
-
+		if (players.size() < 1) {
+			flm.removeFlags();
+		}
 		super.onPlayerLeaveGame(bpPlayer);
 		updateTeamMapViews();
 	}
@@ -138,6 +144,8 @@ public class CTFGame extends Game {
 		
 		if (players.size() >= 2) {
 			flm.spawnFlags();
+		} else {
+			flm.removeFlags();
 		}
 	}
 
@@ -497,6 +505,9 @@ public class CTFGame extends Game {
 			}
 		}
 		broadcast(ChatColor.GRAY + "---------------------------------");
+		for (BPPlayer bpPlayer : players) {
+			bpPlayer.getScoreboardManager().updateSidebarObjective();
+		}
 	}
 
 	public void spawnFireworks(final Team team) {
@@ -574,7 +585,7 @@ public class CTFGame extends Game {
 			MapView map = Bukkit.getMap((short) (teamSizeRenderersMapId + i));
 			for (BPPlayer bpPlayer : BPPlayer.onlinePlayers) {
 				Player player = bpPlayer.getPlayer();
-				if (bpPlayer.isInLobby()) {
+				if (bpPlayer.isInLobby() && map != null) {
 					player.sendMap(map);
 				}
 			}
@@ -614,6 +625,8 @@ public class CTFGame extends Game {
 		bpPlayer.purify();
 		props.equip();
 		Perk.onSpawn(bpPlayer);
+		bpPlayer.getScoreboardManager().updateSidebarObjective();
+		updateProgressObjective(bpPlayer);
 		if (team == null) {
 			bpPlayer.teleport(this.teamSelectionLocation, false);
 			return;

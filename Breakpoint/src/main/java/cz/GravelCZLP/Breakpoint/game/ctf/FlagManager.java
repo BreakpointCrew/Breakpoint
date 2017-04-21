@@ -388,8 +388,10 @@ public class FlagManager {
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_TAKE_RED.getTranslation().getValue(holderName));
+			game.broadcastTitle("", "§4Tvá vlajka byla ukradena! \n §4Zab toho kdo to udělal", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_TAKE_BLUE.getTranslation().getValue(holderName));
+			game.broadcastTitle("", "§4Tvá vlajka byla ukradena! \n §4Zab toho kdo to udělal", flagTeam);
 		}
 	}
 
@@ -419,8 +421,10 @@ public class FlagManager {
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_DROP_RED.getTranslation().getValue(holderName));
+			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna, yn §6jdi si pro ní!", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_DROP_BLUE.getTranslation().getValue(holderName));
+			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna, \n §6jdi si pro ní!", flagTeam);
 		}
 	}
 
@@ -439,10 +443,10 @@ public class FlagManager {
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_RETURN_RED.getTranslation().getValue(playerName));
-			game.broadcastTitle("", "§aTvá vlajka byla navrácena", oppositeTeam);
+			game.broadcastTitle("", "§aTvá vlajka byla navrácena!", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_RETURN_BLUE.getTranslation().getValue(playerName));
-			game.broadcastTitle("", "§aTvá vlajka byla navrácena", oppositeTeam);
+			game.broadcastTitle("", "§aTvá vlajka byla navrácena!", flagTeam);
 		}
 	}
 
@@ -474,13 +478,13 @@ public class FlagManager {
 
 		if (oppositeTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_CAPTURE_RED.getTranslation().getValue(holderName));
-			game.broadcastTitle("§4Vlajka Ukradena !!", "§4Tvá vlajka byla ukradnuta", oppositeTeam);
+			game.broadcastTitle("§4Vlajka zachycena !!", "§4Tvá vlajka byla zachycena.", oppositeTeam);
 		} else if (oppositeTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_CAPTURE_BLUE.getTranslation().getValue(holderName));
-			game.broadcastTitle("§4Vlajka Ukradena !!", "§4Tvá vlajka byla ukradnuta", oppositeTeam);
+			game.broadcastTitle("§4Vlajka zachycena !!", "§4Tvá vlajka byla zachycena.", oppositeTeam);
 		}
 	}
-
+ 
 	public void timeoutFlag(Team flagTeam) {
 		Team oppositeTeam = Team.getOpposite(flagTeam);
 

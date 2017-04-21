@@ -32,6 +32,7 @@ import net.minecraft.server.v1_11_R1.PacketPlayInClientCommand.EnumClientCommand
 import net.minecraft.server.v1_11_R1.PacketPlayOutEntityTeleport;
 
 public class PlayerManager {
+	
 	public static void clearInventory(PlayerInventory pi) {
 		pi.clear();
 		pi.setArmorContents(new ItemStack[] { null, null, null, null });

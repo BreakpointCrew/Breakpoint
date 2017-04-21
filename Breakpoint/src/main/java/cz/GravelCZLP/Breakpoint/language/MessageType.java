@@ -1,6 +1,8 @@
 package cz.GravelCZLP.Breakpoint.language;
 
 public enum MessageType implements Translateable {
+	
+	//TODO: make this pretty 
 	// {{ENUMS
 	// {{FREQUENTLY USED
 	OTHER_REGENMATTER_NAME("&cRegeneration matter"), OTHER_REGENMATTER_DESC("&7Heals 4 hearts."),

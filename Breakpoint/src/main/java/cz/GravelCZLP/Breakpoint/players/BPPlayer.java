@@ -47,7 +47,6 @@ import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.SBManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.perks.PerkType;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import me.limeth.storageAPI.Column;
@@ -118,7 +117,7 @@ public class BPPlayer {
 		if (game != null) {
 			game.onPlayerLeaveGame(bpPlayer);
 		}
-
+		
 		bpPlayer.getScoreboardManager().unregister();
 	}
 
@@ -140,13 +139,11 @@ public class BPPlayer {
 		List<Achievement> achievements = Achievement.loadPlayerAchievements(storage);
 		List<Perk> perks = Perk.loadPlayerPerks(storage);
 
-		ServerPosition pos = ServerPosition.load(storage);
-
 		long timeJoined = System.currentTimeMillis();
 		Clan clan = Clan.getByPlayer(playerName);
 
 		BPPlayer bpPlayer = new BPPlayer(playerName, settings, lobbyInventory, stats, achievements, perks, clan,
-				timeJoined, pos);
+				timeJoined);
 
 		return bpPlayer;
 	}
@@ -268,7 +265,6 @@ public class BPPlayer {
 		columns.addAll(Settings.getRequiredMySQLColumns());
 		columns.addAll(Achievement.getRequiredMySQLColumns());
 		columns.addAll(LobbyInventory.getRequiredMySQLColumns());
-		columns.addAll(ServerPosition.getRequiredMySQLColumns());
 
 		return columns;
 	}
@@ -286,8 +282,6 @@ public class BPPlayer {
 	private GameProperties gameProperties;
 	private SBManager scoreboardManager;
 
-	private ServerPosition pos;
-
 	// Chat
 	private String lastMessage;
 
@@ -302,9 +296,9 @@ public class BPPlayer {
 	private BPPlayer achievementViewTarget = null, lastTimeKilledBy = null;
 	private Location afkPastLocation = null, shopItemLocation = null, singleTeleportLocation = null;
 	private CharacterType queueCharacter = null;
-
+	
 	private BPPlayer(String name, Settings settings, LobbyInventory lobbyInventory, PlayerStatistics statistics,
-			List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined, ServerPosition pos) {
+			List<Achievement> achievements, List<Perk> perks, Clan bpClan, long timeJoined) {
 		this.settings = settings;
 		this.lobbyInventory = lobbyInventory;
 		this.name = name;
@@ -313,9 +307,6 @@ public class BPPlayer {
 		this.perks = perks;
 		this.bpClan = bpClan;
 		this.timeJoined = timeJoined;
-		this.pos = pos;
-
-		setupPermissions();
 
 		if (isOnline()) {
 			this.scoreboardManager = new SBManager(this);
@@ -338,7 +329,6 @@ public class BPPlayer {
 		this.statistics.savePlayerStatistics(storage);
 		Achievement.savePlayerAchievements(storage, this.achievements);
 		Perk.savePlayerPerks(storage, this.perks);
-		this.pos.save(storage);
 
 		storage.save(storageType, folder, mySQL, Breakpoint.getBreakpointConfig().getMySQLTablePlayers());
 	}
@@ -387,7 +377,6 @@ public class BPPlayer {
 			perks.remove(i);
 		}
 		settings.setDeathMessages(true);
-		settings.setDiscordMessages(true);
 		settings.setExtraSounds(true);
 		settings.setShowEnchantments(true);
 		for (int i = 0; i < achievements.size(); i++) {
@@ -417,10 +406,10 @@ public class BPPlayer {
 
 	public String getTagPrefix(boolean brackets) {
 		String gamePrefix = this.gameProperties != null ? this.gameProperties.getTagPrefix() : null;
-		boolean vip = this.pos.isVIP() || this.pos.isVIPPlus();
-		boolean staff = this.pos.isStaff();
-		boolean sponsor = staff ? false : this.pos.isSponsor();
-		boolean yt = staff ? false : this.pos.isYoutube();
+		boolean vip = getPlayer().hasPermission("Breakpoint.vip") || getPlayer().hasPermission("Breakpoint.vipplus");
+		boolean staff = getPlayer().hasPermission("Breakpoint.admin") || getPlayer().hasPermission("Breakpoint.moderator") || getPlayer().hasPermission("Breakpoint.helper");
+		boolean sponsor = staff ? false : getPlayer().hasPermission("Breakpoint.sponsor");
+		boolean yt = staff ? false : getPlayer().hasPermission("Breakpoint.yt");
 
 		return getTagPrefix(gamePrefix, vip, sponsor, yt, brackets);
 	}
@@ -480,14 +469,19 @@ public class BPPlayer {
 	}
 
 	public void sendStaffMessage(String message) {
-		if (!this.pos.isStaff()) {
+		if (!getPlayer().hasPermission("Breakpoint.admin")
+				|| getPlayer().hasPermission("Breakpoint.moderator")
+				|| getPlayer().hasPermission("Breakpoint.helper")
+				) {
 			return;
 		}
 
 		for (Player target : Bukkit.getOnlinePlayers()) {
-			BPPlayer bpTarget = BPPlayer.get(target);
 
-			if (bpTarget.pos.isStaff()) {
+			if (target.hasPermission("Breakpoint.admin")
+					|| target.hasPermission("Breakpoint.moderator")
+					|| target.hasPermission("Breakpoint.helper")
+					) {
 				target.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.ITALIC + this.name + ": " + message);
 			}
 		}
@@ -724,8 +718,9 @@ public class BPPlayer {
 
 	public boolean hasSpaceInLobbyInventory() {
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
-				|| this.pos.isYoutube();
+		boolean b = getPlayer().hasPermission("Breakpoint.vipSlots") 
+				|| getPlayer().hasPermission("Breakpoint.vip") 
+				|| getPlayer().hasPermission("Breakpoint.vipplus");
 		int size = b ? 24 : 12;
 		for (int i = 0; i < size; i++) {
 			if (contents[4 + i] == null) {
@@ -737,8 +732,9 @@ public class BPPlayer {
 
 	public int getLobbyInventorySpaceSlot() {
 		BPEquipment[] contents = getLobbyInventory().getContents();
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
-				|| this.pos.isYoutube();
+		boolean b = getPlayer().hasPermission("Breakpoint.vipSlots") 
+				|| getPlayer().hasPermission("Breakpoint.vip") 
+				|| getPlayer().hasPermission("Breakpoint.vipplus");
 		int size = b ? 24 : 12;
 		for (int i = 0; i < size; i++) {
 			if (contents[4 + i] == null) {
@@ -809,13 +805,17 @@ public class BPPlayer {
 
 		int byWhat = 2;
 
-		if (this.pos.isStaff()) {
+		if (getPlayer().hasPermission("Breakpoint.admin") 
+				|| getPlayer().hasPermission("Breakpoint.moderator") 
+				|| getPlayer().hasPermission("Breakpoint.helper")) {
 			byWhat = 8;
 		}
-		if (multiply && !this.pos.isStaff()) {
-			if (this.pos.isVIPPlus()) {
+		if (multiply && !getPlayer().hasPermission("Breakpoint.admin") 
+				|| !getPlayer().hasPermission("Breakpoint.moderator") 
+				|| !getPlayer().hasPermission("Breakpoint.helper")) {
+			if (getPlayer().hasPermission("Breakpoint.vipplus")) {
 				byWhat = 6;
-			} else if (this.pos.isVIP()) {
+			} else if (getPlayer().hasPermission("Breakpoint.vip")) {
 				byWhat = 4;
 			} else {
 				byWhat = 2;
@@ -881,8 +881,7 @@ public class BPPlayer {
 	}
 
 	public int getMaxEquippedPerks() {
-		boolean b = this.pos.isVIP() || this.pos.isVIPPlus() || this.pos.isSponsor() || this.pos.isStaff()
-				|| this.pos.isYoutube();
+		boolean b = getPlayer().hasPermission("Breakpoint.game.moreperks");
 		return b ? 3 : 1;
 	}
 
@@ -1295,33 +1294,6 @@ public class BPPlayer {
 
 	public void setPerks(List<Perk> perks) {
 		this.perks = perks;
-	}
-
-	public ServerPosition getServerPosition() {
-		return this.pos;
-	}
-
-	public void setupPermissions() {
-		Player p = getPlayer();
-		if (p.hasPermission("Breakpoint.admin")) {
-			this.pos.setPosition(ServerPositionEnum.ADMIN);
-		} else if (p.hasPermission("Breakpoint.developer")) {
-			this.pos.setPosition(ServerPositionEnum.DEVELOPER);
-		} else if (p.hasPermission("Breakpoint.moderator")) {
-			this.pos.setPosition(ServerPositionEnum.MODERATOR);
-		} else if (p.hasPermission("Breakpoint.helper")) {
-			this.pos.setPosition(ServerPositionEnum.HELPER);
-		} else if (p.hasPermission("Breakpoint.youtube")) {
-			this.pos.setPosition(ServerPositionEnum.YOUTUBE);
-		} else if (p.hasPermission("Breakpoint.sponsor")) {
-			this.pos.setPosition(ServerPositionEnum.SPONSOR);
-		} else if (p.hasPermission("Breakpoint.vipplus")) {
-			this.pos.setPosition(ServerPositionEnum.VIPPLUS);
-		} else if (p.hasPermission("Breakpoint.vip")) {
-			this.pos.setPosition(ServerPositionEnum.VIP);
-		} else {
-			this.pos.setPosition(ServerPositionEnum.NORMAL);
-		}
 	}
 	
 	public void sendParticles() {

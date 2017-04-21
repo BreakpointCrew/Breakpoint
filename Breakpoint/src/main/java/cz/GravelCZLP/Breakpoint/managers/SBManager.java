@@ -107,7 +107,10 @@ public class SBManager {
 
 		if (game != null) {
 			if (!game.votingInProgress()) {
-				this.progressObj.setDisplaySlot(DisplaySlot.SIDEBAR);
+				if (progressObj == null) {
+					initProgressObj();
+				}
+ 				this.progressObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 			} else {
 				this.voteObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 			}

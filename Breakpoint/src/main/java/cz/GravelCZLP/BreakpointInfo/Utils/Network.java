@@ -9,8 +9,6 @@ import cz.GravelCZLP.Breakpoint.achievements.Achievement;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameProperties;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition.ServerPositionEnum;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.BreakpointInfo.Packets.Packet;
 import cz.GravelCZLP.BreakpointInfo.Packets.Client.BreakpointDataRequestPacket;
@@ -37,9 +35,6 @@ public class Network {
 		
 		kryo.register(Game.class);
 		kryo.register(GameProperties.class);
-		
-		kryo.register(ServerPosition.class);
-		kryo.register(ServerPositionEnum.class);
 	}
 
 }

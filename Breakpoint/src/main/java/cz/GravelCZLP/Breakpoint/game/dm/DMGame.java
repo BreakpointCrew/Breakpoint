@@ -134,6 +134,9 @@ public class DMGame extends Game {
 	}
 
 	public void updateProgressObjectiveScores() {
+		if (getPlayers().isEmpty()) {
+			return;
+		}
 		for (BPPlayer bpPlayer : getPlayers()) {
 			updateProgressObjectiveScores(bpPlayer);
 		}

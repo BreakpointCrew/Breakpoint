@@ -25,7 +25,6 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class DMListener extends GameListener {
 	public DMListener(Game game) {
@@ -131,15 +130,13 @@ public class DMListener extends GameListener {
 					if (charType != null) {
 						String name = charType.getProperName();
 
-						ServerPosition pos = bpPlayer.getServerPosition();
-						boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
-								|| pos.isYoutube();
-
-						if (charType.requiresVIP() && !b) {
-							player.sendMessage(ChatColor.DARK_GRAY + "---");
-							player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
-							player.sendMessage(ChatColor.DARK_GRAY + "---");
-							return;
+						if (charType.requiresVIP()) {
+							if (!bpPlayer.getPlayer().hasPermission("Breakpoint.kit." + charType.name().toLowerCase())) {
+								player.sendMessage(ChatColor.DARK_GRAY + "---");
+								player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
+								player.sendMessage(ChatColor.DARK_GRAY + "---");
+								return;	
+							}
 						}
 
 						props.chooseCharacter(charType, true);

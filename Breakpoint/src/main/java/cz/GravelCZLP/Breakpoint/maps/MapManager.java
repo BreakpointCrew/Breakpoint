@@ -3,6 +3,7 @@ package cz.GravelCZLP.Breakpoint.maps;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,6 +22,8 @@ public class MapManager {
 	public static short breakpointMapId, vipMapId, czechFlagMapId, slovakFlagMapId, totalPlayersMapId, totalKillsMapId,
 			totalDeathsMapId, totalMoneyMapId, totalBoughtMapId;
 
+	public static StatisticRenderer players,kills,deaths,emeralds,boughtitems;
+	
 	public static short getNextFreeId(int amount) {
 		short id = usedIds;
 		usedIds += amount;
@@ -31,12 +34,74 @@ public class MapManager {
 		return getNextFreeId(1);
 	}
 
-	public static void setup() {
+	public void update() {
+		players = new StatisticRenderer("Hracu", BPMapPalette.getColor(BPMapPalette.LIGHT_BLUE, 2)) {
+			@Override
+			public String getValue() {
+				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
+					return "Nacitam...";
+				}
+
+				return Integer.toString(StatisticsManager.getTotalStats().getPlayerAmount());
+			}
+		};
+		players.set(Bukkit.getMap(totalPlayersMapId));
+
+		kills = new StatisticRenderer("Zabiti", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
+			@Override
+			public String getValue() {
+				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
+					return "Nacitam...";
+				}
+
+				return Integer.toString(StatisticsManager.getTotalStats().getKills());
+			}
+		};
+		kills.set(Bukkit.getMap(totalKillsMapId));
+
+		deaths = new StatisticRenderer("Umrti", BPMapPalette.getColor(BPMapPalette.RED, 2)) {
+			@Override
+			public String getValue() {
+				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
+					return "Nacitam...";
+				}
+
+				return Integer.toString(StatisticsManager.getTotalStats().getDeaths());
+			}
+		};
+		deaths.set(Bukkit.getMap(totalDeathsMapId));
+
+		emeralds = new StatisticRenderer("Emeraldu", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
+			@Override
+			public String getValue() {
+				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
+					return "Nacitam...";
+				}
+
+				return Integer.toString(StatisticsManager.getTotalStats().getMoney());
+			}
+		};
+		emeralds.set(Bukkit.getMap(totalMoneyMapId));
+
+		boughtitems = new StatisticRenderer("Nakoupeno veci", BPMapPalette.getColor(BPMapPalette.YELLOW, 2)) {
+			@Override
+			public String getValue() {
+				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
+					return "Nacitam...";
+				}
+
+				return Integer.toString(StatisticsManager.getTotalStats().getBought());
+			}
+		};
+		boughtitems.set(Bukkit.getMap(totalBoughtMapId));
+	}
+	
+	public void setup() {
 		setIds();
 		setRenderers();
 	}
 
-	private static void setIds() {
+	private void setIds() {
 		breakpointMapId = getNextFreeId();
 		vipMapId = getNextFreeId();
 		czechFlagMapId = getNextFreeId();
@@ -46,16 +111,27 @@ public class MapManager {
 		totalDeathsMapId = getNextFreeId();
 		totalMoneyMapId = getNextFreeId();
 		totalBoughtMapId = getNextFreeId();
+		ConsoleCommandSender ccs = Bukkit.getConsoleSender();
+		ccs.sendMessage("" + breakpointMapId);
+		ccs.sendMessage("" + vipMapId);
+		ccs.sendMessage("" + czechFlagMapId);
+		ccs.sendMessage("" + slovakFlagMapId);
+		ccs.sendMessage("" + totalPlayersMapId);
+		ccs.sendMessage("" + totalKillsMapId);
+		ccs.sendMessage("" + totalDeathsMapId);
+		ccs.sendMessage("" + totalMoneyMapId);
+		ccs.sendMessage("" + totalBoughtMapId);
+		
 	}
 
-	private static void setRenderers() {
+	private void setRenderers() {
 		new ImageRenderer("plugins/Breakpoint/images/logo.png").set(Bukkit.getMap(breakpointMapId));
 		new ImageRenderer("plugins/Breakpoint/images/vip.png").set(Bukkit.getMap(vipMapId));
 		new ImageRenderer("plugins/Breakpoint/images/czech.png").set(Bukkit.getMap(czechFlagMapId));
 		new ImageRenderer("plugins/Breakpoint/images/slovak.png").set(Bukkit.getMap(slovakFlagMapId));
 
 		// STATS
-		new StatisticRenderer("Hracu", BPMapPalette.getColor(BPMapPalette.LIGHT_BLUE, 2)) {
+		players = new StatisticRenderer("Hracu", BPMapPalette.getColor(BPMapPalette.LIGHT_BLUE, 2)) {
 			@Override
 			public String getValue() {
 				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
@@ -64,9 +140,10 @@ public class MapManager {
 
 				return Integer.toString(StatisticsManager.getTotalStats().getPlayerAmount());
 			}
-		}.set(Bukkit.getMap(totalPlayersMapId));
+		};
+		players.set(Bukkit.getMap(totalPlayersMapId));
 
-		new StatisticRenderer("Zabiti", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
+		kills = new StatisticRenderer("Zabiti", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
 			@Override
 			public String getValue() {
 				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
@@ -75,9 +152,10 @@ public class MapManager {
 
 				return Integer.toString(StatisticsManager.getTotalStats().getKills());
 			}
-		}.set(Bukkit.getMap(totalKillsMapId));
+		};
+		kills.set(Bukkit.getMap(totalKillsMapId));
 
-		new StatisticRenderer("Umrti", BPMapPalette.getColor(BPMapPalette.RED, 2)) {
+		deaths = new StatisticRenderer("Umrti", BPMapPalette.getColor(BPMapPalette.RED, 2)) {
 			@Override
 			public String getValue() {
 				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
@@ -86,9 +164,10 @@ public class MapManager {
 
 				return Integer.toString(StatisticsManager.getTotalStats().getDeaths());
 			}
-		}.set(Bukkit.getMap(totalDeathsMapId));
+		};
+		deaths.set(Bukkit.getMap(totalDeathsMapId));
 
-		new StatisticRenderer("Emeraldu", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
+		emeralds = new StatisticRenderer("Emeraldu", BPMapPalette.getColor(BPMapPalette.LIGHT_GREEN, 2)) {
 			@Override
 			public String getValue() {
 				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
@@ -97,9 +176,10 @@ public class MapManager {
 
 				return Integer.toString(StatisticsManager.getTotalStats().getMoney());
 			}
-		}.set(Bukkit.getMap(totalMoneyMapId));
+		};
+		emeralds.set(Bukkit.getMap(totalMoneyMapId));
 
-		new StatisticRenderer("Nakoupeno veci", BPMapPalette.getColor(BPMapPalette.YELLOW, 2)) {
+		boughtitems = new StatisticRenderer("Nakoupeno veci", BPMapPalette.getColor(BPMapPalette.YELLOW, 2)) {
 			@Override
 			public String getValue() {
 				if (StatisticsManager.isUpdating() || !StatisticsManager.hasTotalStats()) {
@@ -108,7 +188,8 @@ public class MapManager {
 
 				return Integer.toString(StatisticsManager.getTotalStats().getBought());
 			}
-		}.set(Bukkit.getMap(totalBoughtMapId));
+		};
+		boughtitems.set(Bukkit.getMap(totalBoughtMapId));
 	}
 
 	public static void updateLobbyMapsForPlayer(BPPlayer bpPlayer) {

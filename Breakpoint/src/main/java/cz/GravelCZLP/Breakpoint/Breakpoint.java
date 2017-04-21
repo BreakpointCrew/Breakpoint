@@ -87,7 +87,7 @@ public class Breakpoint extends JavaPlugin {
 	public boolean successfullyEnabled;
 
 	private Main data = null;
-
+	
 	private boolean canEnable = false;
 	
 	@Override
@@ -96,7 +96,8 @@ public class Breakpoint extends JavaPlugin {
 		if (canEnable) {
 			instance = this;
 			this.prm = ProtocolLibrary.getProtocolManager();
-			MapManager.setup();
+			mapm = new MapManager();
+			mapm.setup();
 			Clan.loadClans();
 
 			if (Configuration.getFile().exists()) {
@@ -137,8 +138,7 @@ public class Breakpoint extends JavaPlugin {
 			DoubleMoneyManager.update();
 			DoubleMoneyManager.startBoostLoop();
 			StatisticsManager.updateStatistics();
-
-
+			
 			this.data = new Main(this);
 
 			try {
@@ -176,6 +176,26 @@ public class Breakpoint extends JavaPlugin {
 			sender.sendMessage(ChatColor.RED + "#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
 			getServer().getPluginManager().registerEvents(new BanListener(), this);
 		}
+	}
+	
+	public void reload() {
+		if (!this.successfullyEnabled) {
+			return;
+		}
+		
+		trySave();
+		
+		this.data.stop();
+		
+		if (this.evtm != null) {
+			this.evtm.save();
+		}
+		
+		getServer().getScheduler().cancelTasks(this);
+		
+		instance = null;
+		config = null;
+		onEnable();
 	}
 	
 	@Override
@@ -421,6 +441,11 @@ public class Breakpoint extends JavaPlugin {
 		}
 	}
 
+	// only for debug
+	public void setEventManager(EventManager e) {
+		this.evtm = e;
+	}
+	
 	public boolean hasEvent() {
 		return this.evtm != null;
 	}
@@ -429,6 +454,10 @@ public class Breakpoint extends JavaPlugin {
 		return this.evtm;
 	}
 
+	public MapManager getMapManager() {
+		return mapm;
+	}
+	
 	public static Breakpoint getInstance() {
 		return instance;
 	}

@@ -21,7 +21,6 @@ import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.perks.PerkType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.LobbyInventory;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class ShopManager {
 	public static void buyItem(BPPlayer bpPlayer, Sign sign, String[] lines) {
@@ -39,8 +38,7 @@ public class ShopManager {
 		String typeName = ChatColor.stripColor(lines[1]);
 		SkullType skullType = SkullType.parse(typeName);
 		boolean vip = skullType == null || skullType.isVip();
-		ServerPosition pos = bpPlayer.getServerPosition();
-		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		boolean b = player.hasPermission("Breakpoint.shop.heads");
 
 		if (!vip && b) {
 			Location bLoc = sign.getLocation();
@@ -85,8 +83,7 @@ public class ShopManager {
 		String typeName = ChatColor.stripColor(lines[0]);
 		ArmorMerchandiseType amt = ArmorMerchandiseType.parse(typeName);
 
-		ServerPosition pos = bpPlayer.getServerPosition();
-		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		boolean b = player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vipS") || player.hasPermission("Breakpoint.vipplus");
 
 		if (amt != null) {
 			Location bLoc = sign.getLocation();

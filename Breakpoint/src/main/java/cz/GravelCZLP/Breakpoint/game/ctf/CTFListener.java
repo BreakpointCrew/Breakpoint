@@ -34,7 +34,6 @@ import cz.GravelCZLP.Breakpoint.game.GameListener;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class CTFListener extends GameListener {
 	public CTFListener(Game game) {
@@ -248,17 +247,15 @@ public class CTFListener extends GameListener {
 						}
 						if (charType != null) {
 							String name = charType.getProperName();
-
-							ServerPosition pos = bpPlayer.getServerPosition();
-							boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus()
-									|| pos.isYoutube();
-
-							if (charType.requiresVIP() && !b) {
-								player.sendMessage(ChatColor.DARK_GRAY + "---");
-								player.sendMessage(
-										MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
-								player.sendMessage(ChatColor.DARK_GRAY + "---");
-								return;
+							
+							if (charType.requiresVIP()) {
+								if (!bpPlayer.getPlayer().hasPermission("Breakpoint.kit." + charType.name().toLowerCase())) {
+									player.sendMessage(ChatColor.DARK_GRAY + "---");
+									player.sendMessage(
+											MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
+									player.sendMessage(ChatColor.DARK_GRAY + "---");
+									return;	
+								}
 							}
 							props.chooseCharacter(charType, true);
 							player.sendMessage(MessageType.LOBBY_CHARACTER_SELECTED.getTranslation().getValue(name));
@@ -296,10 +293,7 @@ public class CTFListener extends GameListener {
 		byte data = block.getData();
 
 		if (data == (byte) 11) {
-			ServerPosition pos = bpPlayer.getServerPosition();
-			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
-
-			if (!b) {
+			if (!player.hasPermission("Breakpoint.ctf.teamSelect")) {
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());
 				return;
@@ -317,10 +311,7 @@ public class CTFListener extends GameListener {
 				}
 			}
 		} else if (data == (byte) 14) {
-			ServerPosition pos = bpPlayer.getServerPosition();
-			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
-
-			if (!b) {
+			if (!player.hasPermission("Breakpoint.ctf.teamSelect")) {
 				event.setCancelled(true);
 				player.sendMessage(MessageType.LOBBY_TEAM_SELECTVIPSONLY.getTranslation().getValue());
 				return;
@@ -367,21 +358,12 @@ public class CTFListener extends GameListener {
 	
 	@Override
 	public void onPlayerMove(BPPlayer bpPlayer, Location from, Location to, PlayerMoveEvent e) {
-		/*if (bpPlayer.hasCooldown(CooldownType.PYRO_EFFECT.getPath(), 60, false)) {
-			int fromX = from.getBlockX();
-			int fromZ = from.getBlockZ();
-			int toX = to.getBlockX();
-			int toZ = to.getBlockZ();
-			if (fromX != toX || fromZ != toZ) {
-				e.setTo(from);
-			}
-		}*/
 	}
 
 	@Override
 	public void onPlayerToggleSprint(BPPlayer bpPlayer, PlayerToggleSprintEvent e) {
 		if (e.isSprinting()) {
-			if (bpPlayer.getServerPosition().getPosition() == ServerPosition.ServerPositionEnum.NORMAL) {
+			if (bpPlayer.getPlayer().hasPermission("Breakpoint.ctf.gamesprint")) {
 				if (bpPlayer.isInGame()) {
 					if (bpPlayer.getGame().getType() == GameType.CTF) {
 						FlagManager flm = ((CTFGame) bpPlayer.getGame()).getFlagManager();

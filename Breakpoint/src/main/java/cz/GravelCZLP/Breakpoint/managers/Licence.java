@@ -18,7 +18,7 @@ public class Licence {
 		try {
 			b = getResponce();
 			ConsoleCommandSender console = Bukkit.getConsoleSender();
-			console.sendMessage(ChatColor.GOLD + "[Breakpoint Loader] Responce: " + getResponce());
+			console.sendMessage(ChatColor.GOLD + "[Breakpoint Loader] Responce: " + b);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();

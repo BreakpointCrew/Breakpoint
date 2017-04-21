@@ -2,6 +2,7 @@ package cz.GravelCZLP.Breakpoint.managers.commands;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -31,6 +32,7 @@ import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.RandomShop;
 import cz.GravelCZLP.Breakpoint.achievements.AchievementType;
+import cz.GravelCZLP.Breakpoint.equipment.BPBlock;
 import cz.GravelCZLP.Breakpoint.equipment.BPEquipment;
 import cz.GravelCZLP.Breakpoint.equipment.BPSkull.SkullType;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
@@ -45,6 +47,8 @@ import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
+import cz.GravelCZLP.Breakpoint.managers.events.advent.AdventGift;
+import cz.GravelCZLP.Breakpoint.managers.events.advent.AdventManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
@@ -93,6 +97,8 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			sender.sendMessage("/bp setMatch +days challenging challenged");
 			sender.sendMessage("/bp removeMatch +days");
 			sender.sendMessage("/bp updatePerms [Player]");
+			sender.sendMessage("/bp reload");
+			sender.sendMessage("/bp giveMap id");
 			sender.sendMessage("Games:");
 			sender.sendMessage("/bp game create [GameType] [Name]");
 			sender.sendMessage("/bp game remove [Game]");
@@ -744,23 +750,43 @@ public class BPCommandExecutor extends BreakpointCommand implements CommandExecu
 			catch (IOException e) {
 				sender.sendMessage("Saving config failed: " + e.getMessage());
 			}
-	    } else if (args[0].equalsIgnoreCase("updatePerms")) {
+	    } else if (args[0].equalsIgnoreCase("giveMap")) {
 	    	if (args.length < 1) {
-	    		sender.sendMessage("/bp updatePerms [Player]");
+	    		sender.sendMessage("/bp giveMap id");
 	    		return false;
 	    	}
-	    	Player p = Bukkit.getPlayer(args[1]);
-	    	if (p == null) {
-	    		sender.sendMessage("Hráč neexistuje");
+	    	if (!(sender instanceof Player)) {
+	    		sender.sendMessage(ChatColor.RED + "Players only!");
 	    		return false;
 	    	}
-	    	if (!p.isOnline()) {
-	    		sender.sendMessage("Hráč je offline");
+	    	int id = 1;
+	    	try {
+	    		id = Integer.parseInt(args[1]);
+	    	} catch (Exception e) {
+	    		sender.sendMessage("id must me an int");
 	    		return false;
 	    	}
-	    	BPPlayer bpPlayer = BPPlayer.get(p);
-	    	bpPlayer.setupPermissions();
-	    	sender.sendMessage("§aDone...");
+	    	ItemStack map = new ItemStack(Material.MAP, 1, (short) id);
+	    	((Player) sender).getInventory().addItem(map);
+	    } else if (args[0].equalsIgnoreCase("advent")) {
+	    	if (args.length < 2) {
+	    		sender.sendMessage("/bp advent [year]");
+	    		return false;
+	    	}
+	    	if (!(sender instanceof Player)) {
+	    		sender.sendMessage(ChatColor.RED + "Players only!");
+	    		return false;
+	    	}
+	    	int year = 0;
+	    	try {
+	    		year = Integer.parseInt(args[1]);
+	    	} catch (Exception e) {
+	    		sender.sendMessage("year must be an int");
+	    		return false;
+	    	}
+	    	ArrayList<AdventGift> gifts = new ArrayList<>();
+	    	gifts.add(new AdventGift(new BPBlock("REDSTOUN", 420, Material.REDSTONE_BLOCK.getId(), (byte) 0 )));
+	    	pl.setEventManager(new AdventManager(year, null));
 	    } else {
 			super.callAllExecutors(args, sender);
 		}

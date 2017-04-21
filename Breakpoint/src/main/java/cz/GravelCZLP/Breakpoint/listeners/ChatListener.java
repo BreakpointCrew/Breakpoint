@@ -34,7 +34,7 @@ public class ChatListener implements Listener {
 			return;
 		}
 
-		if (bpPlayer.getServerPosition().isStaff()) {
+		if (bpPlayer.getPlayer().hasPermission("Breakpoint.chat.colors")) {
 			message = ChatColor.translateAlternateColorCodes('&', message);
 		}
 
@@ -45,7 +45,7 @@ public class ChatListener implements Listener {
 		}
 
 		if (message.charAt(0) == '#') {
-			if (bpPlayer.getServerPosition().isStaff()) {
+			if (bpPlayer.getPlayer().hasPermission("Breakpoint.chat.staffchat")) {
 				message = message.substring(1);
 				event.setCancelled(true);
 				String playerName = player.getName();
@@ -53,7 +53,7 @@ public class ChatListener implements Listener {
 				Breakpoint.info("Staff chat: " + playerName + ": " + message);
 				return;
 			}
-		} else if (message.charAt(0) == '&') {
+		} else if (message.charAt(0) == '@') {
 			String playerName = player.getName();
 			Clan clan = Clan.getByPlayer(playerName);
 			if (clan != null) {

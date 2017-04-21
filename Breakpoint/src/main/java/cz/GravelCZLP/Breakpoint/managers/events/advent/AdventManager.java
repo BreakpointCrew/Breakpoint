@@ -29,7 +29,6 @@ import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.managers.events.EventManager;
 import cz.GravelCZLP.Breakpoint.maps.MapManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class AdventManager implements EventManager {
 	// {{STATIC
@@ -200,8 +199,7 @@ public class AdventManager implements EventManager {
 
 				BPBlock block = gift.getBlock();
 
-				ServerPosition pos = bpPlayer.getServerPosition();
-				boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+				boolean b = player.hasPermission("Breakpoint.vipSlots");
 
 				InventoryMenuManager.saveLobbyMenu(bpPlayer);
 				ShopManager.processBoughtItem(bpPlayer, block, b);

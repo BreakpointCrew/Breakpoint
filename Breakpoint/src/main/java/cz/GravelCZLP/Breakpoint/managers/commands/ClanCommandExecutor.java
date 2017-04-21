@@ -19,7 +19,6 @@ import cz.GravelCZLP.Breakpoint.language.Translation;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.StatisticsManager;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.players.clans.ClanChallenge;
 import cz.GravelCZLP.Breakpoint.statistics.CWMatchResult;
@@ -35,8 +34,7 @@ public class ClanCommandExecutor implements CommandExecutor {
 
 		BPPlayer bpPlayer = BPPlayer.get(player);
 
-		ServerPosition pos = bpPlayer.getServerPosition();
-		boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+		boolean b = player.hasPermission("Breakpoint.clan");
 
 		if (args.length <= 0) {
 			listClanCommands(sender, ChatColor.AQUA);

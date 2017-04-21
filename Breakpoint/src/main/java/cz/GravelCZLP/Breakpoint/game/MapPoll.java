@@ -224,7 +224,7 @@ public class MapPoll {
 			if (this.game.getPlayers() != null) {
 				for (BPPlayer bpPlayer : this.game.getPlayers()) {
 					bpPlayer.setSingleTeleportLocation(null);
-					bpPlayer.setLeaveAfterDeath(true);
+					bpPlayer.leaveGame();
 					bpPlayer.getPlayer().setHealth(0.0);
 					bpPlayer.getPlayer()
 							.sendMessage(MessageType.NOT_ENOUGH_PLAYERS_STARTGAME.getTranslation().getValue());

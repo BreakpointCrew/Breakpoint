@@ -22,7 +22,6 @@ public class Settings {
 	private boolean deathMessages;
 	private boolean extraSounds;
 	private boolean showEnchantments;
-	private boolean discordMessages;
 
 	public Settings() {
 		this.deathMessages = true;
@@ -30,39 +29,34 @@ public class Settings {
 		this.showEnchantments = true;
 	}
 
-	public Settings(boolean deathMessages, boolean extraSounds, boolean showEnchantments, boolean discordMessages) {
+	public Settings(boolean deathMessages, boolean extraSounds, boolean showEnchantments) {
 		this.deathMessages = deathMessages;
 		this.extraSounds = extraSounds;
 		this.showEnchantments = showEnchantments;
-		this.discordMessages = discordMessages;
 	}
 
 	public static final Settings load(Storage storage) throws Exception {
 		boolean deathMessages = storage.get(Boolean.class, "deathMessages", true);
 		boolean extraSounds = storage.get(Boolean.class, "extraSounds", true);
 		boolean showEnchantments = storage.get(Boolean.class, "showEnchantments", true);
-		boolean sendDiscordMessages = storage.get(Boolean.class, "discordMessages", true);
 
-		return new Settings(deathMessages, extraSounds, showEnchantments, sendDiscordMessages);
+		return new Settings(deathMessages, extraSounds, showEnchantments);
 	}
 
 	public void save(Storage storage) {
 		storage.put("deathMessages", this.deathMessages);
 		storage.put("extraSounds", this.extraSounds);
 		storage.put("showEnchantments", this.showEnchantments);
-		storage.put("discordMessages", this.discordMessages);
 	}
 
 	public static List<Column> getRequiredMySQLColumns() {
 		return Arrays.asList(new Column("deathMessages", ColumnType.BOOLEAN),
 				new Column("extraSounds", ColumnType.BOOLEAN),
-				new Column("showEnchantments", ColumnType.BOOLEAN),
-				new Column("discordMessages", ColumnType.BOOLEAN));
+				new Column("showEnchantments", ColumnType.BOOLEAN));
 	}
 
 	public boolean areDefault() {
-		return this.deathMessages == true && this.extraSounds == true && this.showEnchantments == true
-				&& this.discordMessages == true;
+		return this.deathMessages == true && this.extraSounds == true && this.showEnchantments == true;
 	}
 
 	public boolean toggleExtraSounds() {
@@ -99,13 +93,6 @@ public class Settings {
 		this.showEnchantments = showEnchantments;
 	}
 
-	public boolean hasDiscordMessages() {
-		return this.discordMessages;
-	}
-
-	public void setDiscordMessages(boolean b) {
-		this.discordMessages = b;
-	}
 	// INVENTORY
 
 	public static final String MENU_TITLE = "" + ChatColor.DARK_PURPLE + ChatColor.BOLD + "BREAKPOINT "
@@ -147,20 +134,8 @@ public class Settings {
 		public void setEnabled(Settings settings, boolean enabled) {
 			settings.showEnchantments = enabled;
 		}
-	}, new SettingsButton(MessageType.MENU_SETTINGS_DISCORDMESSAGES_DESC,
-			MessageType.MENU_SETTINGS_DISCORDMESSAGES_TURNON, MessageType.MENU_SETTINGS_DISCORDMESSAGES_TURNOFF,
-			MessageType.MENU_SETTINGS_DISCORDMESSAGES_ENABLE, MessageType.MENU_SETTINGS_DISCORDMESSAGES_DISABLE, 6) {
-
-		@Override
-		public void setEnabled(Settings settings, boolean enabled) {
-			settings.discordMessages = enabled;
-		}
-
-		@Override
-		public boolean isEnabled(Settings settings) {
-			return settings.discordMessages;
-		}
-	} };
+	}
+	};
 
 	public static InventoryView showSettingsMenu(BPPlayer bpPlayer) {
 		Settings settings = bpPlayer.getSettings();

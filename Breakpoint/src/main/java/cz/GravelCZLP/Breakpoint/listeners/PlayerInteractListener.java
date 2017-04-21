@@ -1,6 +1,5 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -10,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -23,6 +23,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
@@ -49,7 +50,10 @@ import cz.GravelCZLP.Breakpoint.achievements.Achievement;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.MapPoll;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
+import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
+import cz.GravelCZLP.Breakpoint.game.ctf.Team;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AbilityManager;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
@@ -58,7 +62,6 @@ import cz.GravelCZLP.Breakpoint.managers.ShopManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.players.CooldownType;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 
 public class PlayerInteractListener implements Listener {
@@ -175,8 +178,7 @@ public class PlayerInteractListener implements Listener {
 		if (mapPoll.isIdCorrect(mapId)) {
 			String playerName = player.getName();
 			if (!mapPoll.hasVoted(playerName)) {
-				ServerPosition pos = bpPlayer.getServerPosition();
-				boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+				boolean b = player.hasPermission("Breakpoint.game.votetwo");
 
 				int strength = b ? 2 : 1;
 				mapPoll.vote(playerName, mapId, strength);
@@ -193,9 +195,7 @@ public class PlayerInteractListener implements Listener {
 		Entity entity = event.getRightClicked();
 		if (entity instanceof ItemFrame) {
 			Player player = event.getPlayer();
-			BPPlayer bpPlayer = BPPlayer.get(player);
-			ServerPosition pos = bpPlayer.getServerPosition();
-			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+			boolean b = player.hasPermission("Breakpoint.interact");
 			if (!b) {
 				event.setCancelled(true);
 			}
@@ -290,6 +290,8 @@ public class PlayerInteractListener implements Listener {
 						bpPlayer.teleport(config.getLobbyLocation(), false);
 					} else if (belowMat == Material.REDSTONE_BLOCK) {
 						bpPlayer.teleport(config.getStaffListLocation(), false);
+					} else if (belowMat == Material.GOLD_BLOCK) {
+						bpPlayer.teleport(config.getVipInfoLocation(), false);
 					}
 				} else {
 					Game game = bpPlayer.getGame();
@@ -360,13 +362,20 @@ public class PlayerInteractListener implements Listener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		Inventory inv = event.getInventory();
-		String name = ChatColor.stripColor(inv.getName());
-
-		if (name.startsWith("BREAKPOINT")) {
+		
+		BPPlayer bpPlayer = BPPlayer.get(event.getPlayer().getName());
+		
+		if (bpPlayer.isInGame()) {
 			return;
 		}
-		BPPlayer bpPlayer = BPPlayer.get(event.getPlayer().getName());
-		if (inv.getType() != InventoryType.PLAYER && bpPlayer.getServerPosition().isStaff()) {
+		
+		if (bpPlayer.isInLobby()) {
+			if (inv.getType() != InventoryType.CHEST ) {
+				return;
+			}
+		}
+		
+		if (inv.getType() != InventoryType.PLAYER && !bpPlayer.getPlayer().hasPermission("Breakpoint.interact")) {
 			event.setCancelled(true);
 		}
 	}
@@ -438,6 +447,23 @@ public class PlayerInteractListener implements Listener {
 		
 		if (game != null) {
 			game.getListener().onPlayerToggleSprint(bpPlayer, e);
+		}
+	}
+	
+	@EventHandler
+	public void onEnderCrystalDie(EntityDeathEvent e) {
+		if (e.getEntityType() == EntityType.ENDER_CRYSTAL) {
+			EnderCrystal crystal = (EnderCrystal) e.getEntity();
+			for (Game g : GameManager.getGames()) {
+				if (g.getType() == GameType.CTF) {
+					CTFGame game = (CTFGame) g;
+					FlagManager flm = game.getFlagManager();
+					if (flm.isTeamFlag(crystal)) {
+						Team t = flm.getFlagTeam(crystal);
+						flm.spawnFlag(flm.getFlagLocation(t), t);
+					}
+				}
+			}
 		}
 	}
 }

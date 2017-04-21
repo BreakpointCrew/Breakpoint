@@ -28,7 +28,6 @@ import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.InventoryMenuManager;
 import cz.GravelCZLP.Breakpoint.perks.Perk;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 import cz.GravelCZLP.Breakpoint.players.Settings;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
 
@@ -93,10 +92,7 @@ public class PlayerInventoryListener implements Listener {
 					event.setCancelled(true);
 					InventoryMenuManager.updateInventoryDelayed(player);
 				} else {
-					ServerPosition pos = bpPlayer.getServerPosition();
-					boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
-
-					if (!b) {
+					if (!player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vip") || player.hasPermission("Breakpoint.vipplus")) {
 						if (InventoryMenuManager.isVipSlot(slotId)) {
 							event.setCancelled(true);
 							InventoryMenuManager.updateInventoryDelayed(player);
@@ -231,11 +227,8 @@ public class PlayerInventoryListener implements Listener {
 			ct = CharacterType.getByMonsterEggId(e.getTypeId());
 			if (ct != null) {
 				String name = ct.getProperName();
-
-				ServerPosition pos = bpPlayer.getServerPosition();
-				boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
-
-				if (ct.requiresVIP() && !b) {
+				
+				if (ct.requiresVIP() && !player.hasPermission("Breakpoint.kit." + ct.name().toLowerCase())) {
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
 					player.sendMessage(MessageType.LOBBY_CHARACTER_VIPSONLY.getTranslation().getValue(name));
 					player.sendMessage(ChatColor.DARK_GRAY + "---");
@@ -258,7 +251,7 @@ public class PlayerInventoryListener implements Listener {
 			event.getItemDrop().remove();
 			return;
 		}
-		if (!(bpPlayer.getServerPosition().isStaff() && player.getGameMode() == GameMode.CREATIVE)) {
+		if (!(player.hasPermission("Breakpoint.interact") && player.getGameMode() == GameMode.CREATIVE)) {
 			event.setCancelled(true);
 			return;
 		}

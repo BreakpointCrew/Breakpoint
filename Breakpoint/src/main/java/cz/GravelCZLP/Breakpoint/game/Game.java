@@ -101,6 +101,7 @@ public abstract class Game {
 		this.currentMapRenderer.set(cmmv);
 
 		this.playerAmountRendererMapId = MapManager.getNextFreeId();
+		System.out.println(playerAmountRendererMapId);
 		this.playerAmountRenderer = new SizeRenderer(BPMapPalette.getColor(BPMapPalette.DARK_BROWN, 0),
 				BPMapPalette.getColor(BPMapPalette.WHITE, 2), 0);
 		MapView rtsmv = Bukkit.getMap(this.playerAmountRendererMapId);
@@ -234,8 +235,6 @@ public abstract class Game {
 		player.getInventory().clear();
 
 		SBManager sbm = bpPlayer.getScoreboardManager();
-
-		sbm.initProgressObj();
 		updateProgressObjective(bpPlayer);
 		sbm.updateSidebarObjective();
 		SBManager.updateLobbyObjectives();

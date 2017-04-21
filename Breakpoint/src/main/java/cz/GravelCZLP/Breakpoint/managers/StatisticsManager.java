@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.limeth.storageAPI.StorageType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,6 +18,7 @@ import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.Breakpoint.statistics.PlayerStatistics;
 import cz.GravelCZLP.Breakpoint.statistics.Statistics;
 import cz.GravelCZLP.Breakpoint.statistics.TotalPlayerStatistics;
+import me.limeth.storageAPI.StorageType;
 
 public class StatisticsManager {
 	public static final int MAX_AMOUNT = Integer.MAX_VALUE;
@@ -61,11 +60,16 @@ public class StatisticsManager {
 		updateClanRanksByPoints();
 		updateStatistics();
 		updateNPCStatistics();
+		updateMaps();
 		updating = false;
 		
 		Breakpoint.warn("Statistics have been updated!");
 	}
 
+	public static void updateMaps() {
+		Breakpoint.getInstance().getMapManager().update();
+	}
+	
 	public static void updateNPCStatistics() {
 		
 	}

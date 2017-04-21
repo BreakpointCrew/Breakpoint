@@ -135,7 +135,7 @@ public enum AchievementType implements Translateable {
 					new ItemStack(Material.COOKED_FISH),
 					"You have found and reported more bugs to an admin."), RECONSTRUCKTER("Reconstructer",
 							new ItemStack(Material.REDSTONE_COMPARATOR_ON),
-							"You have helped with Breakpoitn Reconstruction.");
+							"You have helped with Breakpoint Reconstruction.");
 	// }}
 	// }}
 

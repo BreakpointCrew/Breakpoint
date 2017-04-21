@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.Configuration;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
-import cz.GravelCZLP.Breakpoint.players.BPPlayer;
-import cz.GravelCZLP.Breakpoint.players.ServerPosition;
 
 public class VIPManager {
 	public static void startLoops() {
@@ -40,8 +38,7 @@ public class VIPManager {
 	public static void checkFlyingPlayersInLobby() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.isFlying()) {
-				BPPlayer bpPlayer = BPPlayer.get(player);
-				if (!bpPlayer.getServerPosition().isStaff()) {
+				if (!player.hasPermission("Breakpoint.admin") || !player.hasPermission("Breakpoint.helper") || !player.hasPermission("Breakpoint.moderator")) {
 					if (isFarFromSpawnToUseFly(player)) {
 						player.sendMessage(MessageType.COMMAND_FLY_TOOFAR.getTranslation().getValue());
 						player.setAllowFlight(false);
@@ -70,10 +67,12 @@ public class VIPManager {
 		feature = ChatColor.translateAlternateColorCodes('&', feature);
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			BPPlayer bpPlayer = BPPlayer.get(player);
-
-			ServerPosition pos = bpPlayer.getServerPosition();
-			boolean b = pos.isSponsor() || pos.isStaff() || pos.isVIP() || pos.isVIPPlus() || pos.isYoutube();
+			boolean b = player.hasPermission("Breakpoint.admin")
+					|| player.hasPermission("Breakpoint.helper")
+					|| player.hasPermission("Breakpoint.moderator")
+					|| player.hasPermission("Breakpoint.sponsor")
+					|| player.hasPermission("Breakpoint.vipplus")
+					|| player.hasPermission("Breakpoint.vip");
 
 			if (!b) {
 				remindPlayer(player, feature);
