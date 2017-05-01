@@ -106,9 +106,9 @@ public class PlayerInteractListener implements Listener {
 							world.playSound(loc, Sound.ENTITY_GENERIC_EAT, 1F, 1F);
 						}
 					}
-				} else if (mat == Material.POTION && durability >= 16000) {
+				} else if (mat == Material.POTION && bpPlayer.isInGame()) {
 					if (!bpPlayer.hasCooldown(CooldownType.POTION_RAW.getPath() + durability, 1, true)) {
-						player.setItemInHand(itemClone);
+						player.getInventory().setItem(player.getInventory().getHeldItemSlot(), itemClone);
 					} else {
 						event.setCancelled(true);
 						player.updateInventory();
@@ -146,17 +146,17 @@ public class PlayerInteractListener implements Listener {
 			ItemStack item = player.getItemInHand();
 			Material mat = item.getType();
 			if (mat == Material.BLAZE_ROD) {
-				if (!bpPlayer.hasCooldown(CooldownType.BLAZE_ROD_MAGE.getPath(), 3, true)) {
+				if (!bpPlayer.hasCooldown(CooldownType.BLAZE_ROD_MAGE.getPath(), 2, true)) {
 					Location eyeLoc = player.getEyeLocation();
 					AbilityManager.launchFireball(player, eyeLoc, AbilityManager.getDirection(player));
 				}
 			} else if (mat == Material.STICK) {
-				if (!bpPlayer.hasCooldown(CooldownType.STICK_MAGE.getPath(), 3, true)) {
+				if (!bpPlayer.hasCooldown(CooldownType.STICK_MAGE.getPath(), 2, true)) {
 					Location eyeLoc = player.getEyeLocation();
 					AbilityManager.launchSmallFireball(player, eyeLoc, AbilityManager.getDirection(player));
 				}
 			} else if (mat == Material.FEATHER) {
-				if (!bpPlayer.hasCooldown(CooldownType.FEATHER_MAGE.getPath(), 4, true)) {
+				if (!bpPlayer.hasCooldown(CooldownType.FEATHER_MAGE.getPath(), 3, true)) {
 					AbilityManager.launchPlayer(player);
 				}
 			} else {
@@ -168,7 +168,7 @@ public class PlayerInteractListener implements Listener {
 			}
 		}
 	}
-
+	
 	public void voting(PlayerInteractEvent event, BPPlayer bpPlayer) {
 		Game game = bpPlayer.getGame();
 		Player player = bpPlayer.getPlayer();
@@ -258,18 +258,6 @@ public class PlayerInteractListener implements Listener {
 
 					event.setCancelled(true);
 					return false;
-				} else if (type == Material.SKULL) {
-					Block signBlock = block.getRelative(BlockFace.UP);
-					Material signMat = signBlock.getType();
-
-					if (signMat == Material.SIGN_POST || signMat == Material.WALL_SIGN) {
-						Sign sign = (Sign) signBlock.getState();
-						String[] lines = sign.getLines();
-
-						if (ShopManager.isShop(lines)) {
-							ShopManager.buyItem(bpPlayer, sign, lines);
-						}
-					}
 				}
 			}
 		} else if (action == Action.PHYSICAL) {
@@ -285,13 +273,13 @@ public class PlayerInteractListener implements Listener {
 					Configuration config = Breakpoint.getBreakpointConfig();
 
 					if (belowMat == Material.EMERALD_BLOCK) {
-						bpPlayer.teleport(config.getShopLocation(), false);
+						bpPlayer.teleport(config.getShopLocation());
 					} else if (belowMat == Material.QUARTZ_BLOCK) {
-						bpPlayer.teleport(config.getLobbyLocation(), false);
+						bpPlayer.teleport(config.getLobbyLocation());
 					} else if (belowMat == Material.REDSTONE_BLOCK) {
-						bpPlayer.teleport(config.getStaffListLocation(), false);
+						bpPlayer.teleport(config.getStaffListLocation());
 					} else if (belowMat == Material.GOLD_BLOCK) {
-						bpPlayer.teleport(config.getVipInfoLocation(), false);
+						bpPlayer.teleport(config.getVipInfoLocation());
 					}
 				} else {
 					Game game = bpPlayer.getGame();

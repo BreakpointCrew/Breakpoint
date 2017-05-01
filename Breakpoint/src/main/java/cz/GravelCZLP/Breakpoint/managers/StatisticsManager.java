@@ -59,7 +59,6 @@ public class StatisticsManager {
 		updatePlayerRanksByKills();
 		updateClanRanksByPoints();
 		updateStatistics();
-		updateNPCStatistics();
 		updateMaps();
 		updating = false;
 		
@@ -68,10 +67,6 @@ public class StatisticsManager {
 
 	public static void updateMaps() {
 		Breakpoint.getInstance().getMapManager().update();
-	}
-	
-	public static void updateNPCStatistics() {
-		
 	}
 	
 	public static void updateStatistics() {

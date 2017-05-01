@@ -94,6 +94,13 @@ public class MapManager {
 			}
 		};
 		boughtitems.set(Bukkit.getMap(totalBoughtMapId));
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			p.sendMap(Bukkit.getMap(totalBoughtMapId));
+			p.sendMap(Bukkit.getMap(totalDeathsMapId));
+			p.sendMap(Bukkit.getMap(totalKillsMapId));
+			p.sendMap(Bukkit.getMap(totalMoneyMapId));
+			p.sendMap(Bukkit.getMap(totalPlayersMapId));
+		}
 	}
 	
 	public void setup() {

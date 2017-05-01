@@ -2,7 +2,7 @@ package cz.GravelCZLP.Breakpoint.language;
 
 public enum MessageType implements Translateable {
 	
-	//TODO: make this pretty 
+	//FIXME: make this pretty 
 	// {{ENUMS
 	// {{FREQUENTLY USED
 	OTHER_REGENMATTER_NAME("&cRegeneration matter"), OTHER_REGENMATTER_DESC("&7Heals 4 hearts."),
@@ -398,13 +398,18 @@ public enum MessageType implements Translateable {
 	// {{CHAT
 	CHAT_BREAKPOINT("&8[&d&lBreakpoint&8]&e"), CHAT_PREFIX_ADMIN("&8[&4Admin&8]&r"), CHAT_PREFIX_MODERATOR(
 			"&8[&1Moderator&8]&r"), CHAT_PREFIX_HELPER(
-					"&8[&7Helper&8]&r"), CHAT_PREFIX_VIP("&8[&bVIP&8]&r"), CHAT_PREFIX_YOUTUBE(
+					"&8[&aHelper&8]&r"), CHAT_PREFIX_VIP("&8[&bVIP&8]&r"), CHAT_PREFIX_YOUTUBE(
 							"&8[&4You&fTube&8]&r"), CHAT_PREFIX_SPONSOR("&8[&aSponsor&8]&r"), CHAT_PREFIX_VIPPLUS(
-									"&8[&9VIP+&8]&r"), CHAT_PREFIX_AdminDev("&8[&4Admin&a/&cDeveloper&8]&r"),
+									"&8[&9VIP+&8]&r"),
 
-	CHAT_PREFIX_DEV("&8cl[c4clDeveloper&8&l]&r"),
-
-	CHAT_TAGPREFIX_VIP("&6VIP"), CHAT_TAGPREFIX_YOUTUBE("&eYT"), CHAT_TAGPREFIX_SPONSOR("&aSPR"),
+	CHAT_TAGPREFIX_VIP("&6VIP"), 
+	CHAT_TAGPREFIX_YOUTUBE("&eYT"), 
+	CHAT_TAGPREFIX_SPONSOR("&aSPR"),
+	CHAT_TAGPREFIX_ADMIN("&4ADM"),
+	CHAT_TAGPREFIX_VIPPLUS("&9VIP+"),
+	CHAT_TAGPREFIX_MODERATOR("&1MOD"),
+	CHAT_TAGPREFIX_HELPER("&aH"),
+	
 	// }}
 	// {{GAMETYPES
 	GAMETYPE_CTF("Capture the Flag"), GAMETYPE_DM("Deathmatch"), GAMETYPE_CW("Clan Wars"),

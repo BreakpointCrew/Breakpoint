@@ -227,11 +227,11 @@ public class CWGame extends CTFGame {
 		Perk.onSpawn(bpPlayer);
 		CharacterType ct = props.getCharacterType();
 		if (ct == null) {
-			bpPlayer.teleport(this.characterSelectionLocation, false);
+			bpPlayer.teleport(this.characterSelectionLocation);
 			return;
 		}
 		Location spawnLoc = getSpawnLocation(team);
-		bpPlayer.teleport(spawnLoc, true);
+		bpPlayer.teleport(spawnLoc);
 	}
 
 	@Override

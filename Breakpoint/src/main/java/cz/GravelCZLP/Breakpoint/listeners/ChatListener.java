@@ -34,7 +34,7 @@ public class ChatListener implements Listener {
 			return;
 		}
 
-		if (bpPlayer.getPlayer().hasPermission("Breakpoint.chat.colors")) {
+		if (message.length() >= 1 && bpPlayer.getPlayer().hasPermission("Breakpoint.chat.colors") && message.charAt(1) != '&') {
 			message = ChatColor.translateAlternateColorCodes('&', message);
 		}
 
@@ -44,9 +44,9 @@ public class ChatListener implements Listener {
 			return;
 		}
 
-		if (message.charAt(0) == '#') {
+		if (message.length() >= 1 && message.charAt(0) == '#' && message.charAt(1) == '#') {
 			if (bpPlayer.getPlayer().hasPermission("Breakpoint.chat.staffchat")) {
-				message = message.substring(1);
+				message = message.substring(2);
 				event.setCancelled(true);
 				String playerName = player.getName();
 				bpPlayer.sendStaffMessage(message);

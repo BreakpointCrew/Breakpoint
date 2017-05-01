@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -39,6 +40,11 @@ import cz.GravelCZLP.Breakpoint.game.BPMap;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameProperties;
+import cz.GravelCZLP.Breakpoint.game.GameType;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
+import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
+import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
+import cz.GravelCZLP.Breakpoint.game.ctf.Team;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AbilityManager;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
@@ -274,7 +280,7 @@ public class PVPListener implements Listener {
 		}
 
 		if (stl != null) {
-			bpPlayer.teleport(stl, false);
+			bpPlayer.teleport(stl);
 			bpPlayer.setSingleTeleportLocation(null);
 		}
 	}
@@ -314,24 +320,20 @@ public class PVPListener implements Listener {
 	@SuppressWarnings("deprecation")
 	private void hitByEntityExplosion(EntityDamageByEntityEvent event, BPPlayer bpDamager, Player shooter,
 			BPPlayer bpVictim, Player victim) {
-		// Entity exploded = event.getDamager();
-		// if(exploded instanceof Projectile)
-		// {
-		// if(shooter != null)
-		// {
-		// CTFProperties damagerProps = (CTFProperties)
-		// bpDamager.getGameProperties();
-		// if(damagerProps.isEnemy(bpVictim))
-		// {
-		EntityDamageEvent dmgCause = new EntityDamageByEntityEvent(shooter, victim, DamageCause.ENTITY_ATTACK,
-				event.getDamage());
-		victim.setLastDamageCause(dmgCause);
-		return;
-		// }
-		// }
-		//
-		// event.setCancelled(true);
-		// }
+		Entity exploded = event.getDamager();
+		if (exploded instanceof Projectile) {
+			if (shooter != null) {
+				CTFProperties damagerProps = (CTFProperties) bpDamager.getGameProperties();
+				if (damagerProps.isEnemy(bpVictim)) {
+					EntityDamageEvent dmgCause = new EntityDamageByEntityEvent(shooter, victim, DamageCause.ENTITY_ATTACK,
+							event.getDamage());
+					victim.setLastDamageCause(dmgCause);
+					return;
+				} else {
+					event.setCancelled(true);
+				}
+			}
+		}
 	}
 
 	@EventHandler
@@ -492,7 +494,34 @@ public class PVPListener implements Listener {
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
 		EntityType et = event.getEntityType();
-
+		Entity hited = event.getHitEntity();
+		
+		if (hited != null && hited.getType() == EntityType.ENDER_CRYSTAL) {
+			for (Game game : GameManager.getGames()) {
+				if (game.getType() == GameType.CTF) {
+					CTFGame ctfGame = (CTFGame) game;
+					FlagManager flm = ctfGame.getFlagManager();
+					Team t = flm.getFlagTeam((EnderCrystal) hited);
+					boolean defLoc = true;
+					Location enderCrystalLoc = null;
+					if (flm.isAtDefaultLocation((EnderCrystal) hited)) {
+						defLoc = true;
+					} else {
+						defLoc = false;
+						enderCrystalLoc = ((EnderCrystal) hited).getLocation();
+					}
+					flm.removeFlag(t);
+					
+					if (defLoc) {
+						flm.spawnFlagAtDefaultLocation(t);	
+					} else {
+						flm.spawnFlag(enderCrystalLoc, t);
+					}
+				}
+			}
+		}
+		
+		
 		if (et == EntityType.FIREBALL) {
 			Projectile proj = event.getEntity();
 			AbilityManager.fireballHit((Fireball) proj);

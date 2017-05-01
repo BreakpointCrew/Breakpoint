@@ -61,8 +61,7 @@ public class DoubleMoneyManager {
 					bm.setDisplayName("melounBoost");
 					boost.setItemMeta(bm);
 					Location loc0 = loc.clone();
-					loc0.setYaw(90);
-					loc0.setPitch(90);
+					
 					loc.getWorld().dropItem(loc0, boost);
 				}
 			}

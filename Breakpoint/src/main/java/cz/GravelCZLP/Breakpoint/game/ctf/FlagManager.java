@@ -256,6 +256,8 @@ public class FlagManager {
 
 		ec = (EnderCrystal) world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
 
+		ec.setShowingBottom(false);
+		
 		this.flags[teamId] = ec;
 
 		return ec;
@@ -274,6 +276,7 @@ public class FlagManager {
 				Player player = bpPlayer.getPlayer();
 				this.holders[i] = null;
 				bpPlayer.setPlayerListName();
+				Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpPlayer);
 				giveCompass(player);
 			}
 		}
@@ -285,7 +288,7 @@ public class FlagManager {
 		}
 	}
 
-	private boolean removeFlag(Team team) {
+	public boolean removeFlag(Team team) {
 		int teamId = Team.getId(team);
 
 		if (this.flags[teamId] != null) {
@@ -358,7 +361,7 @@ public class FlagManager {
 			flag.remove();
 
 			if (chain) {
-				for (Entity entity : flag.getNearbyEntities(0, 0, 0)) {
+				for (Entity entity : flag.getNearbyEntities(1, 1, 1)) {
 					if (entity instanceof EnderCrystal) {
 						EnderCrystal cur = (EnderCrystal) entity;
 
@@ -384,14 +387,15 @@ public class FlagManager {
 		showHolderEffect(holder, flagTeam);
 		colorArmorByFlag(holder, flagTeam);
 		giveCompass(holder);
+		Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpHolder);
 		bpHolder.setPlayerListName();
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_TAKE_RED.getTranslation().getValue(holderName));
-			game.broadcastTitle("", "§4Tvá vlajka byla ukradena! \n §4Zab toho kdo to udělal", flagTeam);
+			game.broadcastTitle("", "§4Tvá vlajka byla ukradena!", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_TAKE_BLUE.getTranslation().getValue(holderName));
-			game.broadcastTitle("", "§4Tvá vlajka byla ukradena! \n §4Zab toho kdo to udělal", flagTeam);
+			game.broadcastTitle("", "§4Tvá vlajka byla ukradena!", flagTeam);
 		}
 	}
 
@@ -417,14 +421,15 @@ public class FlagManager {
 		this.timeoutIn[flagTeamId] = 10;
 
 		giveCompass(holder);
+		Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpHolder);
 		bpHolder.setPlayerListName();
 
 		if (flagTeam == Team.RED) {
 			this.game.broadcast(MessageType.FLAG_DROP_RED.getTranslation().getValue(holderName));
-			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna, yn §6jdi si pro ní!", flagTeam);
+			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna!", flagTeam);
 		} else if (flagTeam == Team.BLUE) {
 			this.game.broadcast(MessageType.FLAG_DROP_BLUE.getTranslation().getValue(holderName));
-			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna, \n §6jdi si pro ní!", flagTeam);
+			game.broadcastTitle("", "§6Tvá vlajka byla upuštěna!", flagTeam);
 		}
 	}
 
@@ -467,6 +472,7 @@ public class FlagManager {
 		bpHolder.colorArmor();
 		giveCompass(holder);
 		holder.updateInventory();
+		Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpHolder);
 		
 		CTFProperties props = (CTFProperties) bpHolder.getGameProperties();
 		props.colorChestplate();

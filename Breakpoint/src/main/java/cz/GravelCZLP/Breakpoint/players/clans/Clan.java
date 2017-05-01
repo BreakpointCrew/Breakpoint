@@ -24,7 +24,7 @@ public class Clan {
 			'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
 			'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
 			'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-	public static final int maxLength = 8;
+	public static final int maxLength = 10;
 	public static final int minLength = 3;
 	public static final List<Clan> clans = new LinkedList<>();
 

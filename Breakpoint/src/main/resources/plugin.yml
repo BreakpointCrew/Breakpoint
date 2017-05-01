@@ -1,8 +1,9 @@
 name: Breakpoint
-version: 4.0.0
+version: 5.0.1
 main: cz.GravelCZLP.Breakpoint.Breakpoint
-loadBefore: [ProtocolLib, PingAPI, PacketWrapper]
-depend: [ProtocolLib, PingAPI, PacketWrapper]
+loadBefore: [ProtocolLib, PingAPI, NametagEdit, ClientStats, ProtocolSupport, Vault]
+depend: [ProtocolLib, PingAPI]
+softdepend: [ NametagEdit, ClientStats, ProtocolSupport, Vault]
 authors: [Limeth, GravelCZLP]
 commands:
     BP:
@@ -36,3 +37,6 @@ commands:
     cw:
         description: Povoli letani
         aliases: [clanwars, kv, kw, cv, klanvalky, kalnovevalky, kb, cb]
+    shop:
+        description: Prikaz pro Shop
+        aliases: [obchod]

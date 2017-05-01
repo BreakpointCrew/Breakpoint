@@ -81,6 +81,7 @@ public class CTFGame extends Game {
 				BPMapPalette.getColor(BPMapPalette.DARK_BLUE, 0), getPlayersInTeam(Team.BLUE).size());
 		MapView btsmv = Bukkit.getMap((short) (this.teamSizeRenderersMapId + 1));
 		System.out.print(teamSizeRenderersMapId);
+		System.out.println(teamSizeRenderersMapId + 1);
 		this.teamSizeRenderers[1].set(btsmv);
 		if (players.size() < 2) {
 			flm.removeFlags();
@@ -628,16 +629,16 @@ public class CTFGame extends Game {
 		bpPlayer.getScoreboardManager().updateSidebarObjective();
 		updateProgressObjective(bpPlayer);
 		if (team == null) {
-			bpPlayer.teleport(this.teamSelectionLocation, false);
+			bpPlayer.teleport(this.teamSelectionLocation);
 			return;
 		}
 		CharacterType ct = props.getCharacterType();
 		if (ct == null) {
-			bpPlayer.teleport(this.characterSelectionLocation, false);
+			bpPlayer.teleport(this.characterSelectionLocation);
 			return;
 		}
 		Location spawnLoc = getSpawnLocation(team);
-		bpPlayer.teleport(spawnLoc, true);
+		bpPlayer.teleport(spawnLoc);
 	}
 
 	@Override
@@ -668,9 +669,57 @@ public class CTFGame extends Game {
 		CTFProperties props = (CTFProperties) bpPlayer.getGameProperties();
 		String playerName = player.getName();
 		Team team = props.getTeam();
+		if (isQuickChat(message)) {
+			switch (message.charAt(3)) {
+			case '1' :
+				message = MessageType.QUICKCHAT_1.getTranslation().getValue();
+				break;
+			case '2' :
+				message = MessageType.QUICKCHAT_2.getTranslation().getValue();
+				break;
+			case '3' :
+				message = MessageType.QUICKCHAT_3.getTranslation().getValue();
+				break;
+			case '4' :
+				message = MessageType.QUICKCHAT_4.getTranslation().getValue();
+				break;
+			case '5' :
+				message = MessageType.QUICKCHAT_5.getTranslation().getValue();
+				break;
+			case '6' :
+				message = MessageType.QUICKCHAT_6.getTranslation().getValue();
+				break;
+			case '7' :
+				message = MessageType.QUICKCHAT_7.getTranslation().getValue();
+				break;
+			case '8' :
+				message = MessageType.QUICKCHAT_8.getTranslation().getValue();
+				break;
+			default:
+				break;
+			}
+		}
 		sendTeamMessage(playerName, message, team);
 	}
 
+	public boolean isQuickChat(String message) {
+		if (message.charAt(0) == '&' && message.charAt(1) == '&' 
+				|| isNumber(message.charAt(3)) && message.length() == 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isNumber(char c) {
+		if (c == '1' || c == '2' || c == '3' || c == '4'
+				|| c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void sendTeamMessage(String playerName, String message, Team team) {
 		for (BPPlayer bpTarget : getPlayers()) {
 			Player target = bpTarget.getPlayer();

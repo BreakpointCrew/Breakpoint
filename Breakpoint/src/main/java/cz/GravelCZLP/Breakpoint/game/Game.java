@@ -156,6 +156,8 @@ public abstract class Game {
 		sbm.updateSidebarObjective();
 		sbm.getProgressObj().unregister();
 		sbm.setProgressObj(null);
+		
+		Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpPlayer);
 	}
 
 	// {{Saving
@@ -284,6 +286,9 @@ public abstract class Game {
 		setRoundEnded(true);
 		PlayerManager.clearHotBars();
 		awardLastKiller();
+		for (BPPlayer bpPlayer : players) {
+			Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpPlayer);
+		}
 	}
 
 	public void awardLastKiller() {
@@ -391,6 +396,10 @@ public abstract class Game {
 			world.setGameRuleValue("doDaylightCycle", "false");
 		}
 
+		for (BPPlayer bpPlayer : players) {
+			Breakpoint.getInstance().getNametagAPIHook().updateNametag(bpPlayer);
+		}
+		
 		setRoundEnded(false);
 		startCountdown();
 

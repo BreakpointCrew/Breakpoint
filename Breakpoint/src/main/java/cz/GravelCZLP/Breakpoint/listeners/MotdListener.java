@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.util.CachedServerIcon;
 
+import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameType;
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFGame;
@@ -37,18 +39,19 @@ public class MotdListener implements cz.GravelCZLP.PingAPI.PingListener {
 		
 		PingReply reply = event.getReply();
 		
-		reply.setMOTD("§c[------------§8[§d§lBREAKPOINT§r§8]§c------------]\n"
-				+ "§cC§dT§9F: §9Blue§8: " + pointsBlue + " §cRed§8: " + pointsRed);
+		String motd = Breakpoint.getBreakpointConfig().getMotdMessage();
+		motd = motd.replaceAll("!!RED!!", String.valueOf(pointsRed));
+		motd = motd.replaceAll("!!BLUE!!", String.valueOf(pointsBlue));
+		motd = ChatColor.translateAlternateColorCodes('&', motd);
+		
+		reply.setMOTD(motd);
 		
 		List<String> news = new ArrayList<>();
 		
-		news.add("§d§lBreakpoint");
-		news.add("----------");
-		news.add("§4Nové Mapy.");
-		news.add("§4Odebrány Perky.");
-		news.add("§62 typy VIP");
-		news.add("§4Anti-Cheat !");
-		news.add("§1A mnoho dalšího!");
+		for (String s : Breakpoint.getBreakpointConfig().getMotdNews()) {
+			s = ChatColor.translateAlternateColorCodes('&', s);
+			news.add(s);
+		}
 		
 		CachedServerIcon icon = null;
 		try {

@@ -58,6 +58,7 @@ public class AbilityManager {
 
 	public static Vector launchPlayer(Player player) {
 		Vector vec = AbilityManager.getDirection(player);
+		vec.setY(vec.getY() * 1.3);
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
 		player.setVelocity(vec);

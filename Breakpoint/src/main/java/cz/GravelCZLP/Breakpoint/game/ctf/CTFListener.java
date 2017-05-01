@@ -338,7 +338,7 @@ public class CTFListener extends GameListener {
 		Team team = props.getTeam();
 		if (team != null) {
 			String message = event.getMessage();
-			if (message.charAt(0) == '@') {
+			if (message.charAt(0) == '&' && message.charAt(1) == '&') {
 				CTFGame game = getGame();
 				Player player = bpPlayer.getPlayer();
 				event.setCancelled(true);

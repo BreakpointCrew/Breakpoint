@@ -1,7 +1,7 @@
 package me.limeth.storageAPI;
 
 public class MainColumn extends Column {
-	public static final String NAME = "entryOwner";
+	public static final String NAME = "breakpointUserOwner";
 
 	public MainColumn(ColumnType type, Integer size, String[] values) {
 		super(NAME, type, size, values);

@@ -80,7 +80,12 @@ public enum PerkType {
 					case CW:
 						for (Entity e : nearbyEntites) {
 							Player p = (Player) e;
-							p.setFireTicks(DURATION * 20);
+							BPPlayer bpPlayerDamaged = BPPlayer.get(p);
+							Team teamDamaged = ((CTFProperties) bpPlayerDamaged.getGameProperties()).getTeam();
+							Team teamDamager = ((CTFProperties) bpPlayer.getGameProperties()).getTeam();
+							if (teamDamaged != teamDamager) {
+								p.setFireTicks(DURATION * 20);
+							}
 						}
 						break;
 					case DM:

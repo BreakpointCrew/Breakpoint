@@ -32,6 +32,9 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.fijistudios.jordan.FruitSQL;
 
+import cz.GravelCZLP.Breakpoint.hooks.ClientStatsHooks;
+import cz.GravelCZLP.Breakpoint.hooks.NametagAPIHooks;
+import cz.GravelCZLP.Breakpoint.hooks.VaultHooks;
 import cz.GravelCZLP.Breakpoint.language.Language;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.listeners.BanListener;
@@ -59,6 +62,8 @@ import cz.GravelCZLP.Breakpoint.managers.commands.FlyCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.GMCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.HelpOPCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.RankCommandExecutor;
+import cz.GravelCZLP.Breakpoint.managers.commands.ReportCommand;
+import cz.GravelCZLP.Breakpoint.managers.commands.ShopCommand;
 import cz.GravelCZLP.Breakpoint.managers.commands.SkullCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.TopClansCommandExecutor;
 import cz.GravelCZLP.Breakpoint.managers.commands.TopCommandExecutor;
@@ -87,6 +92,10 @@ public class Breakpoint extends JavaPlugin {
 	public boolean successfullyEnabled;
 
 	private Main data = null;
+	
+	public VaultHooks vaultHook;
+	public ClientStatsHooks clientStatsHook;
+	public NametagAPIHooks nameTagAPIHook;
 	
 	private boolean canEnable = false;
 	
@@ -138,6 +147,10 @@ public class Breakpoint extends JavaPlugin {
 			DoubleMoneyManager.update();
 			DoubleMoneyManager.startBoostLoop();
 			StatisticsManager.updateStatistics();
+			
+			vaultHook = VaultHooks.hook();
+			clientStatsHook = ClientStatsHooks.hook();
+			nameTagAPIHook = NametagAPIHooks.hook();
 			
 			this.data = new Main(this);
 
@@ -248,6 +261,7 @@ public class Breakpoint extends JavaPlugin {
 		server.getPluginCommand("skull").setExecutor(new SkullCommandExecutor());
 		server.getPluginCommand("fly").setExecutor(new FlyCommandExecutor());
 		server.getPluginCommand("cw").setExecutor(new CWCommandExecutor());
+		server.getPluginCommand("shop").setExecutor(new ShopCommand());
 	}
 	
 	public void registerListeners() {
@@ -259,6 +273,11 @@ public class Breakpoint extends JavaPlugin {
 		pm.registerEvents(new ChatListener(), this);
 		pm.registerEvents(new PlayerInventoryListener(this), this);
 
+		ReportCommand rc = new ReportCommand();
+		pm.registerEvents(rc, this);
+		
+		getServer().getPluginCommand("report").setExecutor(rc);
+		
 		// if(NametagEditManager.isLoaded())
 		// pm.registerEvents(new TagAPIListener(this), this);
 
@@ -478,5 +497,14 @@ public class Breakpoint extends JavaPlugin {
 	}
 	public Main getAPI() {
 		return data;
+	}
+	public ClientStatsHooks getClientStatsHook() {
+		return clientStatsHook;
+	}
+	public VaultHooks getVaultHooks() {
+		return vaultHook;
+	}
+	public NametagAPIHooks getNametagAPIHook() {
+		return nameTagAPIHook;
 	}
 }

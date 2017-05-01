@@ -1,6 +1,7 @@
 package cz.GravelCZLP.Breakpoint.listeners;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,7 +51,7 @@ public class PlayerConnectionListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		event.setJoinMessage("§8[§r+§8] §r" + event.getPlayer().getName());
+		event.setJoinMessage("§8[§a+§8] §r" + event.getPlayer().getName());
 
 		Player player = event.getPlayer();
 		String playerName = player.getName();
@@ -79,6 +80,20 @@ public class PlayerConnectionListener implements Listener {
 		bpPlayer.setPlayerListName();
 		bpPlayer.setTimeJoined(System.currentTimeMillis());
 		player.setHealthScaled(true);
+		
+		if (plugin.getClientStatsHook().isHooked())  {
+			HashMap<String, Object> check = plugin.getClientStatsHook().checkOldVersion(player);
+			if (check != null) {
+				int i = (int) check.get("version");
+				if (i < 316) {
+					player.sendMessage("§4§lDetekována stara verze MC!");
+					player.sendMessage("§7Doporucujeme updateovat na novjejší verzi minecraftu.");
+					player.sendMessage("§7Pouzivaná verze: " + ((String) check.get("name")) + " Doporucena verze: 1.11.2");
+					player.sendMessage("§7Pokud tak neucinite, muzete byti nahodne vyhazovani ze hry.");
+					player.sendMessage("§7Pokud nemuzete updateovat na verzi MC 1.11.2, zkuste 1.10 nebo co nejblize k verzi 1.11.2");
+				}
+			}	
+		}
 	}
 
 	@EventHandler
@@ -107,7 +122,7 @@ public class PlayerConnectionListener implements Listener {
 		BPPlayer.removePlayer(bpPlayer);
 		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		bpPlayer.getScoreboardManager().unregister();
- 
+		event.setQuitMessage("§8[§c-§8] §r" + event.getPlayer().getName());
 	}
 
 	@EventHandler

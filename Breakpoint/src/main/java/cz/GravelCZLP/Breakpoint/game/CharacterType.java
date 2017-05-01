@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -91,19 +92,29 @@ public enum CharacterType {
 		case CHEMIST: {
 			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_FIRE, 2 },
 					new Object[] { Enchantment.OXYGEN, 1 });
-			ItemStack harm = new ItemStack(Material.SPLASH_POTION, 1, (short) 16396);
-			ItemStack poison = new ItemStack(Material.SPLASH_POTION, 1, (short) 16388);
-			ItemStack blindness = new ItemStack(Material.SPLASH_POTION, 1, (short) 16443);
+			
+			ItemStack harm = new ItemStack(Material.SPLASH_POTION,1);
+			ItemStack poison = new ItemStack(Material.SPLASH_POTION, 1);
+			ItemStack blindness = new ItemStack(Material.SPLASH_POTION, 1);
+			
+			PotionMeta harmPM = (PotionMeta) harm.getItemMeta();
+			harmPM.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 1, 2, false, false, Color.RED), false);
+			harmPM.setColor(Color.RED);
+			harm.setItemMeta(harmPM);
+			
 			int sekundyPoison = 15;
 			PotionMeta poisonPM = (PotionMeta) poison.getItemMeta();
 			poisonPM.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 20 * sekundyPoison, 0), false);
+			poisonPM.setColor(Color.GREEN);
 			poison.setItemMeta(poisonPM);
+			
 			int sekundyBlindness = 5;
 			PotionMeta blindnessPM = (PotionMeta) blindness.getItemMeta();
 			blindnessPM.addCustomEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * sekundyBlindness, 0), false);
 			blindnessPM.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * sekundyBlindness, 0), false);
-			
+			blindnessPM.setColor(Color.YELLOW);
 			blindness.setItemMeta(blindnessPM);
+			
 			pi.addItem(new ItemStack(Material.WOOD_SWORD));
 			pi.addItem(poison);
 			pi.addItem(harm);
@@ -149,7 +160,7 @@ public enum CharacterType {
 			break;
 		}
 		case HEAVY: {
-			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_ENVIRONMENTAL, 3 });
+			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_ENVIRONMENTAL, 2 });
 			pi.addItem(new ItemStack(Material.IRON_SWORD));
 			PlayerManager.addRegenerationMatter(pi, 2);
 			break;

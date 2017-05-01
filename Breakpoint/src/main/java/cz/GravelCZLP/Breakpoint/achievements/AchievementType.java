@@ -134,7 +134,7 @@ public enum AchievementType implements Translateable {
 			"You have found and reported a bug to an admin."), BUG_HUNTER("Bug hunter",
 					new ItemStack(Material.COOKED_FISH),
 					"You have found and reported more bugs to an admin."), RECONSTRUCKTER("Reconstructer",
-							new ItemStack(Material.REDSTONE_COMPARATOR_ON),
+							new ItemStack(Material.DIAMOND_BLOCK),
 							"You have helped with Breakpoint Reconstruction.");
 	// }}
 	// }}

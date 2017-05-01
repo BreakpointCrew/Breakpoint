@@ -26,10 +26,8 @@ import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 import cz.GravelCZLP.Breakpoint.sound.BPSound;
-import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.PacketPlayInClientCommand;
 import net.minecraft.server.v1_11_R1.PacketPlayInClientCommand.EnumClientCommand;
-import net.minecraft.server.v1_11_R1.PacketPlayOutEntityTeleport;
 
 public class PlayerManager {
 	
@@ -240,27 +238,6 @@ public class PlayerManager {
 				respawnInstantlyPacket(player);
 			}
 		});
-	}
-
-	public static void updatePosDelayed(final Player player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Breakpoint.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				updatePos(player);
-			}
-		});
-	}
-
-	public static void updatePos(Player player) {
-		EntityPlayer entity = ((CraftPlayer) player).getHandle();
-
-		PacketPlayOutEntityTeleport packet = new PacketPlayOutEntityTeleport(entity);
-
-		for (Player online : Bukkit.getOnlinePlayers()) {
-			if (!online.equals(player)) {
-				((CraftPlayer) online).getHandle().playerConnection.sendPacket(packet);
-			}
-		}
 	}
 
 	public static void respawnInstantlyPacket(Player player) {

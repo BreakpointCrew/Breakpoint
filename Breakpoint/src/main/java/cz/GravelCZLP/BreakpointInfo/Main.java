@@ -40,7 +40,7 @@ public class Main {
 	}
 	
 	public void start() throws IOException {
-		logger = Logger.getLogger("Breakpoint Data");
+		logger = Logger.getLogger("Breakpoint API");
 		
 		FileHandler dateLog;
 		FileHandler latestLog;
@@ -104,20 +104,37 @@ public class Main {
 	
 	public void loadConfig() {
 		File configFile = new File(pl.getDataFolder() + "/BreakpointData/config.yml");
+		if (!configFile.exists()) {
+			try {
+				configFile.createNewFile();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 		config.addDefault("connection.portTCP", 25589);
 		port = config.getInt("connection.portTCP");
 	}
 	
 	public void loadBans() {
-		File banFile = new File(pl.getDataFolder() + "/BreakpointData/BanList.yml");
+		File banFile = new File(pl.getDataFolder() + "/BreakpointData/banList.yml");
+		if (!banFile.exists()) {
+			try {
+				banFile.createNewFile();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(banFile);
+		config.addDefault("banlist", new ArrayList<String>());
 		permaBans = config.getStringList("banlist");
 	}
 	
 	public void stop() {
 		logger.info("Server stoping..");
-		File banFile = new File(pl.getDataFolder() + "/BreakpointData/BanList.yml");
+		File banFile = new File(pl.getDataFolder() + "/BreakpointData/banList.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(banFile);
 		logger.info("Saveing bans..");
 		config.set("banlist", permaBans);

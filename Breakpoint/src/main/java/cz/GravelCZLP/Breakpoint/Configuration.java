@@ -18,11 +18,11 @@ import me.limeth.storageAPI.StorageType;
 public class Configuration {
 	private StorageType storageType;
 	private String mySQLHost, mySQLDatabase, mySQLUsername, mySQLPassword, mySQLTablePlayers, languageFileName,
-			cwChallengeGame;
-	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, staffListLocation, NPCLocation, NPCSign;
+			cwChallengeGame, MotdName;
+	private Location lobbyLocation, shopLocation, vipInfoLocation, moneyInfoLocation, staffListLocation;
 	private int mySQLPort, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin;
 	private RandomShop randomShop;
-	private List<String> lobbyMessages;
+	private List<String> lobbyMessages, motdNews;
 	private String[] vipFeatures;
 	private long BoostMelounTime;
 	
@@ -30,7 +30,8 @@ public class Configuration {
 			String mySQLUsername, String mySQLPassword, String mySQLTablePlayers, String languageFileName,
 			String cwChallengeGame, Location lobbyLocation, Location shopLocation, Location vipInfoLocation,
 			Location moneyInfoLocation, RandomShop randomShop, int cwBeginHour, int cwEndHour, int cwWinLimit,
-			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, long BoostMelounTime, Location npcLoc, Location npcSign) {
+			int cwEmeraldsForTotalWin, List<String> lobbyMessages, String[] vipFeatures, Location staffListLocation, 
+			long BoostMelounTime, String motdName, List<String> motdNews) {
 		this.storageType = storageType;
 		this.mySQLHost = mySQLHost;
 		this.mySQLPort = mySQLPort;
@@ -53,8 +54,8 @@ public class Configuration {
 		this.vipFeatures = vipFeatures;
 		this.BoostMelounTime = BoostMelounTime;
 		this.staffListLocation = staffListLocation;
-		this.NPCLocation = npcLoc;
-		this.NPCSign = npcSign;
+		this.MotdName = motdName;
+		this.motdNews = motdNews;
 	}
 
 	public static Configuration load() {
@@ -80,14 +81,15 @@ public class Configuration {
 		String languageFileName = yamlConfig.getString("lang", "en");
 		String challengeGameName = yamlConfig.getString("cwChallengeGame", "CW");
 
+		String motdName = yamlConfig.getString("motd.text", "&c[------------&8[&d&lBREAKPOINT&r&8]&c------------]\n"
+				+ "&cC&dT&9F: &9Blue&8: !!BLUE!! &cRed&8: !!RED!!");
+		List<String> motdNews = yamlConfig.getStringList("motd.news");
+		
 		Location lobbyLocation = deserializeLocation(yamlConfig.getString("locations.lobby", "world,0,64,0,0,0"));
 		Location shopLocation = deserializeLocation(yamlConfig.getString("locations.shop", "world,0,64,0,0,0"));
 		Location vipInfoLocation = deserializeLocation(yamlConfig.getString("locations.vipInfo", "world,0,64,8,0,0"));
 		Location moneyInfoLocation = deserializeLocation(yamlConfig.getString("locations.moneyInfo", "world,0,64,8,0,0"));
 		Location staffListLocation = deserializeLocation(yamlConfig.getString("locations.staffList", "world,0,64,8,0,0"));
-
-		Location NPCSignLoc = deserializeLocation(yamlConfig.getString("npcs.top.sign", "world,0,64,8,0,0"));
-		Location NPCLoc = deserializeLocation(yamlConfig.getString("npcs.top.loc", "world,0,64,8,0,0"));
 		
 		int cwBeginHour = yamlConfig.getInt("cwBeginHour", 16);
 		int cwEndHour = yamlConfig.getInt("cwEndHour", 23);
@@ -121,7 +123,7 @@ public class Configuration {
 		return new Configuration(storageType, mySQLHost, mySQLPort, mySQLDatabase, mySQLUsername, mySQLPassword,
 				mySQLTablePlayers, languageFileName, challengeGameName, lobbyLocation, shopLocation, vipInfoLocation,
 				moneyInfoLocation, randomShop, cwBeginHour, cwEndHour, cwWinLimit, cwEmeraldsForTotalWin, lobbyMessages,
-				vipFeatures, staffListLocation, BoostMelounTime, NPCLoc, NPCSignLoc);
+				vipFeatures, staffListLocation, BoostMelounTime, motdName, motdNews);
 	}
 
 	public void save() throws IOException {
@@ -142,8 +144,6 @@ public class Configuration {
 		yamlConfig.set("locations.vipInfo", serialize(this.vipInfoLocation));
 		yamlConfig.set("locations.moneyInfo", serialize(this.moneyInfoLocation));
 		yamlConfig.set("locations.stafflist", serialize(this.staffListLocation));
-		yamlConfig.set("npcs.top.sign", serialize(NPCSign));
-		yamlConfig.set("npcs.top.loc", serialize(NPCLocation));
 		
 		yamlConfig.set("lobbyMessages", this.lobbyMessages);
 		yamlConfig.set("lang", this.languageFileName);
@@ -376,23 +376,15 @@ public class Configuration {
 		return this.BoostMelounTime;
 	}
 
-	public Location getTopPlayerSignLocation() {
-		return NPCSign;
-	}
-
-	public Location getTopPlayerNPCLocation() {
-		return NPCLocation;
-	}
-
-	public void setNPCLocation(Location nPCLocation) {
-		NPCLocation = nPCLocation;
-	}
-
-	public void setNPCSign(Location nPCSign) {
-		NPCSign = nPCSign;
-	}
-
 	public void setStaffLocation(Location location) {
 		this.staffListLocation = location;
-	}	
+	}
+	
+	public String getMotdMessage() {
+		return MotdName;
+	}
+	
+	public List<String> getMotdNews() {
+		return motdNews;
+	}
 }

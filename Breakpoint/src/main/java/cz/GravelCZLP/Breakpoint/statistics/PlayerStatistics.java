@@ -73,7 +73,7 @@ public class PlayerStatistics extends Statistics {
 		storage.put("bought", getBought());
 		storage.put("flagTakes", getFlagTakes());
 		storage.put("flagCaptures", getFlagCaptures());
-
+		
 		for (Entry<CharacterType, Integer> entry : this.ctKills.entrySet()) {
 			CharacterType ct = entry.getKey();
 			int curKills = entry.getValue();

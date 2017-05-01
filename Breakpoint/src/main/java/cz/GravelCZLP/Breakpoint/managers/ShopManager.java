@@ -40,7 +40,7 @@ public class ShopManager {
 		boolean vip = skullType == null || skullType.isVip();
 		boolean b = player.hasPermission("Breakpoint.shop.heads");
 
-		if (!vip && b) {
+		if (!vip || b) {
 			Location bLoc = sign.getLocation();
 			String nameColored = lines[0];
 			int cost = Integer.valueOf(lines[3]);
@@ -83,7 +83,7 @@ public class ShopManager {
 		String typeName = ChatColor.stripColor(lines[0]);
 		ArmorMerchandiseType amt = ArmorMerchandiseType.parse(typeName);
 
-		boolean b = player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vipS") || player.hasPermission("Breakpoint.vipplus");
+		boolean b = player.hasPermission("Breakpoint.vipSlots") || player.hasPermission("Breakpoint.vip") || player.hasPermission("Breakpoint.vipplus");
 
 		if (amt != null) {
 			Location bLoc = sign.getLocation();

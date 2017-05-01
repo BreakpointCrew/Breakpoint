@@ -70,12 +70,12 @@ public class DMGame extends Game {
 		Perk.onSpawn(bpPlayer);
 
 		if (ct == null) {
-			bpPlayer.teleport(this.characterSelectionLocation, false);
+			bpPlayer.teleport(this.characterSelectionLocation);
 			return;
 		}
 		Location spawnLoc = getSpawnLocation(bpPlayer);
 		props.setSpawnedAt(spawnLoc);
-		bpPlayer.teleport(spawnLoc, true);
+		bpPlayer.teleport(spawnLoc);
 	}
 
 	@Override

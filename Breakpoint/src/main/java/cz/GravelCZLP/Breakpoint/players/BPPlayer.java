@@ -39,6 +39,7 @@ import cz.GravelCZLP.Breakpoint.equipment.BPEquipment;
 import cz.GravelCZLP.Breakpoint.game.CharacterType;
 import cz.GravelCZLP.Breakpoint.game.Game;
 import cz.GravelCZLP.Breakpoint.game.GameProperties;
+import cz.GravelCZLP.Breakpoint.hooks.VaultHooks;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AfkManager;
 import cz.GravelCZLP.Breakpoint.managers.ChatManager;
@@ -308,6 +309,22 @@ public class BPPlayer {
 		this.bpClan = bpClan;
 		this.timeJoined = timeJoined;
 
+		VaultHooks vh = Breakpoint.getInstance().getVaultHooks();
+		
+		if (vh.isHooked()) {
+			if (!vh.getEconomy().hasAccount(getPlayer())) {
+				vh.getEconomy().createPlayerAccount(getPlayer());
+			}
+			
+			int currentEmeralds = getMoney();
+			int vaultMoney = (int) vh.getEconomy().getBalance(getPlayer());
+			
+			if (vaultMoney != currentEmeralds) {
+				vh.getEconomy().withdrawPlayer(getPlayer(), vaultMoney);
+				vh.getEconomy().depositPlayer(getPlayer(), currentEmeralds);
+			}
+		}
+		
 		if (isOnline()) {
 			this.scoreboardManager = new SBManager(this);
 		} else {
@@ -398,12 +415,32 @@ public class BPPlayer {
 
 	// {{CHAT
 	public void setPlayerListName() {
-		Player player = getPlayer();
-		String tag = getTag(false, true);
-
-		player.setPlayerListName(tag);
+		Breakpoint.getInstance().getNametagAPIHook().updateNametag(this);
 	}
 
+	public String getNameTagPrefix() {
+		StringBuilder sb = new StringBuilder();
+		String prefix = "";
+		String gamePrefix = this.gameProperties != null ? this.gameProperties.getTagPrefix() : null;
+		if (getPlayer().hasPermission("Breakpoint.admin")) {
+			prefix = ChatManager.tagPrefixAdmin;
+		} else if (getPlayer().hasPermission("Breakpoint.moderator")) {
+			prefix = ChatManager.tagPrefixModerator;
+		} else if (getPlayer().hasPermission("Breakpoint.helper")) {
+			prefix = ChatManager.tagPrefixHelper;
+		} else if (getPlayer().hasPermission("Breakpoint.yt")) {
+			prefix = ChatManager.tagPrefixYT;
+		} else if (getPlayer().hasPermission("Breakpoint.sponsor")) {
+			prefix = ChatManager.tagPrefixSponsor;
+		} else if (getPlayer().hasPermission("Breakpoint.vipplus")) {
+			prefix = ChatManager.tagPrefixVIPPlus;
+		} else if (getPlayer().hasPermission("Breakpoint.vip")) {
+			prefix = ChatManager.tagPrefixVIP;
+		}
+		sb.append(prefix).append(gamePrefix != null ? gamePrefix : "" + ChatColor.ITALIC);
+		return sb.toString();
+	} 
+	
 	public String getTagPrefix(boolean brackets) {
 		String gamePrefix = this.gameProperties != null ? this.gameProperties.getTagPrefix() : null;
 		boolean vip = getPlayer().hasPermission("Breakpoint.vip") || getPlayer().hasPermission("Breakpoint.vipplus");
@@ -415,7 +452,10 @@ public class BPPlayer {
 	}
 
 	public String getTagSuffix() {
-		return ""; // max length 16
+		if (getPlayer().isOp()) {
+			return ChatColor.DARK_PURPLE + "[OP]";
+		}
+		return "";
 	}
 
 	public String getTag(boolean brackets, boolean cut) {
@@ -436,7 +476,7 @@ public class BPPlayer {
 		return getTag(false, true);
 	}
 
-	private static String getTagPrefix(String gamePrefix, boolean vip, boolean sponsor, boolean yt, boolean brackets) {
+	private static String getTagPrefix(String gamePrefix, boolean vip, boolean sponsor, boolean yt,boolean brackets) {
 		StringBuilder builder = new StringBuilder();
 		String prefix = "";
 
@@ -448,13 +488,12 @@ public class BPPlayer {
 		} else if (vip) {
 			prefix = (brackets ? brackets(ChatManager.tagPrefixVIP) : ChatManager.tagPrefixVIP) + ChatColor.WHITE + " ";
 		}
-
 		builder.append(prefix).append(gamePrefix != null ? gamePrefix : "" + ChatColor.ITALIC);
 
 		return builder.length() > 16 ? builder.substring(0, 16) : builder.toString();
 	}
 
-	private static String brackets(String string) {
+	public static String brackets(String string) {
 		return ChatColor.DARK_GRAY + "[" + string + ChatColor.DARK_GRAY + "]";
 	}
 
@@ -527,8 +566,6 @@ public class BPPlayer {
 			return ChatManager.prefixAdmin + " ";
 		} else if (player.hasPermission("Breakpoint.developer")) {
 			return ChatManager.prefixDeveloper + " ";
-		} else if (player.hasPermission("Breakpoint.admin") && player.hasPermission("Breakpoint.developer")) {
-			return ChatManager.prefixAdminDev;
 		} else if (player.hasPermission("Breakpoint.moderator")) {
 			return ChatManager.prefixModerator + " ";
 		} else if (player.hasPermission("Breakpoint.helper")) {
@@ -552,8 +589,6 @@ public class BPPlayer {
 			return ChatManager.prefixAdmin + " ";
 		} else if (player.hasPermission("Breakpoint.developer")) {
 			return ChatManager.prefixDeveloper + " ";
-		} else if (player.hasPermission("Breakpoint.admin") && player.hasPermission("Breakpoint.developer")) {
-			return ChatManager.prefixAdminDev;
 		} else if (player.hasPermission("Breakpoint.moderator")) {
 			return ChatManager.prefixModerator + " ";
 		} else if (player.hasPermission("Breakpoint.helper")) {
@@ -757,8 +792,7 @@ public class BPPlayer {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public void teleport(Location loc, boolean updatePos) {
+	public void teleport(Location loc) {
 		Chunk chunk = loc.getWorld().getChunkAt(loc);
 		Player player = getPlayer();
 
@@ -767,9 +801,6 @@ public class BPPlayer {
 		}
 		
 		player.teleport(loc);
-		if (updatePos) {
-			Breakpoint.getInstance().prm.updateEntity(player, (List<Player>) Bukkit.getOnlinePlayers());
-		}
 	}
 
 	public void clearInventory() {
@@ -792,7 +823,7 @@ public class BPPlayer {
 			Configuration config = Breakpoint.getBreakpointConfig();
 
 			purify();
-			teleport(config.getLobbyLocation(), false);
+			teleport(config.getLobbyLocation());
 			InventoryMenuManager.showLobbyMenu(this);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, true), true);
 		}

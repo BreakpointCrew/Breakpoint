@@ -83,15 +83,16 @@ public class SBManager {
 		}
 	}
 
+	@SuppressWarnings(
+		"deprecation"
+	)
 	public void updateVoteOptions(Map<String, Integer> votes) {
 		for (Entry<String, Integer> entry : votes.entrySet()) {
 			String name = entry.getKey();
 			int voted = entry.getValue();
 			if (name != null) {
-				// Score score =
-				// voteObj.getScore(Bukkit.getOfflinePlayer(ChatColor.AQUA +
-				// name));
-				Score score = this.voteObj.getScore(ChatColor.AQUA + name);
+				Score score = voteObj.getScore(Bukkit.getOfflinePlayer(ChatColor.AQUA + name));
+				//Score score = this.voteObj.getScore(ChatColor.AQUA + name);
 				score.setScore(voted);
 			}
 		}

@@ -35,6 +35,9 @@ public class LobbyInfoManager {
 				+ messages.get(new Random().nextInt(messages.size()));
 
 		for (BPPlayer bpPlayer : BPPlayer.onlinePlayers) {
+			if (BPPlayer.onlinePlayers.isEmpty() || BPPlayer.onlinePlayers == null) {
+				return;
+			}
 			if (bpPlayer.isInLobby()) {
 				Player player = bpPlayer.getPlayer();
 

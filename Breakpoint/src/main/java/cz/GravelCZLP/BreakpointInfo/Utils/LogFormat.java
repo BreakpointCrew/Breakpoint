@@ -19,7 +19,7 @@ public class LogFormat extends Formatter {
 		cal.setTimeInMillis(log.getMillis());
 		String toSend = "[ " + log.getLoggerName() + 
 				" ] || [ " + logTime.format(cal.getTime()) + 
-				" ]  [ " + log.getLevel() + " ] :" + log.getMessage();
+				" ]  [ " + log.getLevel() + " ] :" + log.getMessage() + "\n";
 		return toSend;
 	}
 
