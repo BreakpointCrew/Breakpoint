@@ -1,5 +1,5 @@
 name: Breakpoint
-version: 5.0.1
+version: 5.1.0
 main: cz.GravelCZLP.Breakpoint.Breakpoint
 loadBefore: [ProtocolLib, PingAPI, NametagEdit, ClientStats, ProtocolSupport, Vault]
 depend: [ProtocolLib, PingAPI]

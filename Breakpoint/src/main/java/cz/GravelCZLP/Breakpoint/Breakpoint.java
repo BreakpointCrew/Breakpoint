@@ -288,9 +288,6 @@ public class Breakpoint extends JavaPlugin {
 		
 		getServer().getPluginCommand("report").setExecutor(rc);
 		
-		// if(NametagEditManager.isLoaded())
-		// pm.registerEvents(new TagAPIListener(this), this);
-
 		// Disable enchantments
 		this.prm./* getAsynchronousManager().registerAsyncHandler */addPacketListener(
 				new PacketAdapter(this, PacketType.Play.Server.ENTITY_EQUIPMENT) {
