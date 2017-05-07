@@ -20,7 +20,6 @@ import com.comphenix.example.Attributes.Operation;
 
 import cz.GravelCZLP.Breakpoint.game.ctf.CTFProperties;
 import cz.GravelCZLP.Breakpoint.game.ctf.Team;
-import cz.GravelCZLP.Breakpoint.game.cw.CWProperties;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
@@ -29,7 +28,16 @@ public enum PerkType {
 	@SuppressWarnings("deprecation")
 	AGILITY(MessageType.PERK_AGILITY_NAME, MessageType.PERK_AGILITY_DESC,
 			new MaterialData(Material.POTION, (byte) 8194), new Attribute[] { 
-					getAttribute(AttributeType.GENERIC_MOVEMENT_SPEED, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STABILITY(MessageType.PERK_STABILITY_NAME, MessageType.PERK_STABILITY_DESC, new MaterialData(Material.CHAINMAIL_CHESTPLATE), new Attribute[] { getAttribute(AttributeType.GENERIC_KNOCKBACK_RESISTANCE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), STRENGTH(MessageType.PERK_STRENGTH_NAME, MessageType.PERK_STRENGTH_DESC, new MaterialData(Material.IRON_SWORD), new Attribute[] { getAttribute(AttributeType.GENERIC_ATTACK_DAMAGE, Operation.MULTIPLY_PERCENTAGE, 0.1) }), 
+					getAttribute(AttributeType.GENERIC_MOVEMENT_SPEED, 
+							Operation.MULTIPLY_PERCENTAGE, 0.1) }), 
+	STABILITY(MessageType.PERK_STABILITY_NAME, MessageType.PERK_STABILITY_DESC, 
+			new MaterialData(Material.CHAINMAIL_CHESTPLATE), new Attribute[] 
+					{ getAttribute(AttributeType.GENERIC_KNOCKBACK_RESISTANCE, 
+							Operation.MULTIPLY_PERCENTAGE, 0.1) }), 
+	STRENGTH(MessageType.PERK_STRENGTH_NAME, MessageType.PERK_STRENGTH_DESC,
+			new MaterialData(Material.IRON_SWORD), new Attribute[] 
+					{ getAttribute(AttributeType.GENERIC_ATTACK_DAMAGE, 
+							Operation.MULTIPLY_PERCENTAGE, 0.1) }), 
 	@Deprecated
 	VITALITY(MessageType.PERK_VITALITY_NAME, MessageType.PERK_VITALITY_DESC, new MaterialData(Material.BOW), new Attribute[] { getAttribute(AttributeType.GENERIC_MAX_HEALTH, Operation.ADD_NUMBER, 20) }), POWER(MessageType.PERK_POWER_NAME, MessageType.PERK_POWER_DESC, new MaterialData(Material.BOW)) {
 		public final double MULTIPLIER = 1.1;
@@ -91,12 +99,7 @@ public enum PerkType {
 					case DM:
 						for (Entity e : nearbyEntites) {
 							Player p = (Player) e;
-							BPPlayer bpPlayerDamaged = BPPlayer.get(p);
-							Team teamDamaged = ((CWProperties) bpPlayerDamaged.getGameProperties()).getTeam();
-							Team teamDamager = ((CWProperties) bpPlayer.getGameProperties()).getTeam();
-							if (teamDamaged != teamDamager) {
-								p.setFireTicks(DURATION * 20);
-							}
+							p.setFireTicks(DURATION * 20);
 						}
 						break;
 					default:

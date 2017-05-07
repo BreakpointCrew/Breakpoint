@@ -12,6 +12,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,6 +38,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -56,6 +58,7 @@ import cz.GravelCZLP.Breakpoint.game.ctf.FlagManager;
 import cz.GravelCZLP.Breakpoint.game.ctf.Team;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 import cz.GravelCZLP.Breakpoint.managers.AbilityManager;
+import cz.GravelCZLP.Breakpoint.managers.DoubleMoneyManager;
 import cz.GravelCZLP.Breakpoint.managers.GameManager;
 import cz.GravelCZLP.Breakpoint.managers.PlayerManager;
 import cz.GravelCZLP.Breakpoint.managers.ShopManager;
@@ -416,6 +419,20 @@ public class PlayerInteractListener implements Listener {
 				return;
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent e) {
+		Entity[] entities = e.getChunk().getEntities();
+		for (Entity ent : entities) {
+			if (ent instanceof Item) {
+				Item i = (Item) ent;
+				ItemStack itemstack = i.getItemStack();
+				if (itemstack.getType() == Material.SPECKLED_MELON && !DoubleMoneyManager.isDoubleXP()) {
+					ent.remove();
+				}
+			}
+		} 
 	}
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {

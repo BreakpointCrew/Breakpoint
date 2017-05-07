@@ -40,3 +40,6 @@ commands:
     shop:
         description: Prikaz pro Shop
         aliases: [obchod]
+    report:
+        descrition: nahlasit hrace
+        aliases: [ nahlasit ]

@@ -2,12 +2,14 @@ package cz.GravelCZLP.Breakpoint;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.craftbukkit.v1_11_R1.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -75,6 +78,7 @@ import cz.GravelCZLP.Breakpoint.players.Settings;
 import cz.GravelCZLP.Breakpoint.players.clans.Clan;
 import cz.GravelCZLP.BreakpointInfo.Main;
 import me.limeth.storageAPI.StorageType;
+import net.minecraft.server.v1_11_R1.MinecraftServer;
 
 public class Breakpoint extends JavaPlugin {
 	private static Breakpoint instance;
@@ -96,6 +100,8 @@ public class Breakpoint extends JavaPlugin {
 	public VaultHooks vaultHook;
 	public ClientStatsHooks clientStatsHook;
 	public NametagAPIHooks nameTagAPIHook;
+	
+	public long timeBoot;
 	
 	private boolean canEnable = false;
 	
@@ -152,6 +158,8 @@ public class Breakpoint extends JavaPlugin {
 			clientStatsHook = ClientStatsHooks.hook();
 			nameTagAPIHook = NametagAPIHooks.hook();
 			
+			cheatSlots(100);
+			
 			this.data = new Main(this);
 
 			try {
@@ -179,6 +187,8 @@ public class Breakpoint extends JavaPlugin {
 			world.setWeatherDuration(1000000000);
 			
 			this.successfullyEnabled = true;
+			
+			this.timeBoot = System.currentTimeMillis();
 			
 			return;
 		} else {
@@ -506,5 +516,23 @@ public class Breakpoint extends JavaPlugin {
 	}
 	public NametagAPIHooks getNametagAPIHook() {
 		return nameTagAPIHook;
+	}
+	
+	private void cheatSlots(int amount) {
+		MinecraftServer ms = ((CraftServer) getServer()).getServer();
+		try {
+			Field playerListField = ms.getClass().getField("v");
+			playerListField.setAccessible(true);
+			Field playerCount = playerListField.getClass().getField("maxPlayers");
+			playerCount.setAccessible(true);
+			playerCount.set(playerCount, amount);
+		} catch (Exception e ) {
+			getLogger().log(Level.WARNING, "Failed to cheat Minecraft server slots", e);
+			e.printStackTrace();
+		}
+	}
+	
+	public static String getVersion() {
+		return "5.1.0";
 	}
 }

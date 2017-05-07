@@ -32,6 +32,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
 import cz.GravelCZLP.Breakpoint.achievements.Achievement;
@@ -351,7 +352,7 @@ public class PVPListener implements Listener {
 		if (eDamager instanceof Player) {
 			Player damager = (Player) eDamager;
 
-			if (damager.hasPermission("Breakpoint.build") && damager.getGameMode() == GameMode.CREATIVE) {
+			if (!damager.hasPermission("Breakpoint.build") && damager.getGameMode() != GameMode.CREATIVE) {
 				return;
 			}
 		}
@@ -525,6 +526,10 @@ public class PVPListener implements Listener {
 		if (et == EntityType.FIREBALL) {
 			Projectile proj = event.getEntity();
 			AbilityManager.fireballHit((Fireball) proj);
+			Vector vec = hited.getVelocity();
+			vec.setY(vec.getY() * 2.5);
+			vec.normalize();
+			hited.setVelocity(vec);
 		} else if (et == EntityType.SMALL_FIREBALL) {
 			Projectile proj = event.getEntity();
 			AbilityManager.smallFireballHit((SmallFireball) proj);

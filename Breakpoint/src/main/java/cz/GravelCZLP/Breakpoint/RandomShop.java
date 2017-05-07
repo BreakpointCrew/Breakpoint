@@ -51,7 +51,7 @@ public class RandomShop {
 	}
 
 	public long getWeekSeed() {
-		Calendar cal = Calendar.getInstance(Locale.GERMANY);
+		Calendar cal = Calendar.getInstance(Locale.GERMANY); // Closest to Czech Republic :D
 		int week = cal.get(Calendar.WEEK_OF_YEAR);
 		int year = cal.get(Calendar.YEAR);
 		int weeksInYear = 52;

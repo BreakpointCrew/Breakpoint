@@ -1,8 +1,13 @@
 package cz.GravelCZLP.Breakpoint.game.ctf;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
+
+import cz.GravelCZLP.Breakpoint.players.BPPlayer;
 
 public enum Team {
 	RED(ChatColor.RED, Color.RED, (byte) 14), BLUE(ChatColor.BLUE, Color.BLUE, (byte) 11);
@@ -87,6 +92,13 @@ public enum Team {
 	}
 
 	public void displayDeathEffect(Location loc) {
-
+		Particle par = Particle.BLOCK_CRACK;
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			BPPlayer bpPlayer = BPPlayer.get(p);
+			if (bpPlayer.isInGame()) {
+				p.spawnParticle(par, loc, 10, getWoolColor());
+			}
+		}
+		
 	}
 }

@@ -67,6 +67,7 @@ public class BreakpointInfo {
 		return new BreakpointInfo(playersInLobby, playersInGame, pointsRed, pointsBlue, bestPlayerInDM, CWChallangeGame, playersInCTF, playersInDM);
 	}
 	
+	//LMFAO the names :D
 	private int pil;
 	private int pig;
 	private int rc;

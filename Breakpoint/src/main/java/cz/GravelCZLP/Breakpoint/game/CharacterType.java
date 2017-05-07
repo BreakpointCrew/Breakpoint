@@ -128,6 +128,7 @@ public enum CharacterType {
 			ItemStack blazeRod = new ItemStack(Material.BLAZE_ROD);
 			ItemStack feather = new ItemStack(Material.FEATHER);
 			feather.addUnsafeEnchantment(Enchantment.PROTECTION_FALL, 1);
+			pi.addItem(new ItemStack(Material.STONE_SWORD, 1));
 			pi.addItem(stick);
 			pi.addItem(blazeRod);
 			pi.addItem(feather);
@@ -151,7 +152,7 @@ public enum CharacterType {
 		case NINJA: {
 			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_FALL, 2 });
 			ItemStack sword = new ItemStack(Material.GOLD_SWORD);
-			sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
+			sword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
 			sword.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
 			pi.addItem(sword);
 			PlayerManager.addRegenerationMatter(pi, 2);
@@ -160,7 +161,7 @@ public enum CharacterType {
 			break;
 		}
 		case HEAVY: {
-			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_ENVIRONMENTAL, 2 });
+			PlayerManager.enchantArmor(pi, new Object[] { Enchantment.PROTECTION_ENVIRONMENTAL, 1 });
 			pi.addItem(new ItemStack(Material.IRON_SWORD));
 			PlayerManager.addRegenerationMatter(pi, 2);
 			break;

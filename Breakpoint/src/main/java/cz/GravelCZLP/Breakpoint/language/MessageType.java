@@ -422,7 +422,7 @@ public enum MessageType implements Translateable {
 									"Vitality"), PERK_VITALITY_DESC(
 											"&7Increases health by 10%."), PERK_FIRESPREADER_NAME(
 													"Fire Spreading"), PERK_FIRESPREADER_DESC(
-															"&7Provides a 10% chance of\\n&7lighting an enemy on fire."), PERK_POWER_NAME(
+															"&7Provides a 30% chance of\\n&7lighting an enimies in rage of 10 blocks on fire."), PERK_POWER_NAME(
 																	"Power"), PERK_POWER_DESC(
 																			"&7Increases projectile damage by 10%."), PERK_SPLITTER_NAME(
 																					"Splitter"), PERK_SPLITTER_DESC(

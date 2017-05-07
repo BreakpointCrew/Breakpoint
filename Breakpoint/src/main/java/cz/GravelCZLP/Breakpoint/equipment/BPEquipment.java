@@ -3,6 +3,7 @@ package cz.GravelCZLP.Breakpoint.equipment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import cz.GravelCZLP.Breakpoint.Breakpoint;
+import cz.GravelCZLP.Breakpoint.equipment.BPSpecialItem.SpecialItemType;
 import cz.GravelCZLP.Breakpoint.language.MessageType;
 
 public abstract class BPEquipment {
@@ -81,6 +83,18 @@ public abstract class BPEquipment {
 				String name = lore.get(0)
 						.substring(MessageType.EQUIPMENT_SKULLOWNER.getTranslation().getValue().length() - 3);
 				return new BPSkull(name, minutesLeft);
+			} else if (im instanceof ItemMeta) {
+				List<String> lore = im.getLore();
+				
+				if (lore == null || lore.size() < 2) {
+					Breakpoint.warn("Errow when parsing Special Item: " + (im.hasDisplayName() ? im.getDisplayName() : ""));
+					return null;
+				}
+				
+				int minutesLeft = Integer.parseInt(lore.get(1).substring(MessageType.EQUIPMENT_MINUTESLEFT.getTranslation().getValue().length() - 3));
+				String typeString = lore.get(0);
+				SpecialItemType type = SpecialItemType.valueOf(typeString.toUpperCase());
+				return new BPSpecialItem(WordUtils.capitalize(type.getMaterial().name().replaceAll("_", "")), minutesLeft, type);
 			} else if (im != null) {
 				try {
 					List<String> lore = im.getLore();
@@ -126,6 +140,10 @@ public abstract class BPEquipment {
 				int id = Integer.parseInt(raw[3]);
 				byte data = Byte.parseByte(raw[4]);
 				return new BPBlock(name, minutesLeft, id, data);
+			} else if (raw[0].equals("specialitem")) {
+				int minsLeft = Integer.parseInt(raw[1]);
+				SpecialItemType type = SpecialItemType.valueOf(raw[2]);
+				return new BPSpecialItem(WordUtils.capitalize(type.getMaterial().name().replaceAll("_", "")), minsLeft, type);
 			} else {
 				return null;
 			}
